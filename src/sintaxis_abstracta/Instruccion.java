@@ -1,8 +1,13 @@
 package sintaxis_abstracta;
 
-public class Instruccion {
+import maquinap.MaquinaP;
+import utils.ErrorSingleton;
+import utils.GestorMem;
+import utils.Utils;
 
-    public class Asignacion extends Instruccion{
+public class Instruccion extends Nodo {
+
+    public static class Asignacion extends Instruccion {
 
         private Exp e1, e2;
 
@@ -10,9 +15,43 @@ public class Instruccion {
             this.e1 = e1;
             this.e2 = e2;
         }
+
+        @Override
+        public void vincula_is(TablaSimbolos ts) {
+            this.e1.vincula_is(ts);
+            this.e2.vincula_is(ts);
+        }
+
+        @Override
+        public void tipado() {
+            this.e1.tipado();
+            this.e2.tipado();
+
+            if (Utils.son_compatibles(e1, e2))
+                this.tipo = new Tipo.Ok();
+            else {
+                ErrorSingleton.setError("Tipos incompatibles.");
+                this.tipo = new Tipo.Error();
+            }
+
+        }
+
+        @Override
+        public void asig_espacio(GestorMem gm) {}
+
+        @Override
+        public void gen_cod(MaquinaP maquinap) {
+            this.e1.gen_cod(maquinap);
+            this.e2.gen_cod(maquinap);
+
+            if (Utils.es_desig(this.e2))
+                maquinap.ponInstruccion(maquinap.mueve(this.e2.tipo.tam));
+            else
+                maquinap.ponInstruccion(maquinap.desapilaInd());
+        }
     }
 
-    public class If_then extends Instruccion{
+    public static class If_then extends Instruccion {
 
         private Exp exp;
         private Instrucciones is;
@@ -23,7 +62,7 @@ public class Instruccion {
         }
     }
 
-    public class If_then_else extends Instruccion{
+    public static class If_then_else extends Instruccion{
 
         private Exp exp;
         private Instrucciones is1, is2;
@@ -35,7 +74,7 @@ public class Instruccion {
         }
     }
 
-    public class While extends Instruccion{
+    public static class While extends Instruccion{
 
         private Exp exp;
         private Instrucciones is;
@@ -46,7 +85,7 @@ public class Instruccion {
         }
     }
 
-    public class Read extends Instruccion{
+    public static class Read extends Instruccion{
 
         private Exp exp;
 
@@ -55,18 +94,51 @@ public class Instruccion {
         }
     }
 
-    public class Write extends Instruccion{
+    public static class Write extends Instruccion {
 
         private Exp exp;
 
         public Write(Exp exp) {
             this.exp = exp;
         }
+
+        @Override
+        public void vincula_is(TablaSimbolos ts) {
+            this.exp.vincula_is(ts);
+        }
+
+        @Override
+        public void tipado() {
+            this.exp.tipado();
+            Nodo n = Utils.reff(this.exp);
+            if (n.tipo instanceof Tipo.Entero ||
+                n.tipo instanceof Tipo.Real   ||
+                n.tipo instanceof Tipo.String){
+
+                this.tipo = new Tipo.Ok();
+            }
+            else {
+
+                ErrorSingleton.setError("no se printeo");
+                this.tipo= new Tipo.Error();
+            }
+        }
+
+        @Override
+        public void asig_espacio(GestorMem gm) {}
+
+        @Override
+        public void gen_cod(MaquinaP maquinap) {
+            this.exp.gen_cod(maquinap);
+//            if (Utils.es_desig(this.exp))
+//                maquinap.ponInstruccion(maquinap.mueve(this.exp.tipo.tam));
+            maquinap.ponInstruccion(maquinap.write());
+        }
     }
 
-    public class Nl extends Instruccion{ public Nl() {} }
+    public static class Nl extends Instruccion{ public Nl() {} }
 
-    public class New extends Instruccion{
+    public static class New extends Instruccion{
 
         private Exp exp;
 
@@ -75,7 +147,7 @@ public class Instruccion {
         }
     }
 
-    public class Delete extends Instruccion{
+    public static class Delete extends Instruccion{
 
         private Exp exp;
 
@@ -84,7 +156,7 @@ public class Instruccion {
         }
     }
 
-    public class Mix extends Instruccion{
+    public static class Mix extends Instruccion{
 
         private Exp exp;
         private Instrucciones is;
@@ -95,7 +167,7 @@ public class Instruccion {
         }
     }
 
-    public class Invoc extends Instruccion {
+    public static class Invoc extends Instruccion {
 
         private Exp exp;
         private Preales preales;
