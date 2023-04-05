@@ -216,6 +216,41 @@ public class Exp extends Nodo {
             e1.vincula_is(ts);
             e2.vincula_is(ts);
         }
+
+        @Override
+        public void tipado() {
+            this.e1.tipado();
+            this.e2.tipado();
+
+            if (Utils.reff(this.e1).tipo instanceof Tipo.Entero && Utils.reff(this.e2).tipo instanceof Tipo.Entero)
+                this.tipo = new Tipo.Entero();
+
+            else if ((Utils.reff(this.e1).tipo instanceof Tipo.Real && Utils.reff(this.e2).tipo instanceof Tipo.Real) ||
+                    (Utils.reff(this.e1).tipo instanceof Tipo.Entero && Utils.reff(this.e2).tipo instanceof Tipo.Real) ||
+                    (Utils.reff(this.e1).tipo instanceof Tipo.Real && Utils.reff(this.e2).tipo instanceof Tipo.Entero))
+            {
+                this.tipo = new Tipo.Real();
+            }
+            else {
+                this.tipo = new Tipo.Error();
+                utils.ErrorSingleton.setError("los tipos de E0 y E1 no son operables");
+            }
+        }
+
+        @Override
+        public void gen_cod(MaquinaP maquinap) {
+            this.e1.gen_cod(maquinap);
+
+            // TODO: convertir floats y esas cosas.
+            if (Utils.es_desig(e1))
+                maquinap.ponInstruccion(maquinap.apilaInd());
+
+            this.e2.gen_cod(maquinap);
+            if (Utils.es_desig(e2))
+                maquinap.ponInstruccion((maquinap.apilaInd()));
+
+            maquinap.ponInstruccion(maquinap.suma());
+        }
     }
 
     public class Exp_resta extends Exp {

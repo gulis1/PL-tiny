@@ -1,6 +1,6 @@
 package sintaxis_abstracta;
 
-public class Preales {
+public class Preales extends Nodo{
 
     public class No_pReal extends Preales { public No_pReal() {} }
 

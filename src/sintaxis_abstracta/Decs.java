@@ -4,7 +4,7 @@ import utils.GestorMem;
 
 public class Decs extends Nodo {
 
-    public class Muchas_decs extends Decs {
+    public static class Muchas_decs extends Decs {
 
         Dec dec;
         Decs decs;
@@ -37,5 +37,14 @@ public class Decs extends Nodo {
 
     public static class No_decs extends Decs {
         public No_decs() {}
+
+        @Override
+        public void vincula(TablaSimbolos ts) {}
+
+        @Override
+        public void tipado() {}
+
+        @Override
+        public void asig_espacio(GestorMem gm) {}
     }
 }
