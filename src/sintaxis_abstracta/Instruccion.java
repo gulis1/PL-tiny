@@ -27,6 +27,9 @@ public class Instruccion extends Nodo {
             this.e1.tipado();
             this.e2.tipado();
 
+            if (!Utils.es_desig(e1))
+                ErrorSingleton.setError("No es un designador");
+
             if (Utils.son_compatibles(e1, e2))
                 this.tipo = new Tipo.Ok();
             else {

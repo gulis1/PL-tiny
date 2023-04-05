@@ -3,6 +3,7 @@ package sintaxis_abstracta;
 
 import jdk.jshell.execution.Util;
 import maquinap.MaquinaP;
+import utils.ErrorSingleton;
 import utils.Utils;
 
 import java.util.HashMap;
@@ -25,7 +26,7 @@ public class Exp extends Nodo {
             if (ts.contiene(this.id))
                 this.vinculo = ts.valor_de(this.id);
             else
-                System.out.println("Identificador no encontrado: " + this.id);
+                ErrorSingleton.setError("Identificador no encontrado: " + this.id);
         }
 
         @Override
