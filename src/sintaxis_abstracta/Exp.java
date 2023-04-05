@@ -9,7 +9,7 @@ import java.util.HashMap;
 
 public class Exp extends Nodo {
 
-    public class Null extends Exp{ public Null() {} }
+    public static class Null extends Exp { public Null() {} }
 
     /**
      * EXPRESIONES BÁSICAS

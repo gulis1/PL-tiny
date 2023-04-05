@@ -108,9 +108,8 @@ public abstract class Tipo extends Nodo {
         private String tam;
 
         public Array(Tipo tipo, String tam) {
-
-            this.tipo=tipo;
-            this.tam=tam;
+            this.tipo = tipo;
+            this.tam = tam;
         }
     }
 
@@ -120,7 +119,6 @@ public abstract class Tipo extends Nodo {
         public Record(Campos campos){
             this.campos = campos;
         }
-
     }
 
     public static class Pointer extends Tipo {
@@ -139,5 +137,4 @@ public abstract class Tipo extends Nodo {
             this.nombre = nombre;
         }
     }
-
 }
