@@ -5,8 +5,8 @@ import utils.GestorMem;
 
 public class Prog extends Nodo {
 
-    Decs decs;
-    Instrucciones is;
+    private Decs decs;
+    private Instrucciones is;
 
     public Prog(Decs decs, Instrucciones is) {
         this.decs = decs;
@@ -40,5 +40,13 @@ public class Prog extends Nodo {
     @Override
     public void gen_cod(MaquinaP maquinap) {
         this.is.gen_cod(maquinap);
+    }
+
+    public Decs getDecs() {
+        return decs;
+    }
+
+    public Instrucciones getIs() {
+        return is;
     }
 }

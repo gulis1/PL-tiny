@@ -16,18 +16,10 @@ public class Dec extends Nodo {
         public Tipo getTipo_dec() {
             return tipo_dec;
         }
-
-        public void setTipo_dec(Tipo tipo_dec) {
-            this.tipo_dec = tipo_dec;
-        }
-
         public String getString() {
             return string;
         }
 
-        public void setString(String string) {
-            this.string = string;
-        }
 
         @Override
         public void vincula(TablaSimbolos ts) {

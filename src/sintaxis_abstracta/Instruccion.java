@@ -47,6 +47,9 @@ public class Instruccion extends Nodo {
             this.e1.gen_cod(maquinap);
             this.e2.gen_cod(maquinap);
 
+            if (this.e1.tipo instanceof Tipo.Real && this.e2.tipo instanceof Tipo.Entero)
+                maquinap.ponInstruccion(maquinap.int2real());
+
             if (Utils.es_desig(this.e2))
                 maquinap.ponInstruccion(maquinap.mueve(this.e2.tipo.tam));
             else

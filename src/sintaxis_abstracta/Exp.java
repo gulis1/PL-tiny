@@ -1,12 +1,9 @@
 package sintaxis_abstracta;
 
 
-import jdk.jshell.execution.Util;
 import maquinap.MaquinaP;
 import utils.ErrorSingleton;
 import utils.Utils;
-
-import java.util.HashMap;
 
 public class Exp extends Nodo {
 
@@ -45,10 +42,10 @@ public class Exp extends Nodo {
         }
     }
 
-    public static class Exp_int extends Exp {
+    public static class Exp_entero extends Exp {
         private String entero;
 
-        public Exp_int(String entero) {
+        public Exp_entero(String entero) {
             this.entero = entero;
         }
 
@@ -66,7 +63,7 @@ public class Exp extends Nodo {
         }
     }
 
-    public class Exp_real extends Exp {
+    public static class Exp_real extends Exp {
         private String real;
 
         public Exp_real(String real) {
@@ -78,7 +75,7 @@ public class Exp extends Nodo {
 
         @Override
         public void tipado() {
-            this.tipo= new Tipo.Real();
+            this.tipo = new Tipo.Real();
         }
     }
 
@@ -240,21 +237,27 @@ public class Exp extends Nodo {
 
         @Override
         public void gen_cod(MaquinaP maquinap) {
-            this.e1.gen_cod(maquinap);
 
-            // TODO: convertir floats y esas cosas.
+            this.e1.gen_cod(maquinap);
             if (Utils.es_desig(e1))
                 maquinap.ponInstruccion(maquinap.apilaInd());
+            if (this.e1.tipo instanceof Tipo.Entero && this.e2.tipo instanceof Tipo.Real)
+                maquinap.ponInstruccion(maquinap.int2real());
 
             this.e2.gen_cod(maquinap);
             if (Utils.es_desig(e2))
                 maquinap.ponInstruccion((maquinap.apilaInd()));
+            if (this.e1.tipo instanceof Tipo.Real && this.e2.tipo instanceof Tipo.Entero)
+                maquinap.ponInstruccion(maquinap.int2real());
 
-            maquinap.ponInstruccion(maquinap.suma());
+            if (this.tipo instanceof Tipo.Entero)
+                maquinap.ponInstruccion(maquinap.suma());
+            else
+                maquinap.ponInstruccion(maquinap.sumaF());
         }
     }
 
-    public class Exp_resta extends Exp {
+    public static class Exp_resta extends Exp {
 
         private Exp e1, e2;
         public Exp_resta(Exp e1, Exp e2) {
@@ -266,6 +269,47 @@ public class Exp extends Nodo {
         public void vincula_is(TablaSimbolos ts) {
             this.e1.vincula_is(ts);
             this.e2.vincula_is(ts);
+        }
+
+        @Override
+        public void tipado() {
+            this.e1.tipado();
+            this.e2.tipado();
+
+            if (Utils.reff(this.e1).tipo instanceof Tipo.Entero && Utils.reff(this.e2).tipo instanceof Tipo.Entero)
+                this.tipo = new Tipo.Entero();
+
+            else if ((Utils.reff(this.e1).tipo instanceof Tipo.Real && Utils.reff(this.e2).tipo instanceof Tipo.Real) ||
+                    (Utils.reff(this.e1).tipo instanceof Tipo.Entero && Utils.reff(this.e2).tipo instanceof Tipo.Real) ||
+                    (Utils.reff(this.e1).tipo instanceof Tipo.Real && Utils.reff(this.e2).tipo instanceof Tipo.Entero))
+            {
+                this.tipo = new Tipo.Real();
+            }
+            else {
+                this.tipo = new Tipo.Error();
+                utils.ErrorSingleton.setError("Los tipos de E0 y E1 no son operables");
+            }
+        }
+
+        @Override
+        public void gen_cod(MaquinaP maquinap) {
+
+            this.e1.gen_cod(maquinap);
+            if (Utils.es_desig(e1))
+                maquinap.ponInstruccion(maquinap.apilaInd());
+            if (this.e1.tipo instanceof Tipo.Entero && this.e2.tipo instanceof Tipo.Real)
+                maquinap.ponInstruccion(maquinap.int2real());
+
+            this.e2.gen_cod(maquinap);
+            if (Utils.es_desig(e2))
+                maquinap.ponInstruccion((maquinap.apilaInd()));
+            if (this.e1.tipo instanceof Tipo.Real && this.e2.tipo instanceof Tipo.Entero)
+                maquinap.ponInstruccion(maquinap.int2real());
+
+            if (this.tipo instanceof Tipo.Entero)
+                maquinap.ponInstruccion(maquinap.resta());
+            else
+                maquinap.ponInstruccion(maquinap.restaF());
         }
     }
 
@@ -299,7 +343,7 @@ public class Exp extends Nodo {
         }
     }
 
-    public class Exp_mul extends Exp {
+    public static class Exp_mul extends Exp {
 
         private Exp e1, e2;
         public Exp_mul(Exp e1, Exp e2) {
@@ -312,9 +356,50 @@ public class Exp extends Nodo {
             this.e1.vincula_is(ts);
             this.e2.vincula_is(ts);
         }
+
+        @Override
+        public void tipado() {
+            this.e1.tipado();
+            this.e2.tipado();
+
+            if (Utils.reff(this.e1).tipo instanceof Tipo.Entero && Utils.reff(this.e2).tipo instanceof Tipo.Entero)
+                this.tipo = new Tipo.Entero();
+
+            else if ((Utils.reff(this.e1).tipo instanceof Tipo.Real && Utils.reff(this.e2).tipo instanceof Tipo.Real) ||
+                    (Utils.reff(this.e1).tipo instanceof Tipo.Entero && Utils.reff(this.e2).tipo instanceof Tipo.Real) ||
+                    (Utils.reff(this.e1).tipo instanceof Tipo.Real && Utils.reff(this.e2).tipo instanceof Tipo.Entero))
+            {
+                this.tipo = new Tipo.Real();
+            }
+            else {
+                this.tipo = new Tipo.Error();
+                utils.ErrorSingleton.setError("Los tipos de E0 y E1 no son operables");
+            }
+        }
+
+        @Override
+        public void gen_cod(MaquinaP maquinap) {
+
+            this.e1.gen_cod(maquinap);
+            if (Utils.es_desig(e1))
+                maquinap.ponInstruccion(maquinap.apilaInd());
+            if (this.e1.tipo instanceof Tipo.Entero && this.e2.tipo instanceof Tipo.Real)
+                maquinap.ponInstruccion(maquinap.int2real());
+
+            this.e2.gen_cod(maquinap);
+            if (Utils.es_desig(e2))
+                maquinap.ponInstruccion((maquinap.apilaInd()));
+            if (this.e1.tipo instanceof Tipo.Real && this.e2.tipo instanceof Tipo.Entero)
+                maquinap.ponInstruccion(maquinap.int2real());
+
+            if (this.tipo instanceof Tipo.Entero)
+                maquinap.ponInstruccion(maquinap.mul());
+            else
+                maquinap.ponInstruccion(maquinap.mulF());
+        }
     }
 
-    public class Exp_div extends Exp {
+    public static class Exp_div extends Exp {
 
         private Exp e1, e2;
         public Exp_div(Exp e1, Exp e2) {
@@ -327,9 +412,50 @@ public class Exp extends Nodo {
             this.e1.vincula_is(ts);
             this.e2.vincula_is(ts);
         }
+
+        @Override
+        public void tipado() {
+            this.e1.tipado();
+            this.e2.tipado();
+
+            if (Utils.reff(this.e1).tipo instanceof Tipo.Entero && Utils.reff(this.e2).tipo instanceof Tipo.Entero)
+                this.tipo = new Tipo.Entero();
+
+            else if ((Utils.reff(this.e1).tipo instanceof Tipo.Real && Utils.reff(this.e2).tipo instanceof Tipo.Real) ||
+                    (Utils.reff(this.e1).tipo instanceof Tipo.Entero && Utils.reff(this.e2).tipo instanceof Tipo.Real) ||
+                    (Utils.reff(this.e1).tipo instanceof Tipo.Real && Utils.reff(this.e2).tipo instanceof Tipo.Entero))
+            {
+                this.tipo = new Tipo.Real();
+            }
+            else {
+                this.tipo = new Tipo.Error();
+                utils.ErrorSingleton.setError("Los tipos de E0 y E1 no son operables.");
+            }
+        }
+
+        @Override
+        public void gen_cod(MaquinaP maquinap) {
+
+            this.e1.gen_cod(maquinap);
+            if (Utils.es_desig(e1))
+                maquinap.ponInstruccion(maquinap.apilaInd());
+            if (this.e1.tipo instanceof Tipo.Entero && this.e2.tipo instanceof Tipo.Real)
+                maquinap.ponInstruccion(maquinap.int2real());
+
+            this.e2.gen_cod(maquinap);
+            if (Utils.es_desig(e2))
+                maquinap.ponInstruccion((maquinap.apilaInd()));
+            if (this.e1.tipo instanceof Tipo.Real && this.e2.tipo instanceof Tipo.Entero)
+                maquinap.ponInstruccion(maquinap.int2real());
+
+            if (this.tipo instanceof Tipo.Entero)
+                maquinap.ponInstruccion(maquinap.div());
+            else
+                maquinap.ponInstruccion(maquinap.divF());
+        }
     }
 
-    public class Exp_mod extends Exp {
+    public static class Exp_mod extends Exp {
 
         private Exp e1, e2;
         public Exp_mod(Exp e1, Exp e2) {
@@ -341,6 +467,34 @@ public class Exp extends Nodo {
         public void vincula_is(TablaSimbolos ts) {
             this.e1.vincula_is(ts);
             this.e2.vincula_is(ts);
+        }
+
+        @Override
+        public void tipado() {
+
+            this.e1.tipado();
+            this.e2.tipado();
+
+            if (Utils.reff(this.e1).tipo instanceof Tipo.Entero && Utils.reff(this.e2).tipo instanceof Tipo.Entero)
+                this.tipo = new Tipo.Entero();
+            else {
+                this.tipo = new Tipo.Error();
+                utils.ErrorSingleton.setError("Los tipos de E0 y E1 no son operables.");
+            }
+        }
+
+        @Override
+        public void gen_cod(MaquinaP maquinap) {
+
+            this.e1.gen_cod(maquinap);
+            if (Utils.es_desig(e1))
+                maquinap.ponInstruccion(maquinap.apilaInd());
+
+            this.e2.gen_cod(maquinap);
+            if (Utils.es_desig(e2))
+                maquinap.ponInstruccion(maquinap.apilaInd());
+
+            maquinap.ponInstruccion(maquinap.mod());
         }
     }
 
