@@ -180,4 +180,58 @@ public class Instruccion extends Nodo {
             this.preales = preales;
         }
     }
+
+    public static class Index extends Instruccion{
+
+        private Exp e1, e2;
+        public Index(Exp e1, Exp e2){
+            this.e1 = e1;
+            this.e2 = e2;
+        }
+
+        @Override
+        public void vincula_is(TablaSimbolos ts) {
+            this.e1.vincula(ts);
+        }
+
+        @Override
+        public void tipado() {
+            this.e1.tipado();
+            this.e2.tipado();
+
+            if (Utils.reff(this.e1).tipo instanceof Tipo.Array) {
+                if (Utils.reff(this.e2).tipo instanceof Tipo.Entero){
+                    this.tipo = e1.tipo;
+
+                }
+                else{
+                    utils.ErrorSingleton.setError("Tamaño de array incorrecto");
+                }
+            }
+            else{
+                utils.ErrorSingleton.setError("Tipo array incorrecto");
+            }
+        }
+
+        @Override
+        public void asig_espacio(GestorMem gm) {
+            // TODO ?
+        }
+
+        @Override
+        public void gen_cod(MaquinaP maquinap) {
+            this.e1.gen_cod(maquinap);
+            this.e2.gen_cod(maquinap);
+
+            if (Utils.es_desig(e2)){
+                maquinap.apilaInd();
+            }
+
+            if(Utils.reff(this.e1).tipo instanceof Tipo.Array){
+                maquinap.apilaInt(e1.tipo.tam);
+                maquinap.mul();
+                maquinap.suma();
+            }
+        }
+    }
 }

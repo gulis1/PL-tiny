@@ -105,11 +105,30 @@ public abstract class Tipo extends Nodo {
     public static class Array extends Tipo {
 
         private Tipo tipo;
-        private String tam;
+        private String tama;
 
-        public Array(Tipo tipo, String tam) {
+        public Array(Tipo tipo, String tama) {
             this.tipo = tipo;
-            this.tam = tam;
+            this.tama = tama;
+        }
+
+        @Override
+        public void vincula(TablaSimbolos ts) {
+            this.tipo.vincula(ts);
+        }
+
+        @Override
+        public void tipado() {
+            this.tipo.tipado();
+        }
+
+        @Override
+        public void asig_espacio_tipo1(GestorMem gm) { }
+
+        @Override
+        public void asig_espacio_tipo2(GestorMem gm) {
+            this.tipo.asig_espacio(gm);
+            this.tam = this.tipo.tam * Integer.parseInt(this.tama);
         }
     }
 
