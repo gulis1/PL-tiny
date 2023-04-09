@@ -77,6 +77,10 @@ public class Exp extends Nodo {
         public void tipado() {
             this.tipo = new Tipo.Real();
         }
+
+        public void gen_cod(MaquinaP maquinaP){
+            maquinaP.ponInstruccion(maquinaP.apilaFloat(Float.valueOf(this.real)));
+        }
     }
 
     public class Exp_bool extends Exp {
@@ -231,7 +235,7 @@ public class Exp extends Nodo {
             }
             else {
                 this.tipo = new Tipo.Error();
-                utils.ErrorSingleton.setError("los tipos de E0 y E1 no son operables");
+                utils.ErrorSingleton.setError("Los tipos de E0 y E1 no son operables");
             }
         }
 

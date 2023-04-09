@@ -20,8 +20,6 @@ public class Utils {
             return true;
         if (t1.tipo instanceof Tipo.Real && t2.tipo instanceof Tipo.Entero)
             return true;
-        if (t1.tipo instanceof Tipo.Entero && t2.tipo instanceof Tipo.Real)
-            return true;
         if (t1.tipo instanceof Tipo.Bool && t2.tipo instanceof Tipo.Bool)
             return true;
         if (t1.tipo instanceof Tipo.String && t2.tipo instanceof Tipo.String)

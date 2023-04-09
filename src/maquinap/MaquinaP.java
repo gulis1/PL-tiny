@@ -71,6 +71,37 @@ public class MaquinaP {
       } 
       public String toString() {return "suma";};
    }
+    private IResta IRESTA;
+    private class IResta implements Instruccion {
+        public void ejecuta() {
+            Valor opnd2 = pilaEvaluacion.pop();
+            Valor opnd1 = pilaEvaluacion.pop();
+            pilaEvaluacion.push(new ValorInt(opnd1.valorInt()-opnd2.valorInt()));
+            pc++;
+        }
+        public String toString() {return "resta";};
+    }
+   private ISumaF ISUMAF;
+   private class ISumaF implements Instruccion{
+       public void ejecuta(){
+           Valor opnd2 = pilaEvaluacion.pop();
+           Valor opnd1 = pilaEvaluacion.pop();
+           pilaEvaluacion.push(new ValorReal(opnd1.valorReal() + opnd2.valorReal()));
+           pc++;
+       }
+       public String toString(){return  "SumaF";}
+   }
+    private IRestaF IRESTAF;
+    private class IRestaF implements Instruccion{
+        public void ejecuta(){
+            Valor opnd2 = pilaEvaluacion.pop();
+            Valor opnd1 = pilaEvaluacion.pop();
+            pilaEvaluacion.push(new ValorReal(opnd1.valorReal() - opnd2.valorReal()));
+            pc++;
+        }
+        public String toString(){return  "RestaF";}
+    }
+
    private IMul IMUL;
    private class IMul implements Instruccion {
       public void ejecuta() {
@@ -125,6 +156,7 @@ public class MaquinaP {
       } 
       public String toString() {return "and";};
    }
+
    private class IApilaInt implements Instruccion {
       private int valor;
       public IApilaInt(int valor) {
@@ -135,6 +167,16 @@ public class MaquinaP {
          pc++;
       } 
       public String toString() {return "apilaInt("+valor+")";};
+   }
+
+   private class IApilaFloat implements Instruccion{
+       private float valor;
+       public IApilaFloat(float valor){this.valor=valor;}
+       public void ejecuta(){
+           pilaEvaluacion.push(new ValorReal(valor));
+           pc++;
+       }
+       public String toString(){ return "apilaFloat("+valor+")";}
    }
 
    private class IApilaBool implements Instruccion {
@@ -380,6 +422,9 @@ public class MaquinaP {
 
 
    public Instruccion suma() {return ISUMA;}
+   public Instruccion sumaF() {return ISUMAF;}
+   public Instruccion resta(){return IRESTA;}
+   public Instruccion restaF(){return IRESTAF;}
    public Instruccion mul() {return IMUL;}
    public Instruccion mulF() {return IMULF;}
    public Instruccion div(){return  IDIV;}
@@ -404,6 +449,7 @@ public class MaquinaP {
    public Instruccion dup() {return IDUP;}
    public Instruccion stop() {return ISTOP;}
    public Instruccion write() {return IWRITE;}
+   public Instruccion int2real(){return IINT2REAL;}
    public void ponInstruccion(Instruccion i) {
       codigoP.add(i); 
    }
@@ -420,6 +466,9 @@ public class MaquinaP {
       datos = new Valor[tamdatos+tampila+tamheap];
       this.pc = 0;
       ISUMA = new ISuma();
+      ISUMAF = new ISumaF();
+      IRESTA = new IResta();
+      IRESTAF = new IRestaF();
       IAND = new IAnd();
       IMUL = new IMul();
       IMULF = new IMulF();
