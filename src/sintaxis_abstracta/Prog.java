@@ -29,6 +29,7 @@ public class Prog extends Nodo {
         this.is.tipado();
 
         this.tipo = (this.decs.tipo instanceof Tipo.Ok && this.is.tipo instanceof Tipo.Ok) ? new Tipo.Ok() : new Tipo.Error();
+        this.tipo = this.is.tipo instanceof Tipo.Ok ? new Tipo.Ok() : new Tipo.Error();
     }
 
     @Override

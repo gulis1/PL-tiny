@@ -11,6 +11,7 @@ public class ErrorSingleton {
     }
 
     public static void setError(String err) {
+
         if (error.isEmpty())
             error = Optional.of(err);
 

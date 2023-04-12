@@ -50,7 +50,7 @@ public class Instrucciones extends Nodo {
         public void vincula_is(TablaSimbolos ts) {}
 
         @Override
-        public void tipado() {}
+        public void tipado() { this.tipo = new Tipo.Ok(); }
 
         @Override
         public void asig_espacio(GestorMem gm) {}
@@ -58,6 +58,4 @@ public class Instrucciones extends Nodo {
         @Override
         public void gen_cod(MaquinaP maquinap) {}
     }
-
-
 }

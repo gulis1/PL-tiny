@@ -4,6 +4,7 @@ package sintaxis_abstracta;
 import jdk.jshell.execution.Util;
 import maquinap.MaquinaP;
 import utils.ErrorSingleton;
+import utils.GestorMem;
 import utils.Utils;
 
 import java.util.HashMap;
@@ -15,9 +16,10 @@ public class Exp extends Nodo {
     /**
      * EXPRESIONES BÁSICAS
      */
-    public static class Id extends Exp {
+    public static class Exp_id extends Exp {
+
         private String id;
-        public Id(String id) {
+        public Exp_id(String id) {
             this.id = id;
         }
 
@@ -32,9 +34,8 @@ public class Exp extends Nodo {
         @Override
         public void tipado() {
             if (this.vinculo instanceof Dec.Dec_var)
-                this.tipo = this.vinculo.tipo;
-            else
-                this.tipo = new Tipo.Error();
+                this.tipo = ((Dec.Dec_var) this.vinculo).getT();
+            else {} // TODO
         }
 
         @Override
@@ -223,12 +224,12 @@ public class Exp extends Nodo {
             this.e1.tipado();
             this.e2.tipado();
 
-            if (Utils.reff(this.e1).tipo instanceof Tipo.Entero && Utils.reff(this.e2).tipo instanceof Tipo.Entero)
+            if (Utils.reff(this.e1.tipo) instanceof Tipo.Entero && Utils.reff(this.e2.tipo) instanceof Tipo.Entero)
                 this.tipo = new Tipo.Entero();
 
-            else if ((Utils.reff(this.e1).tipo instanceof Tipo.Real && Utils.reff(this.e2).tipo instanceof Tipo.Real) ||
-                    (Utils.reff(this.e1).tipo instanceof Tipo.Entero && Utils.reff(this.e2).tipo instanceof Tipo.Real) ||
-                    (Utils.reff(this.e1).tipo instanceof Tipo.Real && Utils.reff(this.e2).tipo instanceof Tipo.Entero))
+            else if ((Utils.reff(this.e1.tipo) instanceof Tipo.Real && Utils.reff(this.e2.tipo) instanceof Tipo.Real) ||
+                    (Utils.reff(this.e1.tipo) instanceof Tipo.Entero && Utils.reff(this.e2.tipo) instanceof Tipo.Real) ||
+                    (Utils.reff(this.e1.tipo) instanceof Tipo.Real && Utils.reff(this.e2.tipo) instanceof Tipo.Entero))
             {
                 this.tipo = new Tipo.Real();
             }
@@ -347,21 +348,55 @@ public class Exp extends Nodo {
     /**
      * EXPRESIONES DE INDEXACIÓN
      */
-//    public class Exp_acc extends Exp {
-//        private String nombreCampo;
-//        private Exp exp;
-//
-//        public Exp_acc(String nombreCampo, Exp exp) {
-//            this.nombreCampo = nombreCampo;
-//            this.exp = exp;
-//        }
-//    }
-//
-//    public class Exp_index {
-//        private Exp e1, e2;
-//        public Exp_index(Exp e1, Exp e2) {
-//            this.e1 = e1;
-//            this.e2 = e2;
-//        }
-//    }
+    public static class Exp_ind extends Exp {
+
+        private Exp e1, e2;
+        public Exp_ind(Exp e1, Exp e2) {
+            this.e1 = e1;
+            this.e2 = e2;
+        }
+
+        @Override
+        public void vincula_is(TablaSimbolos ts) {
+            this.e1.vincula_is(ts);
+            this.e2.vincula_is(ts);
+        }
+
+        @Override
+        public void tipado() {
+
+            this.e1.tipado();
+            this.e2.tipado();
+
+            if (!(Utils.reff(this.e1.tipo) instanceof Tipo.Array)) {
+                utils.ErrorSingleton.setError("Tipo array incorrecto");
+                return;
+            }
+
+            if (!(Utils.reff(this.e2.tipo) instanceof Tipo.Entero)) {
+                utils.ErrorSingleton.setError("Tamaño de array incorrecto");
+                return;
+            }
+
+            this.tipo = ((Tipo.Array) e1.tipo).getT();
+        }
+
+
+        @Override
+        public void gen_cod(MaquinaP maquinap) {
+            this.e1.gen_cod(maquinap);
+            this.e2.gen_cod(maquinap);
+
+            if (Utils.es_desig(e2)) {
+                maquinap.ponInstruccion(maquinap.apilaInd());
+            }
+
+            if(Utils.reff(this.e1.tipo) instanceof Tipo.Array) {
+
+                 maquinap.ponInstruccion(maquinap.apilaInt(((Tipo.Array)this.e1.tipo).getT().tam));
+                 maquinap.ponInstruccion(maquinap.mul());
+                 maquinap.ponInstruccion(maquinap.suma());
+            }
+        }
+    }
 }
