@@ -30,7 +30,7 @@ public class Instruccion extends Nodo {
             if (!Utils.es_desig(e1))
                 ErrorSingleton.setError("No es un designador");
 
-            if (Utils.son_compatibles(e1, e2))
+            if (Utils.son_compatibles(e1.tipo, e2.tipo))
                 this.tipo = new Tipo.Ok();
             else {
                 ErrorSingleton.setError("Tipos incompatibles.");
@@ -116,10 +116,10 @@ public class Instruccion extends Nodo {
         @Override
         public void tipado() {
             this.exp.tipado();
-            Nodo n = Utils.reff(this.exp);
-            if (n.tipo instanceof Tipo.Entero ||
-                n.tipo instanceof Tipo.Real   ||
-                n.tipo instanceof Tipo.String){
+            Tipo t = Utils.reff(this.exp.tipo);
+            if (t instanceof Tipo.Entero ||
+                t instanceof Tipo.Real   ||
+                t instanceof Tipo.Cadena){
 
                 this.tipo = new Tipo.Ok();
             }
@@ -136,8 +136,8 @@ public class Instruccion extends Nodo {
         @Override
         public void gen_cod(MaquinaP maquinap) {
             this.exp.gen_cod(maquinap);
-//            if (Utils.es_desig(this.exp))
-//                maquinap.ponInstruccion(maquinap.mueve(this.exp.tipo.tam));
+            if (Utils.es_desig(this.exp))
+                maquinap.ponInstruccion(maquinap.apilaInd());
             maquinap.ponInstruccion(maquinap.write());
         }
     }

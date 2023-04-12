@@ -16,9 +16,7 @@ public abstract class Tipo extends Nodo {
         public void vincula(TablaSimbolos ts) {}
 
         @Override
-        public void tipado() {
-            this.tipo = this;
-        }
+        public void tipado() { this.tipo = new Tipo.Ok(); }
 
         @Override
         public void asig_espacio_tipo1(GestorMem gm) {
@@ -28,16 +26,16 @@ public abstract class Tipo extends Nodo {
         @Override
         public void asig_espacio_tipo2(GestorMem gm) { }
     }
-    public static class String extends Tipo {
+    public static class Cadena extends Tipo {
 
-        public String() {}
+        public Cadena() {}
 
         @Override
         public void vincula(TablaSimbolos ts) {}
 
         @Override
         public void tipado() {
-            this.tipo = this;
+            this.tipo = new Tipo.Ok();
         }
 
         @Override
@@ -57,7 +55,7 @@ public abstract class Tipo extends Nodo {
 
         @Override
         public void tipado() {
-            this.tipo = this;
+            this.tipo = new Tipo.Ok();
         }
 
         @Override
@@ -77,7 +75,7 @@ public abstract class Tipo extends Nodo {
 
         @Override
         public void tipado() {
-            this.tipo = this;
+            this.tipo = new Tipo.Ok();
         }
 
         @Override
@@ -97,19 +95,45 @@ public abstract class Tipo extends Nodo {
 
         @Override
         public void tipado() {
-            this.tipo = this;
+            this.tipo = new Tipo.Ok();
         }
 
     }
 
     public static class Array extends Tipo {
 
-        private Tipo tipo;
-        private String tam;
+        private Tipo tipoArray;
+        private String tamArray;
 
-        public Array(Tipo tipo, String tam) {
-            this.tipo = tipo;
-            this.tam = tam;
+        public Array(Tipo tipoArray, String tamArray) {
+            this.tipoArray = tipoArray;
+            this.tamArray = tamArray;
+        }
+
+        @Override
+        public void vincula(TablaSimbolos ts) {
+            this.tipoArray.vincula(ts);
+        }
+
+        @Override
+        public void tipado() {
+            this.tipoArray.tipado();
+            this.tipo = new Tipo.Ok()   ;
+        }
+
+        @Override
+        public void asig_espacio_tipo1(GestorMem gm) {
+            this.tipoArray.asig_espacio_tipo1(gm);
+        }
+
+        @Override
+        public void asig_espacio_tipo2(GestorMem gm) {
+            this.tipoArray.asig_espacio_tipo2(gm);
+            this.tam = this.tipoArray.tam * Integer.parseInt(this.tamArray);
+        }
+
+        public Tipo getT() {
+            return this.tipoArray;
         }
     }
 
@@ -130,10 +154,10 @@ public abstract class Tipo extends Nodo {
     }
 
     public static class Ref extends Tipo {
-        private String nombre;
+        private Cadena nombre;
         //creo que habria que poner el tipo a la que esta asociado la referencia pero no estoy seguro si basta con el nombre
 
-        public Ref(String nombre){
+        public Ref(Cadena nombre){
             this.nombre = nombre;
         }
     }

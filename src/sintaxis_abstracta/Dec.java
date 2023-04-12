@@ -5,26 +5,34 @@ import utils.GestorMem;
 public class Dec extends Nodo {
 
     public static class Dec_var extends Dec {
-        private Tipo tipo_dec;
+        private Tipo T;
         private String string;
 
         public Dec_var(Tipo tipo, String string) {
-            this.tipo_dec = tipo;
+            this.T = tipo;
             this.string = string;
         }
 
-        public Tipo getTipo_dec() {
-            return tipo_dec;
+        public Tipo getT() {
+            return T;
         }
+
+        public void setT(Tipo t) {
+            this.T = t;
+        }
+
         public String getString() {
             return string;
         }
 
+        public void setString(String string) {
+            this.string = string;
+        }
 
         @Override
         public void vincula(TablaSimbolos ts) {
 
-            this.tipo_dec.vincula(ts);
+            this.T.vincula(ts);
             if (!ts.contiene(this.string)) {
                 ts.añadir(this.string, this);
             }
@@ -32,16 +40,16 @@ public class Dec extends Nodo {
 
         @Override
         public void tipado() {
-            this.tipo_dec.tipado();
-            this.tipo = this.tipo_dec.tipo;
+            this.T.tipado();
+            this.tipo = this.T.tipo;
         }
 
         @Override
         public void asig_espacio(GestorMem gm) {
             this.nivel = gm.nivel;
             this.dir = gm.dir;
-            this.tipo_dec.asig_espacio_tipo(gm);
-            gm.dir += this.tipo_dec.tam;
+            this.T.asig_espacio_tipo(gm);
+            gm.dir += this.T.tam;
         }
     }
     public static class Dec_type extends Dec {

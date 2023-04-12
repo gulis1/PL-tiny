@@ -42,7 +42,7 @@ public class Decs extends Nodo {
         public void vincula(TablaSimbolos ts) {}
 
         @Override
-        public void tipado() {}
+        public void tipado() { this.tipo = new Tipo.Ok(); }
 
         @Override
         public void asig_espacio(GestorMem gm) {}
