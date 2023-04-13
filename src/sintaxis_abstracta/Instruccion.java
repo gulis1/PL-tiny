@@ -1,7 +1,8 @@
 package sintaxis_abstracta;
 
 import maquinap.MaquinaP;
-import utils.ErrorSingleton;
+import utils.GestorErrores;
+import utils.GestorEtiquetado;
 import utils.GestorMem;
 import utils.Utils;
 
@@ -9,7 +10,7 @@ public class Instruccion extends Nodo {
 
     public static class Asignacion extends Instruccion {
 
-        private Exp e1, e2;
+        private final Exp e1, e2;
 
         public Asignacion(Exp e1, Exp e2) {
             this.e1 = e1;
@@ -28,15 +29,14 @@ public class Instruccion extends Nodo {
             this.e2.tipado();
 
             if (!Utils.es_desig(e1))
-                ErrorSingleton.setError("No es un designador");
+                GestorErrores.addError("No es un designador");
 
             if (Utils.son_compatibles(e1.tipo, e2.tipo))
                 this.tipo = new Tipo.Ok();
             else {
-                ErrorSingleton.setError("Tipos incompatibles.");
+                GestorErrores.addError("Tipos incompatibles.");
                 this.tipo = new Tipo.Error();
             }
-
         }
 
         @Override
@@ -47,7 +47,7 @@ public class Instruccion extends Nodo {
             this.e1.gen_cod(maquinap);
             this.e2.gen_cod(maquinap);
 
-            if (this.e1.tipo instanceof Tipo.Real && this.e2.tipo instanceof Tipo.Entero)
+            if (Utils.esReal(this.e1.tipo) && Utils.esEntero(this.e2.tipo))
                 maquinap.ponInstruccion(maquinap.int2real());
 
             if (Utils.es_desig(this.e2))
@@ -55,45 +55,103 @@ public class Instruccion extends Nodo {
             else
                 maquinap.ponInstruccion(maquinap.desapilaInd());
         }
+
+        @Override
+        public void etiquetado(GestorEtiquetado ge) {
+
+            this.ini = ge.etq;
+
+            this.e1.etiquetado(ge);
+            this.e2.etiquetado(ge);
+
+            if (Utils.esReal(this.e1.tipo) && Utils.esEntero(this.e2.tipo))
+                ge.etq += 1;
+
+            ge.etq += 1;
+
+            this.sig = ge.etq;
+        }
     }
 
     public static class If_then extends Instruccion {
 
-        private Exp exp;
-        private Instrucciones is;
+        private final Exp exp;
+        private final Instruccion i;
 
-        public If_then(Exp exp, Instrucciones is) {
+        public If_then(Exp exp, Instruccion i) {
             this.exp = exp;
-            this.is = is;
+            this.i = i;
+        }
+
+        @Override
+        public void vincula_is(TablaSimbolos ts) {
+            this.exp.vincula_is(ts);
+            this.i.vincula_is(ts);
+        }
+
+        @Override
+        public void tipado() {
+            this.exp.tipado();
+            this.i.tipado();
+
+            if (Utils.esBool(this.exp.tipo) && Utils.esOk(this.i.tipo)) this.tipo = new Tipo.Ok();
+            else {
+                GestorErrores.addError("Error tipado if_then.");
+                this.tipo = new Tipo.Error();
+            }
+        }
+
+        @Override
+        public void asig_espacio(GestorMem gm) {
+            this.i.asig_espacio(gm);
+        }
+
+        @Override
+        public void gen_cod(MaquinaP maquinap) {
+            this.exp.gen_cod(maquinap);
+            maquinap.ponInstruccion(maquinap.irF(this.i.sig));
+            this.i.gen_cod(maquinap);
+        }
+
+        @Override
+        public void etiquetado(GestorEtiquetado ge) {
+
+            this.ini = ge.etq;
+
+            this.exp.etiquetado(ge);
+            ge.etq += 1;
+            this.i.etiquetado(ge);
+
+            this.sig = ge.etq;
         }
     }
 
     public static class If_then_else extends Instruccion{
 
-        private Exp exp;
-        private Instrucciones is1, is2;
+        private final Exp exp;
+        private final Instruccion i1, i2;
 
-        public If_then_else(Exp exp, Instrucciones is1, Instrucciones is2) {
+        public If_then_else(Exp exp, Instruccion i1, Instruccion i2) {
             this.exp = exp;
-            this.is1 = is1;
-            this.is2 = is2;
+            this.i1 = i1;
+            this.i2 = i2;
         }
     }
 
     public static class While extends Instruccion{
 
-        private Exp exp;
-        private Instrucciones is;
+        private final Exp exp;
+        private final Instruccion i;
 
-        public While(Exp exp, Instrucciones is) {
+        public While(Exp exp, Instruccion i) {
             this.exp = exp;
-            this.is = is;
+            this.i = i;
         }
     }
 
     public static class Read extends Instruccion{
 
-        private Exp exp;
+        private final Exp exp;
 
         public Read(Exp exp) {
             this.exp = exp;
@@ -102,7 +160,7 @@ public class Instruccion extends Nodo {
 
     public static class Write extends Instruccion {
 
-        private Exp exp;
+        private final Exp exp;
 
         public Write(Exp exp) {
             this.exp = exp;
@@ -115,17 +173,18 @@ public class Instruccion extends Nodo {
 
         @Override
         public void tipado() {
+
             this.exp.tipado();
             Tipo t = Utils.reff(this.exp.tipo);
-            if (t instanceof Tipo.Entero ||
-                t instanceof Tipo.Real   ||
-                t instanceof Tipo.Cadena){
+            if (Utils.esEntero(t) ||
+                Utils.esReal(t)   ||
+                Utils.esCadena(t)) {
 
                 this.tipo = new Tipo.Ok();
             }
             else {
 
-                ErrorSingleton.setError("no se printeo");
+                GestorErrores.addError("no se printeo");
                 this.tipo= new Tipo.Error();
             }
         }
@@ -140,13 +199,25 @@ public class Instruccion extends Nodo {
                 maquinap.ponInstruccion(maquinap.apilaInd());
             maquinap.ponInstruccion(maquinap.write());
         }
+
+        @Override
+        public void etiquetado(GestorEtiquetado ge) {
+
+            this.ini = ge.etq;
+
+            this.exp.etiquetado(ge);
+            if (Utils.es_desig(this.exp)) ge.etq += 1;
+            ge.etq += 1;
+
+            this.sig = ge.etq;
+        }
     }
 
     public static class Nl extends Instruccion{ public Nl() {} }
 
     public static class New extends Instruccion{
 
-        private Exp exp;
+        private final Exp exp;
 
         public New(Exp exp) {
             this.exp = exp;
@@ -155,7 +226,7 @@ public class Instruccion extends Nodo {
 
     public static class Delete extends Instruccion{
 
-        private Exp exp;
+        private final Exp exp;
 
         public Delete(Exp exp) {
             this.exp = exp;
@@ -164,8 +235,8 @@ public class Instruccion extends Nodo {
 
     public static class Mix extends Instruccion{
 
-        private Exp exp;
-        private Instrucciones is;
+        private final Exp exp;
+        private final Instrucciones is;
 
         public Mix(Exp exp, Instrucciones is) {
             this.exp = exp;
@@ -175,8 +246,8 @@ public class Instruccion extends Nodo {
 
     public static class Invoc extends Instruccion {
 
-        private Exp exp;
-        private Preales preales;
+        private final Exp exp;
+        private final Preales preales;
 
         public Invoc(Exp exp, Preales preales) {
             this.exp = exp;

@@ -1,14 +1,16 @@
 package sintaxis_abstracta;
 
 import maquinap.MaquinaP;
+import utils.GestorEtiquetado;
 import utils.GestorMem;
+import utils.Utils;
 
 public class Instrucciones extends Nodo {
 
     public static class Muchas_Instr extends Instrucciones {
 
-        private Instrucciones is;
-        private Instruccion i;
+        private final Instrucciones is;
+        private final Instruccion i;
 
         public Muchas_Instr(Instrucciones instrucciones, Instruccion instruccion) {
             this.is = instrucciones;
@@ -26,7 +28,7 @@ public class Instrucciones extends Nodo {
             this.is.tipado();
             this.i.tipado();
 
-            this.tipo = this.is.tipo instanceof Tipo.Ok && this.i.tipo instanceof Tipo.Ok ? new Tipo.Ok() : new Tipo.Error();
+            this.tipo = Utils.ambos_ok(this.is.tipo, this.i.tipo);
         }
 
         @Override
@@ -39,6 +41,12 @@ public class Instrucciones extends Nodo {
         public void gen_cod(MaquinaP maquinap) {
             this.is.gen_cod(maquinap);
             this.i.gen_cod(maquinap);
+        }
+
+        @Override
+        public void etiquetado(GestorEtiquetado ge) {
+            this.is.etiquetado(ge);
+            this.i.etiquetado(ge);
         }
     }
 
@@ -57,5 +65,8 @@ public class Instrucciones extends Nodo {
 
         @Override
         public void gen_cod(MaquinaP maquinap) {}
+
+        @Override
+        public void etiquetado(GestorEtiquetado ge) {}
     }
 }

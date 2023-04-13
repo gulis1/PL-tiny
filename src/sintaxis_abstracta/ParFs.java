@@ -4,8 +4,8 @@ public class ParFs extends Nodo {
 
     public class Muchos_ParF extends ParFs {
 
-        private ParFs parFs;
-        private ParF parF;
+        private final ParFs parFs;
+        private final ParF parF;
 
         public Muchos_ParF(ParFs parFs, ParF parF) {
 

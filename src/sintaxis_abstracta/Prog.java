@@ -1,12 +1,14 @@
 package sintaxis_abstracta;
 
 import maquinap.MaquinaP;
+import utils.GestorEtiquetado;
 import utils.GestorMem;
+import utils.Utils;
 
 public class Prog extends Nodo {
 
-    private Decs decs;
-    private Instrucciones is;
+    private final Decs decs;
+    private final Instrucciones is;
 
     public Prog(Decs decs, Instrucciones is) {
         this.decs = decs;
@@ -28,8 +30,7 @@ public class Prog extends Nodo {
         this.decs.tipado();
         this.is.tipado();
 
-        this.tipo = (this.decs.tipo instanceof Tipo.Ok && this.is.tipo instanceof Tipo.Ok) ? new Tipo.Ok() : new Tipo.Error();
-        this.tipo = this.is.tipo instanceof Tipo.Ok ? new Tipo.Ok() : new Tipo.Error();
+        this.tipo = Utils.ambos_ok(this.decs.tipo, this.is.tipo);
     }
 
     @Override
@@ -49,5 +50,10 @@ public class Prog extends Nodo {
 
     public Instrucciones getIs() {
         return is;
+    }
+
+    @Override
+    public void etiquetado(GestorEtiquetado ge) {
+        this.is.etiquetado(ge);
     }
 }

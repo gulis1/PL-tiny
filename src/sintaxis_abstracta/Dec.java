@@ -5,8 +5,8 @@ import utils.GestorMem;
 public class Dec extends Nodo {
 
     public static class Dec_var extends Dec {
-        private Tipo T;
-        private String string;
+        private final Tipo T;
+        private final String string;
 
         public Dec_var(Tipo tipo, String string) {
             this.T = tipo;
@@ -17,16 +17,8 @@ public class Dec extends Nodo {
             return T;
         }
 
-        public void setT(Tipo t) {
-            this.T = t;
-        }
-
         public String getString() {
             return string;
-        }
-
-        public void setString(String string) {
-            this.string = string;
         }
 
         @Override
@@ -87,10 +79,10 @@ public class Dec extends Nodo {
 
     public static class Dec_proc extends Dec {
 
-        String str;
-        ParFs pfs;
-        Decs decs;
-        Instrucciones is;
+        private final String str;
+        private final ParFs pfs;
+        private final Decs decs;
+        private final Instrucciones is;
 
         public Dec_proc(String str, ParFs pfs, Decs decs, Instrucciones is) {
             this.str = str;
@@ -103,32 +95,16 @@ public class Dec extends Nodo {
             return str;
         }
 
-        public void setStr(String str) {
-            this.str = str;
-        }
-
         public ParFs getPfs() {
             return pfs;
-        }
-
-        public void setPfs(ParFs pfs) {
-            this.pfs = pfs;
         }
 
         public Decs getDecs() {
             return decs;
         }
 
-        public void setDecs(Decs decs) {
-            this.decs = decs;
-        }
-
         public Instrucciones getIs() {
             return is;
-        }
-
-        public void setIs(Instrucciones is) {
-            this.is = is;
         }
     }
 }

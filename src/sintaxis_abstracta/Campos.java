@@ -2,7 +2,6 @@ package sintaxis_abstracta;
 
 public class Campos extends Nodo {
 
-
     public class Un_Campo extends Campos{
 
         private Campo campo;

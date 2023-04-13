@@ -14,6 +14,18 @@ public class Utils {
         else return tipo;
     }
 
+    public static boolean esOk(Tipo t) { return t instanceof Tipo.Ok; }
+    public static boolean esError(Tipo t) { return t instanceof Tipo.Error; }
+    public static boolean esEntero(Tipo t) { return t instanceof Tipo.Entero; }
+    public static boolean esReal(Tipo t) {  return t instanceof Tipo.Real; }
+    public static boolean esCadena(Tipo t) { return t instanceof Tipo.Cadena; }
+    public static boolean esBool(Tipo t) { return t instanceof Tipo.Bool; }
+    public static boolean esArray(Tipo t) { return t instanceof Tipo.Array; }
+
+    public static Tipo ambos_ok(Tipo t1, Tipo t2) {
+        return (t1 instanceof Tipo.Ok && t2 instanceof Tipo.Ok) ? new Tipo.Ok() : new Tipo.Error();
+    }
+
     public static boolean son_compatibles(Tipo t1, Tipo t2) {
 
         if (t1 instanceof Tipo.Ref)

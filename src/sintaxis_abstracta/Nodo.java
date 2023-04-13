@@ -1,6 +1,7 @@
 package sintaxis_abstracta;
 
 import maquinap.MaquinaP;
+import utils.GestorEtiquetado;
 import utils.GestorMem;
 
 public abstract class Nodo {
@@ -10,6 +11,7 @@ public abstract class Nodo {
     public int nivel;
     public int dir;
     public int tam = -1;
+    public int ini = -1, sig = -1;
 
     // Vinculación
     public void vincula(TablaSimbolos ts) { throw new UnsupportedOperationException("Vincula no implementado."); }
@@ -33,18 +35,20 @@ public abstract class Nodo {
 
     // Generación de código
     public void gen_cod(MaquinaP maquinap) { throw new UnsupportedOperationException("Gen_cod no implementado."); };
+
+    public void etiquetado(GestorEtiquetado ge) { throw new UnsupportedOperationException("Etiquetado no implementado."); };
 }
 /* Para hacer una suma:
 
 De momento solo tenemos tipo int
 
 - Vincular dec vars
-- vincular expresion generica
-- Vincular expresion suma
+- vincular expresión genérica
+- Vincular expresión suma
 - Vincular write
 
 - Comprobar tipos
-- Asignacion de espacio
+- Asignación de espacio
 */
 
 

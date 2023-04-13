@@ -1,13 +1,14 @@
 package sintaxis_abstracta;
 
 import utils.GestorMem;
+import utils.Utils;
 
 public class Decs extends Nodo {
 
     public static class Muchas_decs extends Decs {
 
-        Dec dec;
-        Decs decs;
+        private final Dec dec;
+        private final Decs decs;
 
         public Muchas_decs(Dec dec, Decs decs) {
             this.dec = dec;
@@ -25,7 +26,7 @@ public class Decs extends Nodo {
             this.decs.tipado();
             this.dec.tipado();
 
-            this.tipo = (this.decs.tipo instanceof Tipo.Ok && this.dec.tipo instanceof Tipo.Ok) ? new Tipo.Ok() : new Tipo.Error();
+            this.tipo = Utils.ambos_ok(this.decs.tipo, this.dec.tipo);
         }
 
         @Override
@@ -36,6 +37,7 @@ public class Decs extends Nodo {
     }
 
     public static class No_decs extends Decs {
+
         public No_decs() {}
 
         @Override

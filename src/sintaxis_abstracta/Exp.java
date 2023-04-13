@@ -2,8 +2,8 @@ package sintaxis_abstracta;
 
 
 import maquinap.MaquinaP;
-import utils.ErrorSingleton;
-import utils.GestorMem;
+import utils.GestorErrores;
+import utils.GestorEtiquetado;
 import utils.Utils;
 
 public class Exp extends Nodo {
@@ -15,7 +15,7 @@ public class Exp extends Nodo {
      */
     public static class Exp_id extends Exp {
 
-        private String id;
+        private final String id;
         public Exp_id(String id) {
             this.id = id;
         }
@@ -25,7 +25,7 @@ public class Exp extends Nodo {
             if (ts.contiene(this.id))
                 this.vinculo = ts.valor_de(this.id);
             else
-                ErrorSingleton.setError("Identificador no encontrado: " + this.id);
+                GestorErrores.addError("Identificador no encontrado: " + this.id);
         }
 
         @Override
@@ -44,7 +44,7 @@ public class Exp extends Nodo {
     }
 
     public static class Exp_entero extends Exp {
-        private String entero;
+        private final String entero;
 
         public Exp_entero(String entero) {
             this.entero = entero;
@@ -62,10 +62,14 @@ public class Exp extends Nodo {
         public void gen_cod(MaquinaP maquinap) {
             maquinap.ponInstruccion((maquinap.apilaInt(Integer.parseInt(entero))));
         }
+
+        @Override
+        public void etiquetado(GestorEtiquetado ge) { ge.etq += 1; }
     }
 
     public static class Exp_real extends Exp {
-        private String real;
+
+        private final String real;
 
         public Exp_real(String real) {
             this.real = real;
@@ -79,13 +83,17 @@ public class Exp extends Nodo {
             this.tipo = new Tipo.Real();
         }
 
-        public void gen_cod(MaquinaP maquinaP){
-            maquinaP.ponInstruccion(maquinaP.apilaFloat(Float.valueOf(this.real)));
+        public void gen_cod(MaquinaP maquinaP) {
+            maquinaP.ponInstruccion(maquinaP.apilaFloat(Float.parseFloat(this.real)));
         }
+
+        @Override
+        public void etiquetado(GestorEtiquetado ge) { ge.etq += 1; }
     }
 
-    public class Exp_bool extends Exp {
-        private String bool;
+    public static class Exp_bool extends Exp {
+
+        private final String bool;
 
         public Exp_bool(String bool) {
             this.bool = bool;
@@ -93,10 +101,21 @@ public class Exp extends Nodo {
 
         @Override
         public void vincula_is(TablaSimbolos ts) { }
+
+        @Override
+        public void tipado() { this.tipo = new Tipo.Bool(); }
+
+        public void gen_cod(MaquinaP maquinaP) {
+            maquinaP.ponInstruccion(maquinaP.apilaBool(Boolean.parseBoolean(this.bool)));
+        }
+
+        @Override
+        public void etiquetado(GestorEtiquetado ge) { ge.etq += 1; }
     }
 
-    public class Exp_cadena extends Exp {
-        private String cadena;
+    public static class Exp_cadena extends Exp {
+
+        private final String cadena;
 
         public Exp_cadena(String cadena) {
             this.cadena = cadena;
@@ -104,9 +123,20 @@ public class Exp extends Nodo {
 
         @Override
         public void vincula_is(TablaSimbolos ts) { }
+
+        @Override
+        public void tipado() { this.tipo = new Tipo.Cadena(); }
+
+        @Override
+        public void gen_cod(MaquinaP maquinaP) {
+            maquinaP.ponInstruccion(maquinaP.apilaString(this.cadena));
+        }
+
+        @Override
+        public void etiquetado(GestorEtiquetado ge) { ge.etq += 1; }
     }
 
-    public class Exp_null extends Exp {
+    public static class Exp_null extends Exp {
 
         public Exp_null() {}
 
@@ -117,9 +147,9 @@ public class Exp extends Nodo {
     /**
      * EXPRESIONES BINARIAS
      */
-    public class Exp_eq extends Exp {
+    public static class Exp_eq extends Exp {
 
-        private Exp e1, e2;
+        private final Exp e1, e2;
         public Exp_eq(Exp e1, Exp e2) {
             this.e1 = e1;
             this.e2 = e2;
@@ -132,9 +162,9 @@ public class Exp extends Nodo {
         }
     }
 
-    public class Exp_neq extends Exp {
+    public static class Exp_neq extends Exp {
 
-        private Exp e1, e2;
+        private final Exp e1, e2;
         public Exp_neq(Exp e1, Exp e2) {
             this.e1 = e1;
             this.e2 = e2;
@@ -147,9 +177,9 @@ public class Exp extends Nodo {
         }
     }
 
-    public class Exp_gt extends Exp {
+    public static class Exp_gt extends Exp {
 
-        private Exp e1, e2;
+        private final Exp e1, e2;
         public Exp_gt(Exp e1, Exp e2) {
             this.e1 = e1;
             this.e2 = e2;
@@ -162,9 +192,9 @@ public class Exp extends Nodo {
         }
     }
 
-    public class Exp_ge extends Exp {
+    public static class Exp_ge extends Exp {
 
-        private Exp e1, e2;
+        private final Exp e1, e2;
         public Exp_ge(Exp e1, Exp e2) {
             this.e1 = e1;
             this.e2 = e2;
@@ -177,9 +207,9 @@ public class Exp extends Nodo {
         }
     }
 
-    public class Exp_lt extends Exp {
+    public static class Exp_lt extends Exp {
 
-        private Exp e1, e2;
+        private final Exp e1, e2;
         public Exp_lt(Exp e1, Exp e2) {
             this.e1 = e1;
             this.e2 = e2;
@@ -192,9 +222,9 @@ public class Exp extends Nodo {
         }
     }
 
-    public class Exp_le extends Exp {
+    public static class Exp_le extends Exp {
 
-        private Exp e1, e2;
+        private final Exp e1, e2;
         public Exp_le(Exp e1, Exp e2) {
             this.e1 = e1;
             this.e2 = e2;
@@ -208,7 +238,8 @@ public class Exp extends Nodo {
     }
 
     public static class Exp_suma extends Exp {
-        private Exp e1, e2;
+
+        private final Exp e1, e2;
         public Exp_suma(Exp e1, Exp e2) {
             this.e1 = e1;
             this.e2 = e2;
@@ -222,21 +253,22 @@ public class Exp extends Nodo {
 
         @Override
         public void tipado() {
+
             this.e1.tipado();
             this.e2.tipado();
 
-            if (Utils.reff(this.e1.tipo) instanceof Tipo.Entero && Utils.reff(this.e2.tipo) instanceof Tipo.Entero)
+            if (Utils.esEntero(Utils.reff(this.e1.tipo)) && Utils.esEntero(Utils.reff(this.e2.tipo)))
                 this.tipo = new Tipo.Entero();
 
-            else if ((Utils.reff(this.e1.tipo) instanceof Tipo.Real && Utils.reff(this.e2.tipo) instanceof Tipo.Real) ||
-                    (Utils.reff(this.e1.tipo) instanceof Tipo.Entero && Utils.reff(this.e2.tipo) instanceof Tipo.Real) ||
-                    (Utils.reff(this.e1.tipo) instanceof Tipo.Real && Utils.reff(this.e2.tipo) instanceof Tipo.Entero))
+            else if ((Utils.esReal(Utils.reff(this.e1.tipo)) && Utils.esReal(Utils.reff(this.e2.tipo))) ||
+                    (Utils.esEntero(Utils.reff(this.e1.tipo)) && Utils.esReal(Utils.reff(this.e2.tipo))) ||
+                    (Utils.esReal(Utils.reff(this.e1.tipo)) && Utils.esEntero(Utils.reff(this.e2.tipo))))
             {
                 this.tipo = new Tipo.Real();
             }
             else {
                 this.tipo = new Tipo.Error();
-                utils.ErrorSingleton.setError("Los tipos de E0 y E1 no son operables");
+                GestorErrores.addError("Los tipos de E0 y E1 no son operables");
             }
         }
 
@@ -246,25 +278,43 @@ public class Exp extends Nodo {
             this.e1.gen_cod(maquinap);
             if (Utils.es_desig(e1))
                 maquinap.ponInstruccion(maquinap.apilaInd());
-            if (this.e1.tipo instanceof Tipo.Entero && this.e2.tipo instanceof Tipo.Real)
+            if (Utils.esEntero(this.e1.tipo) && Utils.esReal(this.e2.tipo))
                 maquinap.ponInstruccion(maquinap.int2real());
 
             this.e2.gen_cod(maquinap);
             if (Utils.es_desig(e2))
                 maquinap.ponInstruccion((maquinap.apilaInd()));
-            if (this.e1.tipo instanceof Tipo.Real && this.e2.tipo instanceof Tipo.Entero)
+            if (Utils.esReal(this.e1.tipo) && Utils.esEntero(this.e2.tipo))
                 maquinap.ponInstruccion(maquinap.int2real());
 
-            if (this.tipo instanceof Tipo.Entero)
+            if (Utils.esEntero(this.tipo))
                 maquinap.ponInstruccion(maquinap.suma());
             else
                 maquinap.ponInstruccion(maquinap.sumaF());
+        }
+
+        @Override
+        public void etiquetado(GestorEtiquetado ge) {
+
+            this.e1.etiquetado(ge);
+            if (Utils.es_desig(e1))
+                ge.etq += 1;
+            if (Utils.esEntero(this.e1.tipo) && Utils.esReal(this.e2.tipo))
+                ge.etq += 1;
+
+            this.e2.etiquetado(ge);
+            if (Utils.es_desig(e2))
+                ge.etq += 1;
+            if (Utils.esReal(this.e1.tipo) && Utils.esEntero(this.e2.tipo))
+                ge.etq += 1;
+
+            ge.etq += 1;
         }
     }
 
     public static class Exp_resta extends Exp {
 
-        private Exp e1, e2;
+        private final Exp e1, e2;
         public Exp_resta(Exp e1, Exp e2) {
             this.e1 = e1;
             this.e2 = e2;
@@ -281,18 +331,18 @@ public class Exp extends Nodo {
             this.e1.tipado();
             this.e2.tipado();
 
-            if (Utils.reff(this.e1.tipo) instanceof Tipo.Entero && Utils.reff(this.e2.tipo) instanceof Tipo.Entero)
+            if (Utils.esEntero(Utils.reff(this.e1.tipo)) && Utils.esEntero(Utils.reff(this.e2.tipo)))
                 this.tipo = new Tipo.Entero();
 
-            else if ((Utils.reff(this.e1.tipo) instanceof Tipo.Real && Utils.reff(this.e2.tipo) instanceof Tipo.Real) ||
-                    (Utils.reff(this.e1.tipo) instanceof Tipo.Entero && Utils.reff(this.e2.tipo) instanceof Tipo.Real) ||
-                    (Utils.reff(this.e1.tipo) instanceof Tipo.Real && Utils.reff(this.e2.tipo) instanceof Tipo.Entero))
+            else if ((Utils.esReal(Utils.reff(this.e1.tipo)) && Utils.esReal(Utils.reff(this.e2.tipo))) ||
+                    (Utils.esEntero(Utils.reff(this.e1.tipo)) && Utils.esReal(Utils.reff(this.e2.tipo))) ||
+                    (Utils.esReal(Utils.reff(this.e1.tipo)) && Utils.esEntero(Utils.reff(this.e2.tipo))))
             {
                 this.tipo = new Tipo.Real();
             }
             else {
                 this.tipo = new Tipo.Error();
-                utils.ErrorSingleton.setError("Los tipos de E0 y E1 no son operables");
+                GestorErrores.addError("Los tipos de E0 y E1 no son operables");
             }
         }
 
@@ -302,25 +352,43 @@ public class Exp extends Nodo {
             this.e1.gen_cod(maquinap);
             if (Utils.es_desig(e1))
                 maquinap.ponInstruccion(maquinap.apilaInd());
-            if (this.e1.tipo instanceof Tipo.Entero && this.e2.tipo instanceof Tipo.Real)
+            if (Utils.esEntero(this.e1.tipo) && Utils.esReal(this.e2.tipo))
                 maquinap.ponInstruccion(maquinap.int2real());
 
             this.e2.gen_cod(maquinap);
             if (Utils.es_desig(e2))
                 maquinap.ponInstruccion((maquinap.apilaInd()));
-            if (this.e1.tipo instanceof Tipo.Real && this.e2.tipo instanceof Tipo.Entero)
+            if (Utils.esReal(this.e1.tipo) && Utils.esEntero(this.e2.tipo))
                 maquinap.ponInstruccion(maquinap.int2real());
 
-            if (this.tipo instanceof Tipo.Entero)
+            if (Utils.esEntero(this.tipo))
                 maquinap.ponInstruccion(maquinap.resta());
             else
                 maquinap.ponInstruccion(maquinap.restaF());
         }
+
+        @Override
+        public void etiquetado(GestorEtiquetado ge) {
+
+            this.e1.etiquetado(ge);
+            if (Utils.es_desig(e1))
+                ge.etq += 1;
+            if (Utils.esEntero(this.e1.tipo) && Utils.esReal(this.e2.tipo))
+                ge.etq += 1;
+
+            this.e2.etiquetado(ge);
+            if (Utils.es_desig(e2))
+                ge.etq += 1;
+            if (Utils.esReal(this.e1.tipo) && Utils.esEntero(this.e2.tipo))
+                ge.etq += 1;
+
+            ge.etq += 1;
+        }
     }
 
-    public class Exp_and extends Exp {
+    public static class Exp_and extends Exp {
 
-        private Exp e1, e2;
+        private final Exp e1, e2;
         public Exp_and(Exp e1, Exp e2) {
             this.e1 = e1;
             this.e2 = e2;
@@ -333,9 +401,9 @@ public class Exp extends Nodo {
         }
     }
 
-    public class Exp_or extends Exp {
+    public static class Exp_or extends Exp {
 
-        private Exp e1, e2;
+        private final Exp e1, e2;
         public Exp_or(Exp e1, Exp e2) {
             this.e1 = e1;
             this.e2 = e2;
@@ -350,7 +418,7 @@ public class Exp extends Nodo {
 
     public static class Exp_mul extends Exp {
 
-        private Exp e1, e2;
+        private final Exp e1, e2;
         public Exp_mul(Exp e1, Exp e2) {
             this.e1 = e1;
             this.e2 = e2;
@@ -367,18 +435,18 @@ public class Exp extends Nodo {
             this.e1.tipado();
             this.e2.tipado();
 
-            if (Utils.reff(this.e1.tipo) instanceof Tipo.Entero && Utils.reff(this.e2.tipo) instanceof Tipo.Entero)
+            if (Utils.esEntero(Utils.reff(this.e1.tipo)) && Utils.esEntero(Utils.reff(this.e2.tipo)))
                 this.tipo = new Tipo.Entero();
 
-            else if ((Utils.reff(this.e1.tipo) instanceof Tipo.Real && Utils.reff(this.e2.tipo) instanceof Tipo.Real) ||
-                    (Utils.reff(this.e1.tipo) instanceof Tipo.Entero && Utils.reff(this.e2.tipo) instanceof Tipo.Real) ||
-                    (Utils.reff(this.e1.tipo) instanceof Tipo.Real && Utils.reff(this.e2.tipo) instanceof Tipo.Entero))
+            else if ((Utils.esReal(Utils.reff(this.e1.tipo)) && Utils.esReal(Utils.reff(this.e2.tipo))) ||
+                    (Utils.esEntero(Utils.reff(this.e1.tipo)) && Utils.esReal(Utils.reff(this.e2.tipo))) ||
+                    (Utils.esReal(Utils.reff(this.e1.tipo)) && Utils.esEntero(Utils.reff(this.e2.tipo))))
             {
                 this.tipo = new Tipo.Real();
             }
             else {
                 this.tipo = new Tipo.Error();
-                utils.ErrorSingleton.setError("Los tipos de E0 y E1 no son operables");
+                GestorErrores.addError("Los tipos de E0 y E1 no son operables");
             }
         }
 
@@ -388,25 +456,43 @@ public class Exp extends Nodo {
             this.e1.gen_cod(maquinap);
             if (Utils.es_desig(e1))
                 maquinap.ponInstruccion(maquinap.apilaInd());
-            if (this.e1.tipo instanceof Tipo.Entero && this.e2.tipo instanceof Tipo.Real)
+            if (Utils.esEntero(this.e1.tipo) && Utils.esReal(this.e2.tipo))
                 maquinap.ponInstruccion(maquinap.int2real());
 
             this.e2.gen_cod(maquinap);
             if (Utils.es_desig(e2))
                 maquinap.ponInstruccion((maquinap.apilaInd()));
-            if (this.e1.tipo instanceof Tipo.Real && this.e2.tipo instanceof Tipo.Entero)
+            if (Utils.esReal(this.e1.tipo) && Utils.esEntero(this.e2.tipo))
                 maquinap.ponInstruccion(maquinap.int2real());
 
-            if (this.tipo instanceof Tipo.Entero)
+            if (Utils.esEntero(this.tipo))
                 maquinap.ponInstruccion(maquinap.mul());
             else
                 maquinap.ponInstruccion(maquinap.mulF());
+        }
+
+        @Override
+        public void etiquetado(GestorEtiquetado ge) {
+
+            this.e1.etiquetado(ge);
+            if (Utils.es_desig(e1))
+                ge.etq += 1;
+            if (Utils.esEntero(this.e1.tipo) && Utils.esReal(this.e2.tipo))
+                ge.etq += 1;
+
+            this.e2.etiquetado(ge);
+            if (Utils.es_desig(e2))
+                ge.etq += 1;
+            if (Utils.esReal(this.e1.tipo) && Utils.esEntero(this.e2.tipo))
+                ge.etq += 1;
+
+            ge.etq += 1;
         }
     }
 
     public static class Exp_div extends Exp {
 
-        private Exp e1, e2;
+        private final Exp e1, e2;
         public Exp_div(Exp e1, Exp e2) {
             this.e1 = e1;
             this.e2 = e2;
@@ -423,18 +509,18 @@ public class Exp extends Nodo {
             this.e1.tipado();
             this.e2.tipado();
 
-            if (Utils.reff(this.e1.tipo) instanceof Tipo.Entero && Utils.reff(this.e2.tipo) instanceof Tipo.Entero)
+            if (Utils.esEntero(Utils.reff(this.e1.tipo)) && Utils.esEntero(Utils.reff(this.e2.tipo)))
                 this.tipo = new Tipo.Entero();
 
-            else if ((Utils.reff(this.e1.tipo) instanceof Tipo.Real && Utils.reff(this.e2.tipo) instanceof Tipo.Real) ||
-                    (Utils.reff(this.e1.tipo) instanceof Tipo.Entero && Utils.reff(this.e2.tipo) instanceof Tipo.Real) ||
-                    (Utils.reff(this.e1.tipo) instanceof Tipo.Real && Utils.reff(this.e2.tipo) instanceof Tipo.Entero))
+            else if ((Utils.esReal(Utils.reff(this.e1.tipo)) && Utils.esReal(Utils.reff(this.e2.tipo))) ||
+                    (Utils.esEntero(Utils.reff(this.e1.tipo)) && Utils.esReal(Utils.reff(this.e2.tipo))) ||
+                    (Utils.esReal(Utils.reff(this.e1.tipo)) && Utils.esEntero(Utils.reff(this.e2.tipo))))
             {
                 this.tipo = new Tipo.Real();
             }
             else {
                 this.tipo = new Tipo.Error();
-                utils.ErrorSingleton.setError("Los tipos de E0 y E1 no son operables.");
+                GestorErrores.addError("Los tipos de E0 y E1 no son operables.");
             }
         }
 
@@ -444,25 +530,43 @@ public class Exp extends Nodo {
             this.e1.gen_cod(maquinap);
             if (Utils.es_desig(e1))
                 maquinap.ponInstruccion(maquinap.apilaInd());
-            if (this.e1.tipo instanceof Tipo.Entero && this.e2.tipo instanceof Tipo.Real)
+            if (Utils.esEntero(this.e1.tipo) && Utils.esReal(this.e2.tipo))
                 maquinap.ponInstruccion(maquinap.int2real());
 
             this.e2.gen_cod(maquinap);
             if (Utils.es_desig(e2))
                 maquinap.ponInstruccion((maquinap.apilaInd()));
-            if (this.e1.tipo instanceof Tipo.Real && this.e2.tipo instanceof Tipo.Entero)
+            if (Utils.esReal(this.e1.tipo) && Utils.esEntero(this.e2.tipo))
                 maquinap.ponInstruccion(maquinap.int2real());
 
-            if (this.tipo instanceof Tipo.Entero)
+            if (Utils.esEntero(this.tipo))
                 maquinap.ponInstruccion(maquinap.div());
             else
                 maquinap.ponInstruccion(maquinap.divF());
+        }
+
+        @Override
+        public void etiquetado(GestorEtiquetado ge) {
+
+            this.e1.etiquetado(ge);
+            if (Utils.es_desig(e1))
+                ge.etq += 1;
+            if (Utils.esEntero(this.e1.tipo) && Utils.esReal(this.e2.tipo))
+                ge.etq += 1;
+
+            this.e2.etiquetado(ge);
+            if (Utils.es_desig(e2))
+                ge.etq += 1;
+            if (Utils.esReal(this.e1.tipo) && Utils.esEntero(this.e2.tipo))
+                ge.etq += 1;
+
+            ge.etq += 1;
         }
     }
 
     public static class Exp_mod extends Exp {
 
-        private Exp e1, e2;
+        private final Exp e1, e2;
         public Exp_mod(Exp e1, Exp e2) {
             this.e1 = e1;
             this.e2 = e2;
@@ -480,11 +584,11 @@ public class Exp extends Nodo {
             this.e1.tipado();
             this.e2.tipado();
 
-            if (Utils.reff(this.e1.tipo) instanceof Tipo.Entero && Utils.reff(this.e2.tipo) instanceof Tipo.Entero)
+            if (Utils.esEntero(Utils.reff(this.e1.tipo)) && Utils.esEntero(Utils.reff(this.e2.tipo)))
                 this.tipo = new Tipo.Entero();
             else {
                 this.tipo = new Tipo.Error();
-                utils.ErrorSingleton.setError("Los tipos de E0 y E1 no son operables.");
+                GestorErrores.addError("Los tipos de E0 y E1 no son operables.");
             }
         }
 
@@ -501,6 +605,20 @@ public class Exp extends Nodo {
 
             maquinap.ponInstruccion(maquinap.mod());
         }
+
+        @Override
+        public void etiquetado(GestorEtiquetado ge) {
+
+            this.e1.etiquetado(ge);
+            if (Utils.es_desig(e1))
+                ge.etq += 1;
+
+            this.e2.etiquetado(ge);
+            if (Utils.es_desig(e2))
+                ge.etq += 1;
+
+            ge.etq += 1;
+        }
     }
 
     /**
@@ -508,7 +626,7 @@ public class Exp extends Nodo {
      */
     public static class Exp_ind extends Exp {
 
-        private Exp e1, e2;
+        private final Exp e1, e2;
         public Exp_ind(Exp e1, Exp e2) {
             this.e1 = e1;
             this.e2 = e2;
@@ -526,13 +644,13 @@ public class Exp extends Nodo {
             this.e1.tipado();
             this.e2.tipado();
 
-            if (!(Utils.reff(this.e1.tipo) instanceof Tipo.Array)) {
-                utils.ErrorSingleton.setError("Tipo array incorrecto");
+            if (!Utils.esArray(Utils.reff(this.e1.tipo))) {
+                GestorErrores.addError("Tipo array incorrecto");
                 return;
             }
 
-            if (!(Utils.reff(this.e2.tipo) instanceof Tipo.Entero)) {
-                utils.ErrorSingleton.setError("Tamaño de array incorrecto");
+            if (!(Utils.esEntero(Utils.reff(this.e2.tipo)))) {
+                GestorErrores.addError("Tamaño de array incorrecto");
                 return;
             }
 
@@ -545,16 +663,20 @@ public class Exp extends Nodo {
             this.e1.gen_cod(maquinap);
             this.e2.gen_cod(maquinap);
 
-            if (Utils.es_desig(e2)) {
+            if (Utils.es_desig(e2))
                 maquinap.ponInstruccion(maquinap.apilaInd());
-            }
 
-            if(Utils.reff(this.e1.tipo) instanceof Tipo.Array) {
+            maquinap.ponInstruccion(maquinap.apilaInt(((Tipo.Array)this.e1.tipo).getT().tam));
+            maquinap.ponInstruccion(maquinap.mul());
+            maquinap.ponInstruccion(maquinap.suma());
+        }
 
-                 maquinap.ponInstruccion(maquinap.apilaInt(((Tipo.Array)this.e1.tipo).getT().tam));
-                 maquinap.ponInstruccion(maquinap.mul());
-                 maquinap.ponInstruccion(maquinap.suma());
-            }
+        @Override
+        public void etiquetado(GestorEtiquetado ge) {
+            this.e1.etiquetado(ge);
+            this.e2.etiquetado(ge);
+
+            ge.etq += 3;
         }
     }
 }

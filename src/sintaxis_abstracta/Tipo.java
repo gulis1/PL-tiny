@@ -102,8 +102,8 @@ public abstract class Tipo extends Nodo {
 
     public static class Array extends Tipo {
 
-        private Tipo tipoArray;
-        private String tamArray;
+        private final Tipo tipoArray;
+        private final String tamArray;
 
         public Array(Tipo tipoArray, String tamArray) {
             this.tipoArray = tipoArray;

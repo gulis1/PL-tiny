@@ -2,9 +2,8 @@ package sintaxis_abstracta;
 
 public class Campo extends Nodo {
 
-    private String nombre;
-    private Tipo tipo;
-
+    private final String nombre;
+    private final Tipo tipo;
 
     public Campo(String nombre,Tipo tipo) {
 

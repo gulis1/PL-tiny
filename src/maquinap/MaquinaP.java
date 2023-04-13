@@ -19,8 +19,8 @@ public class MaquinaP {
    private class Valor {
       public int valorInt() {throw new EAccesoIlegitimo();}
       public float valorReal() {throw new EAccesoIlegitimo();}
-
       public boolean valorBool() {throw new EAccesoIlegitimo();} 
+      public String valorCadena() {throw new EAccesoIlegitimo();}
    }
 
    private class ValorInt extends Valor {
@@ -52,6 +52,16 @@ public class MaquinaP {
         return String.valueOf(valor);
       }
    }
+    private class ValorCadena extends Valor {
+        private String valor;
+        public ValorCadena(String valor) {
+            this.valor = valor;
+        }
+        public String valorCadena() {return valor;}
+        public String toString() {
+            return valor;
+        }
+    }
 
    private List<Instruccion> codigoP;
    private Stack<Valor> pilaEvaluacion;
@@ -191,7 +201,20 @@ public class MaquinaP {
       public String toString() {return "apilaBool("+valor+")";};
    }
 
-   private class IIrA implements Instruccion {
+   private class IApilaCadena implements Instruccion {
+        private String valor;
+        public IApilaCadena(String valor) {
+            this.valor = valor;
+        }
+        public void ejecuta() {
+            pilaEvaluacion.push(new ValorCadena(valor));
+            pc++;
+        }
+        public String toString() {return "apilaCadena("+valor+")";};
+    }
+
+
+    private class IIrA implements Instruccion {
       private int dir;
       public IIrA(int dir) {
         this.dir = dir;  
@@ -433,6 +456,7 @@ public class MaquinaP {
    public Instruccion and() {return IAND;}
    public Instruccion apilaInt(int val) {return new IApilaInt(val);}
    public Instruccion apilaFloat(float val) {return new IApilaFloat(val);}
+   public Instruccion apilaString(String val) {return new IApilaCadena(val);}
    public Instruccion apilaBool(boolean val) {return new IApilaBool(val);}
    public Instruccion apilad(int nivel) {return new IApilad(nivel);}
    public Instruccion apilaInd() {return IAPILAIND;}
