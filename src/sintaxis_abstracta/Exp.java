@@ -160,6 +160,50 @@ public class Exp extends Nodo {
             this.e1.vincula_is(ts);
             this.e2.vincula_is(ts);
         }
+
+        @Override
+        public void tipado() {
+
+            this.e1.tipado();
+            this.e2.tipado();
+
+            if(Utils.tipado_relacional(e1.tipo,e2.tipo) || Utils.tipado_igualdad(e1.tipo,e2.tipo)){
+                this.tipo= new Tipo.Bool();
+            }
+            else {
+                this.tipo = new Tipo.Error();
+                GestorErrores.addError("Los tipos de E0 y E1 no son operables");
+            }
+        }
+
+        @Override
+        public void gen_cod(MaquinaP maquinap) {
+
+            this.e1.gen_cod(maquinap);
+            if (Utils.es_desig(e1))
+                maquinap.ponInstruccion(maquinap.apilaInd());
+
+            this.e2.gen_cod(maquinap);
+            if (Utils.es_desig(e2))
+                maquinap.ponInstruccion(maquinap.apilaInd());
+
+            maquinap.ponInstruccion(maquinap.eq());
+
+        }
+
+        @Override
+        public void etiquetado(GestorEtiquetado ge) {
+
+            this.e1.etiquetado(ge);
+            if (Utils.es_desig(e1))
+                ge.etq += 1;
+
+            this.e2.etiquetado(ge);
+            if (Utils.es_desig(e2))
+                ge.etq += 1;
+
+            ge.etq+=1;
+        }
     }
 
     public static class Exp_neq extends Exp {

@@ -36,7 +36,7 @@ public class Main {
         Dec dec_array = new Dec.Dec_var(new Tipo.Entero(), "x");
         Decs decs = new Decs.Muchas_decs(dec_array, new Decs.No_decs());
 
-        Instruccion i1 = new Instruccion.If_then(new Exp.Exp_bool("false"), new Instruccion.Write(new Exp.Exp_cadena("Mamichan")));
+        Instruccion i1 = new Instruccion.If_then(new Exp.Exp_eq(new Exp.Exp_entero("2"),new Exp.Exp_entero("2")), new Instruccion.Write(new Exp.Exp_cadena("Mamichan")));
         Instrucciones is = new Instrucciones.Muchas_Instr(new Instrucciones.No_Instr(), i1);
 
         Prog programa = new Prog(decs, is);

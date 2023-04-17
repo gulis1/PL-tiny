@@ -51,4 +51,28 @@ public class Utils {
         return (nodo instanceof Exp.Exp_id ||
                 nodo instanceof  Exp.Exp_ind);
     }
+
+
+    public static boolean tipado_relacional(Tipo t1,Tipo t2){
+
+        if( reff(t1) instanceof Tipo.Entero && reff(t2) instanceof Tipo.Entero)
+            return true;
+
+        if( reff(t1) instanceof Tipo.Real && reff(t2) instanceof Tipo.Real)
+            return true;
+        if( reff(t1) instanceof Tipo.Entero && reff(t2) instanceof Tipo.Real)
+            return true;
+        if( reff(t1) instanceof Tipo.Real && reff(t2) instanceof Tipo.Entero)
+            return true;
+        if( reff(t1) instanceof Tipo.Bool && reff(t2) instanceof Tipo.Bool)
+            return true;
+        if( reff(t1) instanceof Tipo.Cadena && reff(t2) instanceof Tipo.Cadena)
+            return true;
+
+        return false;
+    }
+    //TODO cuando ya se tengan punturos (no se si se pueden unir a la funcion de arriba)
+    public static boolean tipado_igualdad(Tipo t1, Tipo t2){
+        return false;
+    }
 }

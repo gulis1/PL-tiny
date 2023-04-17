@@ -444,6 +444,21 @@ public class MaquinaP {
     }
 
 
+    private Ieq IEQ;
+    private class Ieq implements Instruccion{
+
+        public void ejecuta(){
+            Valor opnd2 = pilaEvaluacion.pop();
+            Valor opnd1 = pilaEvaluacion.pop();
+
+            pilaEvaluacion.push(new ValorBool(opnd1 == opnd2));
+
+            pc++;
+        }
+        public String toString(){return "igualdad";}
+    }
+
+
    public Instruccion suma() {return ISUMA;}
    public Instruccion sumaF() {return ISUMAF;}
    public Instruccion resta(){return IRESTA;}
@@ -454,6 +469,7 @@ public class MaquinaP {
    public Instruccion divF(){return IDIVF;}
    public Instruccion mod(){return  IMOD;}
    public Instruccion and() {return IAND;}
+   public Instruccion eq(){return  IEQ;}
    public Instruccion apilaInt(int val) {return new IApilaInt(val);}
    public Instruccion apilaFloat(float val) {return new IApilaFloat(val);}
    public Instruccion apilaString(String val) {return new IApilaCadena(val);}
@@ -506,6 +522,7 @@ public class MaquinaP {
       ISTOP = new IStop();
       IWRITE = new IWrite();
       IINT2REAL = new Iint2real();
+      IEQ= new Ieq();
       gestorPilaActivaciones = new GestorPilaActivaciones(tamdatos,(tamdatos+tampila)-1,ndisplays);
       gestorMemoriaDinamica = new GestorMemoriaDinamica(tamdatos+tampila,(tamdatos+tampila+tamheap)-1);
    }
