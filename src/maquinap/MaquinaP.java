@@ -21,6 +21,8 @@ public class MaquinaP {
       public float valorReal() {throw new EAccesoIlegitimo();}
       public boolean valorBool() {throw new EAccesoIlegitimo();} 
       public String valorCadena() {throw new EAccesoIlegitimo();}
+
+
    }
 
    private class ValorInt extends Valor {
@@ -443,20 +445,136 @@ public class MaquinaP {
         public String toString(){return "mod";}
     }
 
+    private Imenos IMENOS;
+    private class Imenos implements Instruccion{
 
-    private Ieq IEQ;
-    private class Ieq implements Instruccion{
+        public void ejecuta(){
+            Valor opnd1 = pilaEvaluacion.pop();
+
+            pilaEvaluacion.push(new ValorInt((-1)*opnd1.valorInt()));
+
+            pc++;
+
+        }
+
+        public String toString(){return "Menos";}
+    }
+
+    private ImenosF IMENOSF;
+    private class ImenosF implements Instruccion{
+
+        public void ejecuta(){
+            Valor opnd1 = pilaEvaluacion.pop();
+
+            pilaEvaluacion.push(new ValorReal((-1)*opnd1.valorReal()));
+
+            pc++;
+
+        }
+
+        public String toString(){return "Menos";}
+    }
+
+    private IeqInt IEQINT;
+    private class IeqInt implements Instruccion{
 
         public void ejecuta(){
             Valor opnd2 = pilaEvaluacion.pop();
             Valor opnd1 = pilaEvaluacion.pop();
 
-            pilaEvaluacion.push(new ValorBool(opnd1 == opnd2));
+            pilaEvaluacion.push(new ValorBool(opnd1.valorInt()==opnd2.valorInt()));
 
             pc++;
         }
         public String toString(){return "igualdad";}
     }
+
+    private IeqFloat IEQF;
+    private class IeqFloat implements Instruccion{
+
+        public void ejecuta(){
+            Valor opnd2 = pilaEvaluacion.pop();
+            Valor opnd1 = pilaEvaluacion.pop();
+
+            pilaEvaluacion.push(new ValorBool(opnd1.valorReal()==opnd2.valorReal()));
+
+            pc++;
+        }
+        public String toString(){return "igualdad";}
+    }
+
+    private IeqFloatInt IEQFI;
+    private class IeqFloatInt implements Instruccion{
+
+        public void ejecuta(){
+            Valor opnd2 = pilaEvaluacion.pop();
+            Valor opnd1 = pilaEvaluacion.pop();
+
+            pilaEvaluacion.push(new ValorBool(opnd1.valorReal()==opnd2.valorInt()));
+
+            pc++;
+        }
+        public String toString(){return "igualdad";}
+    }
+
+    private IeqIntFloat IEQIF;
+    private class IeqIntFloat implements Instruccion{
+
+        public void ejecuta(){
+            Valor opnd2 = pilaEvaluacion.pop();
+            Valor opnd1 = pilaEvaluacion.pop();
+
+            pilaEvaluacion.push(new ValorBool(opnd1.valorInt()==opnd2.valorReal()));
+
+            pc++;
+        }
+        public String toString(){return "igualdad";}
+    }
+
+
+    private IeqBool IEQBOOL;
+    private class IeqBool implements Instruccion{
+
+        public void ejecuta(){
+            Valor opnd2 = pilaEvaluacion.pop();
+            Valor opnd1 = pilaEvaluacion.pop();
+
+            pilaEvaluacion.push(new ValorBool(opnd1.valorBool()==opnd2.valorBool()));
+
+            pc++;
+        }
+        public String toString(){return "igualdad";}
+    }
+
+    private IeqString IEQSTRING;
+    private class IeqString implements Instruccion{
+
+        public void ejecuta(){
+            Valor opnd2 = pilaEvaluacion.pop();
+            Valor opnd1 = pilaEvaluacion.pop();
+
+            pilaEvaluacion.push(new ValorBool(opnd1.valorCadena().equals(opnd2.valorCadena())));
+
+            pc++;
+        }
+        public String toString(){return "igualdad";}
+    }
+
+    private Inot INOT;
+    private class Inot implements Instruccion{
+
+        public void ejecuta(){
+            Valor opnd1 = pilaEvaluacion.pop();
+
+            pilaEvaluacion.push(new ValorBool(!opnd1.valorBool()));
+
+            pc++;
+
+        }
+
+        public String toString(){return "Negacion";}
+    }
+
 
 
    public Instruccion suma() {return ISUMA;}
@@ -468,8 +586,17 @@ public class MaquinaP {
    public Instruccion div(){return  IDIV;}
    public Instruccion divF(){return IDIVF;}
    public Instruccion mod(){return  IMOD;}
-   public Instruccion and() {return IAND;}
-   public Instruccion eq(){return  IEQ;}
+   public  Instruccion menos(){return IMENOS;}
+    public  Instruccion menosF(){return IMENOSF;}
+    public Instruccion and() {return IAND;}
+   public Instruccion eqInt(){return  IEQINT;}
+   public Instruccion eqFloatInt(){return  IEQFI;}
+   public Instruccion eqIntFloat(){return  IEQIF;}
+   public  Instruccion eqFloat(){return IEQF;}
+   public Instruccion eqBool(){return  IEQBOOL;}
+   public Instruccion eqString(){return  IEQSTRING;}
+
+   public Instruccion not(){return INOT;}
    public Instruccion apilaInt(int val) {return new IApilaInt(val);}
    public Instruccion apilaFloat(float val) {return new IApilaFloat(val);}
    public Instruccion apilaString(String val) {return new IApilaCadena(val);}
@@ -515,6 +642,8 @@ public class MaquinaP {
       IDIV = new IDiv();
       IDIVF = new IDivF();
       IMOD = new IMod();
+      IMENOS = new Imenos();
+      IMENOSF = new ImenosF();
       IAPILAIND = new IApilaind();
       IDESAPILAIND = new IDesapilaind();
       IIRIND = new IIrind();
@@ -522,7 +651,13 @@ public class MaquinaP {
       ISTOP = new IStop();
       IWRITE = new IWrite();
       IINT2REAL = new Iint2real();
-      IEQ= new Ieq();
+      IEQINT= new IeqInt();
+      IEQF = new IeqFloat();
+      IEQFI = new IeqFloatInt();
+      IEQIF = new IeqIntFloat();
+      IEQBOOL = new IeqBool();
+      IEQSTRING = new IeqString();
+      INOT = new Inot();
       gestorPilaActivaciones = new GestorPilaActivaciones(tamdatos,(tamdatos+tampila)-1,ndisplays);
       gestorMemoriaDinamica = new GestorMemoriaDinamica(tamdatos+tampila,(tamdatos+tampila+tamheap)-1);
    }

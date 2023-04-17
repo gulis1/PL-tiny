@@ -45,8 +45,11 @@ public class Main {
         Instrucciones is_mix = new Instrucciones.Muchas_Instr(new Instrucciones.Muchas_Instr(new Instrucciones.No_Instr(), imix_1), imix_2);
         Instruccion mix = new Instruccion.Mix(decs_mix, is_mix);
 
-        Instruccion i1 = new Instruccion.If_then(new Exp.Exp_bool("true"), mix);
+
+        Instruccion i1 = new Instruccion.If_then(new Exp.Exp_neq(new Exp.Exp_real("2.0"),new Exp.Exp_menos(new Exp.Exp_real("2.0")) ), mix);
         Instrucciones is = new Instrucciones.Muchas_Instr(new Instrucciones.No_Instr(), i1);
+
+
 
         Prog programa = new Prog(decs, is);
         ejecutar(programa);

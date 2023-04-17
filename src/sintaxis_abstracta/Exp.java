@@ -1,6 +1,7 @@
 package sintaxis_abstracta;
 
 
+import jdk.jshell.execution.Util;
 import maquinap.MaquinaP;
 import utils.GestorErrores;
 import utils.GestorEtiquetado;
@@ -152,6 +153,111 @@ public class Exp extends Nodo {
         public void vincula_is(TablaSimbolos ts) { }
     }
 
+    /*
+        EXPRESIONES UNARIAS
+     */
+
+
+    public static class Exp_not extends Exp{
+
+        private final Exp e1;
+        public Exp_not(Exp e1){
+            this.e1=e1;
+        }
+
+        @Override
+        public void vincula_is(TablaSimbolos ts) {
+            this.e1.vincula_is(ts);
+        }
+
+        @Override
+        public void tipado() {
+            this.e1.tipado();
+
+            if(Utils.esBool(Utils.reff(this.e1.tipo)))
+                this.tipo= new Tipo.Bool();
+            else{
+                this.tipo = new Tipo.Error();
+                GestorErrores.addError("Los tipos de E0 no es operable");
+            }
+
+        }
+
+        @Override
+        public void gen_cod(MaquinaP maquinap) {
+
+            this.e1.gen_cod(maquinap);
+            if (Utils.es_desig(e1))
+                maquinap.ponInstruccion(maquinap.apilaInd());
+
+            maquinap.ponInstruccion(maquinap.not());
+        }
+
+        @Override
+        public void etiquetado(GestorEtiquetado ge) {
+
+            this.e1.etiquetado(ge);
+            if (Utils.es_desig(e1))
+                ge.etq += 1;
+
+            ge.etq+=1;
+
+        }
+    }
+
+
+    public static class Exp_menos extends Exp{
+
+        private final Exp e1;
+        public Exp_menos(Exp e1){
+            this.e1=e1;
+        }
+
+        @Override
+        public void vincula_is(TablaSimbolos ts) {
+            this.e1.vincula_is(ts);
+        }
+
+        @Override
+        public void tipado() {
+            this.e1.tipado();
+
+            if(Utils.esEntero(Utils.reff(this.e1.tipo)))
+                this.tipo= new Tipo.Entero();
+            else if(Utils.esReal(Utils.reff(this.e1.tipo)))
+                this.tipo= new Tipo.Real();
+            else{
+                this.tipo = new Tipo.Error();
+                GestorErrores.addError("Los tipos de E0 no es operable");
+            }
+
+        }
+
+        @Override
+        public void gen_cod(MaquinaP maquinap) {
+
+            this.e1.gen_cod(maquinap);
+            if (Utils.es_desig(e1))
+                maquinap.ponInstruccion(maquinap.apilaInd());
+
+            if(Utils.esEntero(Utils.reff(this.e1.tipo)))
+                maquinap.ponInstruccion(maquinap.menos());
+            else if(Utils.esReal(Utils.reff(this.e1.tipo)))
+                maquinap.ponInstruccion(maquinap.menosF());
+        }
+
+        @Override
+        public void etiquetado(GestorEtiquetado ge) {
+
+            this.e1.etiquetado(ge);
+            if (Utils.es_desig(e1))
+                ge.etq += 1;
+
+            ge.etq+=1;
+
+        }
+    }
+
     /**
      * EXPRESIONES BINARIAS
      */
@@ -175,7 +281,7 @@ public class Exp extends Nodo {
             this.e1.tipado();
             this.e2.tipado();
 
-            if(Utils.tipado_relacional(e1.tipo,e2.tipo) || Utils.tipado_igualdad(e1.tipo,e2.tipo)){
+            if(Utils.tipado_relacional(this.e1.tipo,this.e2.tipo) || Utils.tipado_igualdad(this.e1.tipo,this.e2.tipo)){
                 this.tipo= new Tipo.Bool();
             }
             else {
@@ -195,8 +301,18 @@ public class Exp extends Nodo {
             if (Utils.es_desig(e2))
                 maquinap.ponInstruccion(maquinap.apilaInd());
 
-            maquinap.ponInstruccion(maquinap.eq());
-
+            if(Utils.esBool(this.e1.tipo))
+                maquinap.ponInstruccion(maquinap.eqBool());
+            else if (Utils.esCadena(this.e1.tipo))
+                maquinap.ponInstruccion(maquinap.eqString());
+            else if (Utils.esEntero(this.e1.tipo) && Utils.esEntero(this.e2.tipo))
+                maquinap.ponInstruccion(maquinap.eqInt());
+            else if (Utils.esReal(this.e1.tipo) && Utils.esReal(this.e2.tipo))
+                maquinap.ponInstruccion(maquinap.eqFloat());
+            else if (Utils.esReal(this.e1.tipo) && Utils.esEntero(this.e2.tipo))
+                maquinap.ponInstruccion(maquinap.eqFloatInt());
+            else if (Utils.esEntero(this.e1.tipo) && Utils.esReal(this.e2.tipo))
+                maquinap.ponInstruccion(maquinap.eqIntFloat());
         }
 
         @Override
@@ -226,6 +342,63 @@ public class Exp extends Nodo {
         public void vincula_is(TablaSimbolos ts) {
             this.e1.vincula_is(ts);
             this.e2.vincula_is(ts);
+        }
+
+
+        @Override
+        public void tipado() {
+
+            this.e1.tipado();
+            this.e2.tipado();
+
+            if(Utils.tipado_relacional(this.e1.tipo,this.e2.tipo) || Utils.tipado_igualdad(this.e1.tipo,this.e2.tipo)){
+                this.tipo= new Tipo.Bool();
+            }
+            else {
+                this.tipo = new Tipo.Error();
+                GestorErrores.addError("Los tipos de E0 y E1 no son operables");
+            }
+        }
+
+        @Override
+        public void gen_cod(MaquinaP maquinap) {
+
+            this.e1.gen_cod(maquinap);
+            if (Utils.es_desig(e1))
+                maquinap.ponInstruccion(maquinap.apilaInd());
+
+            this.e2.gen_cod(maquinap);
+            if (Utils.es_desig(e2))
+                maquinap.ponInstruccion(maquinap.apilaInd());
+
+            if(Utils.esBool(this.e1.tipo))
+                maquinap.ponInstruccion(maquinap.eqBool());
+            else if (Utils.esCadena(this.e1.tipo))
+                maquinap.ponInstruccion(maquinap.eqString());
+            else if (Utils.esEntero(this.e1.tipo) && Utils.esEntero(this.e2.tipo))
+                maquinap.ponInstruccion(maquinap.eqInt());
+            else if (Utils.esReal(this.e1.tipo) && Utils.esReal(this.e2.tipo))
+                maquinap.ponInstruccion(maquinap.eqFloat());
+            else if (Utils.esReal(this.e1.tipo) && Utils.esEntero(this.e2.tipo))
+                maquinap.ponInstruccion(maquinap.eqFloatInt());
+            else if (Utils.esEntero(this.e1.tipo) && Utils.esReal(this.e2.tipo))
+                maquinap.ponInstruccion(maquinap.eqIntFloat());
+
+            maquinap.ponInstruccion(maquinap.not());
+        }
+
+        @Override
+        public void etiquetado(GestorEtiquetado ge) {
+
+            this.e1.etiquetado(ge);
+            if (Utils.es_desig(e1))
+                ge.etq += 1;
+
+            this.e2.etiquetado(ge);
+            if (Utils.es_desig(e2))
+                ge.etq += 1;
+
+            ge.etq+=2;
         }
     }
 
