@@ -21,6 +21,7 @@ public class Utils {
     public static boolean esCadena(Tipo t) { return t instanceof Tipo.Cadena; }
     public static boolean esBool(Tipo t) { return t instanceof Tipo.Bool; }
     public static boolean esArray(Tipo t) { return t instanceof Tipo.Array; }
+    public static boolean esRef(Tipo t) { return t instanceof Tipo.Ref; }
 
     public static Tipo ambos_ok(Tipo t1, Tipo t2) {
         return (t1 instanceof Tipo.Ok && t2 instanceof Tipo.Ok) ? new Tipo.Ok() : new Tipo.Error();

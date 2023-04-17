@@ -4,6 +4,7 @@ package sintaxis_abstracta;
 import maquinap.MaquinaP;
 import utils.GestorErrores;
 import utils.GestorEtiquetado;
+import utils.TablaSimbolos;
 import utils.Utils;
 
 public class Exp extends Nodo {
@@ -41,13 +42,20 @@ public class Exp extends Nodo {
             maquinap.ponInstruccion(maquinap.apilaInt(this.vinculo.dir));
 //            maquinap.desapilad(0);
         }
+
+        @Override
+        public void etiquetado(GestorEtiquetado ge) {
+            // TODO: actualizar esto cuando se termine el gen_cod.
+            ge.etq += 1;
+        }
     }
 
     public static class Exp_entero extends Exp {
-        private final String entero;
+
+        private final int entero;
 
         public Exp_entero(String entero) {
-            this.entero = entero;
+            this.entero = Integer.parseInt(entero);
         }
 
         @Override
@@ -60,7 +68,7 @@ public class Exp extends Nodo {
 
         @Override
         public void gen_cod(MaquinaP maquinap) {
-            maquinap.ponInstruccion((maquinap.apilaInt(Integer.parseInt(entero))));
+            maquinap.ponInstruccion((maquinap.apilaInt(entero)));
         }
 
         @Override
@@ -69,10 +77,10 @@ public class Exp extends Nodo {
 
     public static class Exp_real extends Exp {
 
-        private final String real;
+        private final float real;
 
         public Exp_real(String real) {
-            this.real = real;
+            this.real = Float.parseFloat(real);
         }
 
         @Override
@@ -84,7 +92,7 @@ public class Exp extends Nodo {
         }
 
         public void gen_cod(MaquinaP maquinaP) {
-            maquinaP.ponInstruccion(maquinaP.apilaFloat(Float.parseFloat(this.real)));
+            maquinaP.ponInstruccion(maquinaP.apilaFloat(this.real));
         }
 
         @Override
@@ -93,10 +101,10 @@ public class Exp extends Nodo {
 
     public static class Exp_bool extends Exp {
 
-        private final String bool;
+        private final boolean bool;
 
         public Exp_bool(String bool) {
-            this.bool = bool;
+            this.bool = Boolean.parseBoolean(bool);
         }
 
         @Override
@@ -106,7 +114,7 @@ public class Exp extends Nodo {
         public void tipado() { this.tipo = new Tipo.Bool(); }
 
         public void gen_cod(MaquinaP maquinaP) {
-            maquinaP.ponInstruccion(maquinaP.apilaBool(Boolean.parseBoolean(this.bool)));
+            maquinaP.ponInstruccion(maquinaP.apilaBool(this.bool));
         }
 
         @Override

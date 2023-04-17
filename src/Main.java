@@ -3,6 +3,7 @@ import sintaxis_abstracta.*;
 import utils.GestorErrores;
 import utils.GestorEtiquetado;
 import utils.GestorMem;
+import utils.TablaSimbolos;
 
 public class Main {
 
@@ -33,10 +34,18 @@ public class Main {
 
 //        Instrucciones is = new Instrucciones.Muchas_Instr(new Instrucciones.Muchas_Instr(new Instrucciones.Muchas_Instr(new Instrucciones.Muchas_Instr(new Instrucciones.No_Instr(), i1), i2), i3), i4);
 
-        Dec dec_array = new Dec.Dec_var(new Tipo.Entero(), "x");
-        Decs decs = new Decs.Muchas_decs(dec_array, new Decs.No_decs());
 
-        Instruccion i1 = new Instruccion.If_then(new Exp.Exp_eq(new Exp.Exp_entero("2"),new Exp.Exp_entero("2")), new Instruccion.Write(new Exp.Exp_cadena("Mamichan")));
+        Decs decs = new Decs.No_decs();
+
+        Dec dec_mix = new Dec.Dec_var(new Tipo.Entero(), "y");
+        Decs decs_mix = new Decs.Muchas_decs(new Decs.No_decs(), dec_mix);
+
+        Instruccion imix_1 = new Instruccion.Asignacion(new Exp.Exp_id("y"), new Exp.Exp_entero("5"));
+        Instruccion imix_2 = new Instruccion.Write(new Exp.Exp_id("y"));
+        Instrucciones is_mix = new Instrucciones.Muchas_Instr(new Instrucciones.Muchas_Instr(new Instrucciones.No_Instr(), imix_1), imix_2);
+        Instruccion mix = new Instruccion.Mix(decs_mix, is_mix);
+
+        Instruccion i1 = new Instruccion.If_then(new Exp.Exp_bool("true"), mix);
         Instrucciones is = new Instrucciones.Muchas_Instr(new Instrucciones.No_Instr(), i1);
 
         Prog programa = new Prog(decs, is);

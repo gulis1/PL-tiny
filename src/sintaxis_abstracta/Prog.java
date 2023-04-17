@@ -3,6 +3,7 @@ package sintaxis_abstracta;
 import maquinap.MaquinaP;
 import utils.GestorEtiquetado;
 import utils.GestorMem;
+import utils.TablaSimbolos;
 import utils.Utils;
 
 public class Prog extends Nodo {
@@ -19,8 +20,7 @@ public class Prog extends Nodo {
     public void vincula(TablaSimbolos ts) {
         // Creamos la TS fuera.
         this.decs.vincula(ts);
-        // TODO:
-//        this.decs.vincula_ref(ts);
+        // TODO: this.decs.vincula_ref(ts);
         this.is.vincula_is(ts);
     }
 
