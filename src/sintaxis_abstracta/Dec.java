@@ -1,6 +1,7 @@
 package sintaxis_abstracta;
 
 import utils.GestorMem;
+import utils.TablaSimbolos;
 
 public class Dec extends Nodo {
 

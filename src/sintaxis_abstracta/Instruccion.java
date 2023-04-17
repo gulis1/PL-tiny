@@ -1,10 +1,7 @@
 package sintaxis_abstracta;
 
 import maquinap.MaquinaP;
-import utils.GestorErrores;
-import utils.GestorEtiquetado;
-import utils.GestorMem;
-import utils.Utils;
+import utils.*;
 
 public class Instruccion extends Nodo {
 
@@ -126,7 +123,7 @@ public class Instruccion extends Nodo {
         }
     }
 
-    public static class If_then_else extends Instruccion{
+    public static class If_then_else extends Instruccion {
 
         private final Exp exp;
         private final Instruccion i1, i2;
@@ -138,7 +135,7 @@ public class Instruccion extends Nodo {
         }
     }
 
-    public static class While extends Instruccion{
+    public static class While extends Instruccion {
 
         private final Exp exp;
         private final Instruccion i;
@@ -149,7 +146,7 @@ public class Instruccion extends Nodo {
         }
     }
 
-    public static class Read extends Instruccion{
+    public static class Read extends Instruccion {
 
         private final Exp exp;
 
@@ -213,9 +210,9 @@ public class Instruccion extends Nodo {
         }
     }
 
-    public static class Nl extends Instruccion{ public Nl() {} }
+    public static class Nl extends Instruccion { public Nl() {} }
 
-    public static class New extends Instruccion{
+    public static class New extends Instruccion {
 
         private final Exp exp;
 
@@ -224,7 +221,7 @@ public class Instruccion extends Nodo {
         }
     }
 
-    public static class Delete extends Instruccion{
+    public static class Delete extends Instruccion {
 
         private final Exp exp;
 
@@ -233,14 +230,54 @@ public class Instruccion extends Nodo {
         }
     }
 
-    public static class Mix extends Instruccion{
+    public static class Mix extends Instruccion {
 
-        private final Exp exp;
+        private final Decs decs;
         private final Instrucciones is;
 
-        public Mix(Exp exp, Instrucciones is) {
-            this.exp = exp;
+        public Mix(Decs decs, Instrucciones is) {
+            this.decs = decs;
             this.is = is;
+        }
+
+        @Override
+        public void vincula_is(TablaSimbolos ts) {
+
+            ts.nuevo_nivel();
+            this.decs.vincula(ts);
+            // TODO:this.decs.vincula_ref(ts);
+            this.is.vincula_is(ts);
+            ts.quitar_nivel();
+        }
+
+        @Override
+        public void tipado() {
+
+            this.decs.tipado();
+            this.is.tipado();
+            this.tipo = this.is.tipo;
+        }
+
+        @Override
+        public void asig_espacio(GestorMem gm) {
+
+            int dir_ant = gm.dir;
+            this.decs.asig_espacio(gm);
+            this.is.asig_espacio(gm);
+            gm.dir = dir_ant;
+        }
+
+        @Override
+        public void gen_cod(MaquinaP maquinap) {
+           this.is.gen_cod(maquinap);
+        }
+
+        @Override
+        public void etiquetado(GestorEtiquetado ge) {
+
+            this.ini = ge.etq;
+            this.is.etiquetado(ge);
+            this.sig = ge.etq;
         }
     }
 
@@ -253,5 +290,6 @@ public class Instruccion extends Nodo {
             this.exp = exp;
             this.preales = preales;
         }
+
     }
 }

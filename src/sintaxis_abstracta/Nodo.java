@@ -3,6 +3,7 @@ package sintaxis_abstracta;
 import maquinap.MaquinaP;
 import utils.GestorEtiquetado;
 import utils.GestorMem;
+import utils.TablaSimbolos;
 
 public abstract class Nodo {
 

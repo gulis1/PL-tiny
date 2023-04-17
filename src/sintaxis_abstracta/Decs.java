@@ -1,6 +1,7 @@
 package sintaxis_abstracta;
 
 import utils.GestorMem;
+import utils.TablaSimbolos;
 import utils.Utils;
 
 public class Decs extends Nodo {
@@ -10,9 +11,9 @@ public class Decs extends Nodo {
         private final Dec dec;
         private final Decs decs;
 
-        public Muchas_decs(Dec dec, Decs decs) {
-            this.dec = dec;
+        public Muchas_decs(Decs decs, Dec dec) {
             this.decs = decs;
+            this.dec = dec;
         }
 
         @Override

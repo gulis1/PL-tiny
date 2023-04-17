@@ -1,6 +1,8 @@
 package sintaxis_abstracta;
 
 import utils.GestorMem;
+import utils.TablaSimbolos;
+import utils.Utils;
 
 public abstract class Tipo extends Nodo {
 
@@ -138,7 +140,8 @@ public abstract class Tipo extends Nodo {
     }
 
     public static class Record extends Tipo {
-        private Campos campos;
+
+        private final Campos campos;
 
         public Record(Campos campos){
             this.campos = campos;
@@ -146,11 +149,17 @@ public abstract class Tipo extends Nodo {
     }
 
     public static class Pointer extends Tipo {
-        private Tipo tipo;
+
+        private final Tipo t;
 
         public Pointer(Tipo tipo){
-            this.tipo = tipo;
+            this.t = tipo;
         }
+
+//        @Override
+//        public void vincula(TablaSimbolos ts) {
+//            if (Utils.esRef(this.ti))
+//        }
     }
 
     public static class Ref extends Tipo {
