@@ -33,25 +33,53 @@ public class Main {
 //        Instruccion i4 = new Instruccion.Write(new Exp.Exp_ind(new Exp.Exp_id("v"), new Exp.Exp_entero("1")));
 
 //        Instrucciones is = new Instrucciones.Muchas_Instr(new Instrucciones.Muchas_Instr(new Instrucciones.Muchas_Instr(new Instrucciones.Muchas_Instr(new Instrucciones.No_Instr(), i1), i2), i3), i4);
+//
+
+//        Decs decs = new Decs.No_decs();
+//        Dec dec_mix = new Dec.Dec_var(new Tipo.Entero(), "y");
+//        Decs decs_mix = new Decs.Muchas_decs(new Decs.No_decs(), dec_mix);
+//        Instruccion imix_1 = new Instruccion.Asignacion(new Exp.Exp_id("y"), new Exp.Exp_entero("5"));
+//        Instruccion imix_2 = new Instruccion.Write(new Exp.Exp_id("y"));
+//        Instrucciones is_mix = new Instrucciones.Muchas_Instr(new Instrucciones.Muchas_Instr(new Instrucciones.No_Instr(), imix_1), imix_2);
+//        Instruccion mix = new Instruccion.Mix(decs_mix, is_mix);
+//        Instruccion i1 = new Instruccion.If_then(new Exp.Exp_neq(new Exp.Exp_real("2.0"),new Exp.Exp_menos(new Exp.Exp_real("2.0")) ), mix);
+//        Instrucciones is = new Instrucciones.Muchas_Instr(new Instrucciones.No_Instr(), i1);
+
+//        Decs decs = new Decs.No_decs();
+//        Dec dec_mix_1 = new Dec.Dec_var(new Tipo.Entero(), "y");
+//        Dec dec_mix_2 = new Dec.Dec_var(new Tipo.Entero(), "x");
+//        Decs decs_mix = new Decs.Muchas_decs(new Decs.Muchas_decs(new Decs.No_decs(), dec_mix_2), dec_mix_1);
+//
+//        Instruccion imix_1 = new Instruccion.Asignacion(new Exp.Exp_id("y"), new Exp.Exp_entero("5"));
+//        Instruccion imix_2 = new Instruccion.Write(new Exp.Exp_id("y"));
+//        Instrucciones is_mix_1 = new Instrucciones.Muchas_Instr(new Instrucciones.Muchas_Instr(new Instrucciones.No_Instr(), imix_1), imix_2);
+//        Instruccion mix_1 = new Instruccion.Mix(decs_mix, is_mix_1);
+//
+//        Instruccion imix_3 = new Instruccion.Asignacion(new Exp.Exp_id("x"), new Exp.Exp_entero("10"));
+//        Instruccion imix_4 = new Instruccion.Write(new Exp.Exp_id("x"));
+//        Instrucciones is_mix_2 = new Instrucciones.Muchas_Instr(new Instrucciones.Muchas_Instr(new Instrucciones.No_Instr(), imix_3), imix_4);
+//        Instruccion mix_2 = new Instruccion.Mix(decs_mix, is_mix_2);
+//
+//        Instruccion i1 = new Instruccion.If_then_else(new Exp.Exp_bool("false"), mix_1, mix_2);
+//        Instrucciones is = new Instrucciones.Muchas_Instr(new Instrucciones.No_Instr(), i1);
 
 
-        Decs decs = new Decs.No_decs();
+        Dec var_x = new Dec.Dec_var(new Tipo.Entero(), "x");
+        Decs decs = new Decs.Muchas_decs(new Decs.No_decs(), var_x);
 
-        Dec dec_mix = new Dec.Dec_var(new Tipo.Entero(), "y");
-        Decs decs_mix = new Decs.Muchas_decs(new Decs.No_decs(), dec_mix);
+        Instruccion ini_x = new Instruccion.Asignacion(new Exp.Exp_id("x"), new Exp.Exp_entero("0"));
+        Instruccion print_x = new Instruccion.Write(new Exp.Exp_id("x"));
+        Instrucciones is_x = new Instrucciones.Muchas_Instr(new Instrucciones.Muchas_Instr(new Instrucciones.No_Instr(), ini_x), print_x);
 
-        Instruccion imix_1 = new Instruccion.Asignacion(new Exp.Exp_id("y"), new Exp.Exp_entero("5"));
-        Instruccion imix_2 = new Instruccion.Write(new Exp.Exp_id("y"));
-        Instrucciones is_mix = new Instrucciones.Muchas_Instr(new Instrucciones.Muchas_Instr(new Instrucciones.No_Instr(), imix_1), imix_2);
-        Instruccion mix = new Instruccion.Mix(decs_mix, is_mix);
+        Instruccion x_masuno = new Instruccion.Asignacion(new Exp.Exp_id("x") ,new Exp.Exp_suma(new Exp.Exp_id("x"), new Exp.Exp_entero("1")));
+        Instruccion mix_buc = new Instruccion.Mix(new Decs.No_decs(), new Instrucciones.Muchas_Instr(new Instrucciones.Muchas_Instr(new Instrucciones.No_Instr(),x_masuno), print_x) );
+        Instruccion bucle_while = new Instruccion.While(new Exp.Exp_neq(new Exp.Exp_id("x"), new Exp.Exp_entero("10")), mix_buc);
 
-
-        Instruccion i1 = new Instruccion.If_then(new Exp.Exp_neq(new Exp.Exp_real("2.0"),new Exp.Exp_menos(new Exp.Exp_real("2.0")) ), mix);
-        Instrucciones is = new Instrucciones.Muchas_Instr(new Instrucciones.No_Instr(), i1);
-
-
+        Instruccion mix = new Instruccion.Mix(decs, new Instrucciones.Muchas_Instr(is_x, bucle_while) );
+        Instrucciones is = new Instrucciones.Muchas_Instr(new Instrucciones.No_Instr(), mix);
 
         Prog programa = new Prog(decs, is);
+
         ejecutar(programa);
     }
 
