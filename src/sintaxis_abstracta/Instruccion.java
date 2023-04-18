@@ -26,12 +26,12 @@ public class Instruccion extends Nodo {
             this.e2.tipado();
 
             if (!Utils.es_desig(e1))
-                GestorErrores.addError("No es un designador");
+                GestorErrores.addError("Asignación: no es un designador");
 
             if (Utils.son_compatibles(e1.tipo, e2.tipo))
                 this.tipo = new Tipo.Ok();
             else {
-                GestorErrores.addError("Tipos incompatibles.");
+                GestorErrores.addError("Asignación: tipos incompatibles.");
                 this.tipo = new Tipo.Error();
             }
         }
@@ -272,8 +272,7 @@ public class Instruccion extends Nodo {
                 this.tipo = new Tipo.Ok();
             }
             else {
-
-                GestorErrores.addError("no se printeo");
+                GestorErrores.addError("Write: tipos incomaptibles.");
                 this.tipo= new Tipo.Error();
             }
         }
@@ -311,6 +310,39 @@ public class Instruccion extends Nodo {
         public New(Exp exp) {
             this.exp = exp;
         }
+
+        @Override
+        public void vincula_is(TablaSimbolos ts) {
+            this.exp.vincula_is(ts);
+        }
+
+        @Override
+        public void tipado() {
+
+            this.exp.tipado();
+            if (Utils.esPointer(Utils.reff(this.exp.tipo)))
+                this.tipo = new Tipo.Ok();
+            else {
+                GestorErrores.addError("Tipado alloc no válido.");
+                this.tipo = new Tipo.Error();
+            }
+        }
+
+        @Override
+        public void asig_espacio(GestorMem gm) {}
+
+        @Override
+        public void gen_cod(MaquinaP maquinap) {
+            this.exp.gen_cod(maquinap);
+            maquinap.ponInstruccion(maquinap.alloc(((Tipo.Pointer)(Utils.reff(this.exp.tipo))).getTipoBase().tam));
+            maquinap.ponInstruccion(maquinap.desapilaInd());
+        }
+
+        @Override
+        public void etiquetado(GestorEtiquetado ge) {
+            this.exp.etiquetado(ge);
+            ge.etq += 2;
+        }
     }
 
     public static class Delete extends Instruccion {
@@ -319,6 +351,37 @@ public class Instruccion extends Nodo {
 
         public Delete(Exp exp) {
             this.exp = exp;
+        }
+
+        @Override
+        public void vincula_is(TablaSimbolos ts) { this.exp.vincula_is(ts); }
+
+        @Override
+        public void tipado() {
+
+            this.exp.tipado();
+            if (Utils.esPointer(Utils.reff(this.exp.tipo)))
+                this.tipo = new Tipo.Ok();
+            else {
+                GestorErrores.addError("Tipado alloc no válido.");
+                this.tipo = new Tipo.Error();
+            }
+        }
+
+        @Override
+        public void asig_espacio(GestorMem gm) {}
+
+        @Override
+        public void gen_cod(MaquinaP maquinap) {
+            this.exp.gen_cod(maquinap);
+            maquinap.ponInstruccion(maquinap.apilaInd());
+            maquinap.ponInstruccion(maquinap.dealloc(((Tipo.Pointer)(Utils.reff(this.exp.tipo))).getTipoBase().tam));
+        }
+
+        @Override
+        public void etiquetado(GestorEtiquetado ge) {
+            this.exp.etiquetado(ge);
+            ge.etq += 2;
         }
     }
 

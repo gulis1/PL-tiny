@@ -18,9 +18,8 @@ public class Prog extends Nodo {
 
     @Override
     public void vincula(TablaSimbolos ts) {
-        // Creamos la TS fuera.
         this.decs.vincula(ts);
-        // TODO: this.decs.vincula_ref(ts);
+        this.decs.vincula_ref(ts);
         this.is.vincula_is(ts);
     }
 
