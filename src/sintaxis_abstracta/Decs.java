@@ -23,6 +23,12 @@ public class Decs extends Nodo {
         }
 
         @Override
+        public void vincula_ref(TablaSimbolos ts) {
+            this.dec.vincula_ref(ts);
+            this.decs.vincula_ref(ts);
+        }
+
+        @Override
         public void tipado() {
             this.decs.tipado();
             this.dec.tipado();
@@ -43,6 +49,9 @@ public class Decs extends Nodo {
 
         @Override
         public void vincula(TablaSimbolos ts) {}
+
+        @Override
+        public void vincula_ref(TablaSimbolos ts) {}
 
         @Override
         public void tipado() { this.tipo = new Tipo.Ok(); }

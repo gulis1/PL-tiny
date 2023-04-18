@@ -32,6 +32,11 @@ public class Dec extends Nodo {
         }
 
         @Override
+        public void vincula_ref(TablaSimbolos ts) {
+            this.T.vincula_ref(ts);
+        }
+
+        @Override
         public void tipado() {
             this.T.tipado();
             this.tipo = this.T.tipo;
@@ -47,7 +52,7 @@ public class Dec extends Nodo {
     }
     public static class Dec_type extends Dec {
 
-        private Tipo tipo;
+        private Tipo t;
         private String string;
         Dec_type(String string, Tipo tipo) {
             this.tipo = tipo;
@@ -75,6 +80,11 @@ public class Dec extends Nodo {
             if (!ts.contiene(this.string)) {
                 ts.añadir(this.string, this);
             }
+        }
+
+        @Override
+        public void vincula_ref(TablaSimbolos ts) {
+            this.t.vincula_ref(ts);
         }
     }
 

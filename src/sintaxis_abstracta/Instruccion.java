@@ -26,12 +26,12 @@ public class Instruccion extends Nodo {
             this.e2.tipado();
 
             if (!Utils.es_desig(e1))
-                GestorErrores.addError("No es un designador");
+                GestorErrores.addError("Asignación: no es un designador");
 
             if (Utils.son_compatibles(e1.tipo, e2.tipo))
                 this.tipo = new Tipo.Ok();
             else {
-                GestorErrores.addError("Tipos incompatibles.");
+                GestorErrores.addError("Asignación: tipos incompatibles.");
                 this.tipo = new Tipo.Error();
             }
         }
@@ -133,6 +133,54 @@ public class Instruccion extends Nodo {
             this.i1 = i1;
             this.i2 = i2;
         }
+
+        @Override
+        public void vincula_is(TablaSimbolos ts) {
+            this.exp.vincula_is(ts);
+            this.i1.vincula_is(ts);
+            this.i2.vincula_is(ts);
+        }
+
+        @Override
+        public void tipado() {
+            this.exp.tipado();
+            this.i1.tipado();
+            this.i2.tipado();
+
+            if (Utils.esBool(this.exp.tipo) && Utils.esOk(this.i1.tipo) && Utils.esOk(this.i2.tipo)) this.tipo = new Tipo.Ok();
+            else {
+                GestorErrores.addError("Error tipado if_else_then.");
+                this.tipo = new Tipo.Error();
+            }
+        }
+
+        @Override
+        public void asig_espacio(GestorMem gm) {
+            this.i1.asig_espacio(gm);
+            this.i2.asig_espacio(gm);
+        }
+
+        @Override
+        public void gen_cod(MaquinaP maquinap) {
+            this.exp.gen_cod(maquinap);
+            maquinap.ponInstruccion(maquinap.irF(this.i2.ini));
+            this.i1.gen_cod(maquinap);
+            maquinap.ponInstruccion(maquinap.irA(this.sig));
+            this.i2.gen_cod(maquinap);
+        }
+
+        @Override
+        public void etiquetado(GestorEtiquetado ge) {
+            this.ini = ge.etq;
+
+            this.exp.etiquetado(ge);
+            ge.etq += 1;
+            this.i1.etiquetado(ge);
+            ge.etq += 1;
+            this.i2.etiquetado(ge);
+
+            this.sig = ge.etq;
+        }
     }
 
     public static class While extends Instruccion {
@@ -143,6 +191,50 @@ public class Instruccion extends Nodo {
         public While(Exp exp, Instruccion i) {
             this.exp = exp;
             this.i = i;
+        }
+
+        @Override
+        public void vincula_is(TablaSimbolos ts) {
+            this.exp.vincula_is(ts);
+            this.i.vincula_is(ts);
+        }
+
+        @Override
+        public void tipado() {
+            this.exp.tipado();
+            this.i.tipado();
+
+            if (Utils.esBool(this.exp.tipo) && Utils.esOk(this.i.tipo)) this.tipo = new Tipo.Ok();
+            else {
+                GestorErrores.addError("Error tipado while.");
+                this.tipo = new Tipo.Error();
+            }
+        }
+
+        @Override
+        public void asig_espacio(GestorMem gm) {
+            this.i.asig_espacio(gm);
+        }
+
+        @Override
+        public void gen_cod(MaquinaP maquinap) {
+            this.exp.gen_cod(maquinap);
+            maquinap.ponInstruccion(maquinap.irF(this.sig));
+            this.i.gen_cod(maquinap);
+            maquinap.ponInstruccion(maquinap.irA(this.ini));
+        }
+
+        @Override
+        public void etiquetado(GestorEtiquetado ge) {
+            this.ini = ge.etq;
+
+            this.exp.etiquetado(ge);
+            ge.etq += 1;
+            this.i.etiquetado(ge);
+            ge.etq += 1;
+
+            this.sig = ge.etq;
+
         }
     }
 
@@ -180,8 +272,7 @@ public class Instruccion extends Nodo {
                 this.tipo = new Tipo.Ok();
             }
             else {
-
-                GestorErrores.addError("no se printeo");
+                GestorErrores.addError("Write: tipos incomaptibles.");
                 this.tipo= new Tipo.Error();
             }
         }
@@ -219,6 +310,39 @@ public class Instruccion extends Nodo {
         public New(Exp exp) {
             this.exp = exp;
         }
+
+        @Override
+        public void vincula_is(TablaSimbolos ts) {
+            this.exp.vincula_is(ts);
+        }
+
+        @Override
+        public void tipado() {
+
+            this.exp.tipado();
+            if (Utils.esPointer(Utils.reff(this.exp.tipo)))
+                this.tipo = new Tipo.Ok();
+            else {
+                GestorErrores.addError("Tipado alloc no válido.");
+                this.tipo = new Tipo.Error();
+            }
+        }
+
+        @Override
+        public void asig_espacio(GestorMem gm) {}
+
+        @Override
+        public void gen_cod(MaquinaP maquinap) {
+            this.exp.gen_cod(maquinap);
+            maquinap.ponInstruccion(maquinap.alloc(((Tipo.Pointer)(Utils.reff(this.exp.tipo))).getTipoBase().tam));
+            maquinap.ponInstruccion(maquinap.desapilaInd());
+        }
+
+        @Override
+        public void etiquetado(GestorEtiquetado ge) {
+            this.exp.etiquetado(ge);
+            ge.etq += 2;
+        }
     }
 
     public static class Delete extends Instruccion {
@@ -227,6 +351,37 @@ public class Instruccion extends Nodo {
 
         public Delete(Exp exp) {
             this.exp = exp;
+        }
+
+        @Override
+        public void vincula_is(TablaSimbolos ts) { this.exp.vincula_is(ts); }
+
+        @Override
+        public void tipado() {
+
+            this.exp.tipado();
+            if (Utils.esPointer(Utils.reff(this.exp.tipo)))
+                this.tipo = new Tipo.Ok();
+            else {
+                GestorErrores.addError("Tipado alloc no válido.");
+                this.tipo = new Tipo.Error();
+            }
+        }
+
+        @Override
+        public void asig_espacio(GestorMem gm) {}
+
+        @Override
+        public void gen_cod(MaquinaP maquinap) {
+            this.exp.gen_cod(maquinap);
+            maquinap.ponInstruccion(maquinap.apilaInd());
+            maquinap.ponInstruccion(maquinap.dealloc(((Tipo.Pointer)(Utils.reff(this.exp.tipo))).getTipoBase().tam));
+        }
+
+        @Override
+        public void etiquetado(GestorEtiquetado ge) {
+            this.exp.etiquetado(ge);
+            ge.etq += 2;
         }
     }
 

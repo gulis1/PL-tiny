@@ -18,6 +18,9 @@ public abstract class Tipo extends Nodo {
         public void vincula(TablaSimbolos ts) {}
 
         @Override
+        public void vincula_ref(TablaSimbolos ts) {}
+
+        @Override
         public void tipado() { this.tipo = new Tipo.Ok(); }
 
         @Override
@@ -56,6 +59,9 @@ public abstract class Tipo extends Nodo {
         public void vincula(TablaSimbolos ts) {}
 
         @Override
+        public void vincula_ref(TablaSimbolos ts) {}
+
+        @Override
         public void tipado() {
             this.tipo = new Tipo.Ok();
         }
@@ -74,6 +80,9 @@ public abstract class Tipo extends Nodo {
 
         @Override
         public void vincula(TablaSimbolos ts) {}
+
+        @Override
+        public void vincula_ref(TablaSimbolos ts) {}
 
         @Override
         public void tipado() {
@@ -96,25 +105,31 @@ public abstract class Tipo extends Nodo {
         public void vincula(TablaSimbolos ts) {}
 
         @Override
+        public void vincula_ref(TablaSimbolos ts) {}
+
+        @Override
         public void tipado() {
             this.tipo = new Tipo.Ok();
         }
-
     }
 
     public static class Array extends Tipo {
 
         private final Tipo tipoArray;
-        private final String tamArray;
+        private final int tamArray;
 
         public Array(Tipo tipoArray, String tamArray) {
             this.tipoArray = tipoArray;
-            this.tamArray = tamArray;
+            this.tamArray = Integer.parseInt(tamArray);
         }
 
         @Override
         public void vincula(TablaSimbolos ts) {
             this.tipoArray.vincula(ts);
+        }
+        @Override
+        public void vincula_ref(TablaSimbolos ts) {
+            this.tipoArray.vincula_ref(ts);
         }
 
         @Override
@@ -131,7 +146,7 @@ public abstract class Tipo extends Nodo {
         @Override
         public void asig_espacio_tipo2(GestorMem gm) {
             this.tipoArray.asig_espacio_tipo2(gm);
-            this.tam = this.tipoArray.tam * Integer.parseInt(this.tamArray);
+            this.tam = this.tipoArray.tam * this.tamArray;
         }
 
         public Tipo getT() {
@@ -150,16 +165,55 @@ public abstract class Tipo extends Nodo {
 
     public static class Pointer extends Tipo {
 
-        private final Tipo t;
+        private final Tipo tipoBase;
 
         public Pointer(Tipo tipo){
-            this.t = tipo;
+            this.tipoBase = tipo;
         }
 
-//        @Override
-//        public void vincula(TablaSimbolos ts) {
-//            if (Utils.esRef(this.ti))
-//        }
+        @Override
+        public void vincula(TablaSimbolos ts) {
+            if (!Utils.esRef(this.tipoBase))
+                this.tipoBase.vincula(ts);
+        }
+
+        @Override
+        public void vincula_ref(TablaSimbolos ts) {
+
+            if (Utils.esRef(tipoBase.tipo)) {
+                // TODO: hacer esto.
+            }
+            else
+                this.tipoBase.vincula_ref(ts);
+        }
+
+        @Override
+        public void tipado() {
+            this.tipoBase.tipado();
+            this.tipo = new Tipo.Ok();
+        }
+
+        public Tipo getTipoBase() {
+            return this.tipoBase;
+        }
+
+        @Override
+        public void asig_espacio_tipo1(GestorMem gm) {
+            this.tam = 1;
+            if (!Utils.esRef(this.tipoBase))
+                this.tipoBase.asig_espacio_tipo1(gm);
+        }
+
+        @Override
+        public void asig_espacio_tipo2(GestorMem gm) {
+
+            if (Utils.esRef(this.tipoBase)) {
+                // TODO: hacer esto.
+            }
+            else {
+                this.tipoBase.asig_espacio_tipo2(gm);
+            }
+        }
     }
 
     public static class Ref extends Tipo {

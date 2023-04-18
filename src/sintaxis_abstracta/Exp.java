@@ -1302,4 +1302,36 @@ public class Exp extends Nodo {
             ge.etq += 3;
         }
     }
+
+    public static class Exp_indireccion extends Exp {
+
+        Exp exp;
+
+        public Exp_indireccion(Exp exp) { this.exp = exp; }
+
+        @Override
+        public void vincula_is(TablaSimbolos ts) { this.exp.vincula_is(ts); }
+
+        @Override
+        public void tipado() {
+
+            this.exp.tipado();
+            if (Utils.esPointer(Utils.reff(this.exp.tipo)))
+                this.tipo = ((Tipo.Pointer) this.exp.tipo).getTipoBase();
+            else
+                GestorErrores.addError("El operador ^ solo se puede usar con punteros.");
+        }
+
+        @Override
+        public void gen_cod(MaquinaP maquinap) {
+            this.exp.gen_cod(maquinap);
+            maquinap.ponInstruccion(maquinap.apilaInd());
+        }
+
+        @Override
+        public void etiquetado(GestorEtiquetado ge) {
+            this.exp.etiquetado(ge);
+            ge.etq += 1;
+        }
+    }
 }

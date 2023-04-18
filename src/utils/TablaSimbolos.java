@@ -18,7 +18,7 @@ public class TablaSimbolos {
     public boolean contiene(String clave) {
 
         // Se van recorriendo todos los niveles de la TS en orden inverso.
-        for (int i = this.tabla.peek().size() - 1; i > 0; i--) {
+        for (int i = this.tabla.peek().size() - 1; i >= 0; i--) {
             if (this.tabla.peek().get(i).containsKey(clave)) return true;
         }
         return false;
@@ -28,7 +28,7 @@ public class TablaSimbolos {
     public void añadir(String clave, Nodo valor) { this.tabla.peek().get(tabla.peek().size()  -1).put(clave, valor); }
     public Nodo valor_de(String clave) {
 
-        for (int i = this.tabla.peek().size() - 1; i > 0; i--) {
+        for (int i = this.tabla.peek().size() - 1; i >= 0; i--) {
             if (this.tabla.peek().get(i).containsKey(clave))
                 return this.tabla.peek().get(i).get(clave);
         }
