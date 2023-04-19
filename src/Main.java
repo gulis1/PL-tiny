@@ -9,18 +9,29 @@ public class Main {
 
     public static void main(String[] args) {
 
-        Dec dec_type = new Dec.Dec_type("tipoMamichan", new Tipo.Cadena());
-        Dec dec_ptr = new Dec.Dec_var(new Tipo.Pointer(new Tipo.Ref("tipoMamichan")), "p");
-        Decs decs = new Decs.Muchas_decs( new Decs.Muchas_decs(new Decs.No_decs(), dec_type), dec_ptr);
+//        Dec dec_type = new Dec.Dec_type("tipoMamichan", new Tipo.Cadena());
+//        Dec dec_ptr = new Dec.Dec_var(new Tipo.Pointer(new Tipo.Ref("tipoMamichan")), "p");
+//        Decs decs = new Decs.Muchas_decs( new Decs.Muchas_decs(new Decs.No_decs(), dec_type), dec_ptr);
+//
+//        Instruccion i1 = new Instruccion.New(new Exp.Exp_id("p"));
+//        Instruccion i2 = new Instruccion.Asignacion(new Exp.Exp_indireccion(new Exp.Exp_id("p")), new Exp.Exp_entero("9"));
+//        Instruccion i3 = new Instruccion.Delete(new Exp.Exp_id("p"));
+//        Instruccion i4 = new Instruccion.New(new Exp.Exp_id("p"));
+//        Instruccion i5 = new Instruccion.Asignacion(new Exp.Exp_indireccion(new Exp.Exp_id("p")), new Exp.Exp_entero("17"));
+//        Instruccion i6 = new Instruccion.Write(new Exp.Exp_indireccion(new Exp.Exp_id("p")));
+//
+//        Instrucciones is = new Instrucciones.Muchas_Instr(new Instrucciones.Muchas_Instr(new Instrucciones.Muchas_Instr(new Instrucciones.Muchas_Instr(new Instrucciones.Muchas_Instr(new Instrucciones.Muchas_Instr(new Instrucciones.No_Instr(), i1), i2), i3), i4), i5), i6);
 
-        Instruccion i1 = new Instruccion.New(new Exp.Exp_id("p"));
-        Instruccion i2 = new Instruccion.Asignacion(new Exp.Exp_indireccion(new Exp.Exp_id("p")), new Exp.Exp_entero("9"));
-        Instruccion i3 = new Instruccion.Delete(new Exp.Exp_id("p"));
-        Instruccion i4 = new Instruccion.New(new Exp.Exp_id("p"));
-        Instruccion i5 = new Instruccion.Asignacion(new Exp.Exp_indireccion(new Exp.Exp_id("p")), new Exp.Exp_entero("17"));
-        Instruccion i6 = new Instruccion.Write(new Exp.Exp_indireccion(new Exp.Exp_id("p")));
+        Dec dec_var = new Dec.Dec_var(new Tipo.Entero(),"x");
+        Decs decs = new Decs.Muchas_decs( new Decs.No_decs(),dec_var);
 
-        Instrucciones is = new Instrucciones.Muchas_Instr(new Instrucciones.Muchas_Instr(new Instrucciones.Muchas_Instr(new Instrucciones.Muchas_Instr(new Instrucciones.Muchas_Instr(new Instrucciones.Muchas_Instr(new Instrucciones.No_Instr(), i1), i2), i3), i4), i5), i6);
+        Instruccion i1= new Instruccion.Write(new Exp.Exp_cadena("Escribe un digito"));
+        Instruccion i2 = new Instruccion.Read(new Exp.Exp_id("x"));
+        Instruccion i3 = new Instruccion.Write(new Exp.Exp_cadena("el digito que escribio es:"));
+        Instruccion i4 = new Instruccion.Nl();
+        Instruccion i5 = new Instruccion.Write( new Exp.Exp_id("x"));
+
+        Instrucciones is =new Instrucciones.Muchas_Instr( new Instrucciones.Muchas_Instr(new Instrucciones.Muchas_Instr(new Instrucciones.Muchas_Instr(new Instrucciones.Muchas_Instr( new Instrucciones.No_Instr(),i1),i2),i3),i4 ),i5);
 
         Prog prog = new Prog(decs, is);
         ejecutar(prog);
