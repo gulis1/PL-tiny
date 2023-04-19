@@ -9,8 +9,9 @@ public class Main {
 
     public static void main(String[] args) {
 
-        Dec dec_ptr = new Dec.Dec_var(new Tipo.Pointer(new Tipo.Entero()), "p");
-        Decs decs = new Decs.Muchas_decs(new Decs.No_decs(), dec_ptr);
+        Dec dec_type = new Dec.Dec_type("tipoMamichan", new Tipo.Cadena());
+        Dec dec_ptr = new Dec.Dec_var(new Tipo.Pointer(new Tipo.Ref("tipoMamichan")), "p");
+        Decs decs = new Decs.Muchas_decs( new Decs.Muchas_decs(new Decs.No_decs(), dec_type), dec_ptr);
 
         Instruccion i1 = new Instruccion.New(new Exp.Exp_id("p"));
         Instruccion i2 = new Instruccion.Asignacion(new Exp.Exp_indireccion(new Exp.Exp_id("p")), new Exp.Exp_entero("9"));

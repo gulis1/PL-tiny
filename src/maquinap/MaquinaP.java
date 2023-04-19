@@ -21,8 +21,6 @@ public class MaquinaP {
       public float valorReal() {throw new EAccesoIlegitimo();}
       public boolean valorBool() {throw new EAccesoIlegitimo();} 
       public String valorCadena() {throw new EAccesoIlegitimo();}
-
-
    }
 
    private class ValorInt extends Valor {

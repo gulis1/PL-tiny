@@ -1,5 +1,6 @@
 package utils;
 
+import sintaxis_abstracta.Dec;
 import sintaxis_abstracta.Exp;
 import sintaxis_abstracta.Nodo;
 import sintaxis_abstracta.Tipo;
@@ -7,9 +8,9 @@ import sintaxis_abstracta.Tipo;
 public class Utils {
 
     public static Tipo reff(Tipo tipo) {
-        if (tipo instanceof Tipo.Ref) {
-            // TODO
-            return tipo; // Provisional
+        if (Utils.esRef(tipo)) {
+            if (tipo.vinculo instanceof Tipo.Ref) return reff((Tipo.Ref) tipo.vinculo); // TODO: probar este caso.
+            else return ((Dec.Dec_type)(tipo.vinculo)).getTipo();
         }
         else return tipo;
     }

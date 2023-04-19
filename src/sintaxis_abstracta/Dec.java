@@ -1,5 +1,6 @@
 package sintaxis_abstracta;
 
+import utils.GestorErrores;
 import utils.GestorMem;
 import utils.TablaSimbolos;
 
@@ -26,9 +27,8 @@ public class Dec extends Nodo {
         public void vincula(TablaSimbolos ts) {
 
             this.T.vincula(ts);
-            if (!ts.contiene(this.string)) {
-                ts.añadir(this.string, this);
-            }
+            if (!ts.contiene(this.string)) ts.añadir(this.string, this);
+            else GestorErrores.addError("Identificador ya definido.");
         }
 
         @Override
@@ -52,15 +52,15 @@ public class Dec extends Nodo {
     }
     public static class Dec_type extends Dec {
 
-        private Tipo t;
+        private final Tipo t;
         private String string;
-        Dec_type(String string, Tipo tipo) {
-            this.tipo = tipo;
+        public Dec_type(String string, Tipo tipo) {
+            this.t = tipo;
             this.string = string;
         }
 
         public Tipo getTipo() {
-            return tipo;
+            return t;
         }
 
         public void setTipo(Tipo tipo) {
@@ -77,14 +77,26 @@ public class Dec extends Nodo {
 
         @Override
         public void vincula(TablaSimbolos ts) {
-            if (!ts.contiene(this.string)) {
-                ts.añadir(this.string, this);
-            }
+
+            this.t.vincula(ts);
+            if (!ts.contiene(this.string)) ts.añadir(this.string, this);
+            else GestorErrores.addError("Identificador ya definido.");
         }
 
         @Override
         public void vincula_ref(TablaSimbolos ts) {
             this.t.vincula_ref(ts);
+        }
+
+        @Override
+        public void tipado() {
+            this.t.tipado();
+            this.tipo = this.t.tipo;
+        }
+
+        @Override
+        public void asig_espacio(GestorMem gm) {
+            this.t.asig_espacio_tipo(gm);
         }
     }
 

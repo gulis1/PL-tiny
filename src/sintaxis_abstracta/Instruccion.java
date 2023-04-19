@@ -400,7 +400,7 @@ public class Instruccion extends Nodo {
 
             ts.nuevo_nivel();
             this.decs.vincula(ts);
-            // TODO:this.decs.vincula_ref(ts);
+            this.decs.vincula_ref(ts);
             this.is.vincula_is(ts);
             ts.quitar_nivel();
         }

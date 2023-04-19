@@ -34,7 +34,9 @@ public class Exp extends Nodo {
         public void tipado() {
             if (this.vinculo instanceof Dec.Dec_var)
                 this.tipo = ((Dec.Dec_var) this.vinculo).getT();
-            else {} // TODO
+            else {
+                throw new UnsupportedOperationException("Exp_id: tipado.");
+            } // TODO
         }
 
         @Override

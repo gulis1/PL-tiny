@@ -1,5 +1,6 @@
 package sintaxis_abstracta;
 
+import utils.GestorErrores;
 import utils.GestorMem;
 import utils.TablaSimbolos;
 import utils.Utils;
@@ -37,6 +38,9 @@ public abstract class Tipo extends Nodo {
 
         @Override
         public void vincula(TablaSimbolos ts) {}
+
+        @Override
+        public void vincula_ref(TablaSimbolos ts) {}
 
         @Override
         public void tipado() {
@@ -180,8 +184,10 @@ public abstract class Tipo extends Nodo {
         @Override
         public void vincula_ref(TablaSimbolos ts) {
 
-            if (Utils.esRef(tipoBase.tipo)) {
-                // TODO: hacer esto.
+            if (Utils.esRef(tipoBase)) {
+                Ref ref = (Ref) tipoBase;
+                if (ts.contiene(ref.id)) tipoBase.vinculo = ts.valor_de(ref.id);
+                else GestorErrores.addError("Identificador no definido: " + ref.id);
             }
             else
                 this.tipoBase.vincula_ref(ts);
@@ -208,20 +214,55 @@ public abstract class Tipo extends Nodo {
         public void asig_espacio_tipo2(GestorMem gm) {
 
             if (Utils.esRef(this.tipoBase)) {
-                // TODO: hacer esto.
+                Dec.Dec_type dec_tipo = (Dec.Dec_type) this.tipoBase.vinculo;
+                this.tipoBase.asig_espacio_tipo(gm);
+                this.tam = dec_tipo.getTipo().tam;
             }
-            else {
-                this.tipoBase.asig_espacio_tipo2(gm);
-            }
+
+            else this.tipoBase.asig_espacio_tipo2(gm);
         }
     }
 
     public static class Ref extends Tipo {
-        private Cadena nombre;
-        //creo que habria que poner el tipo a la que esta asociado la referencia pero no estoy seguro si basta con el nombre
 
-        public Ref(Cadena nombre){
-            this.nombre = nombre;
+        private final String id;
+
+        public Ref(String identificador){
+            this.id = identificador;
+        }
+
+        @Override
+        public void vincula(TablaSimbolos ts) {
+
+            if (ts.contiene(this.id)) this.vinculo = ts.valor_de(this.id);
+            else GestorErrores.addError("Tipo no declarado: " + tipo);
+        }
+
+        @Override
+        public void vincula_ref(TablaSimbolos ts) {}
+
+        @Override
+        public void tipado() {
+
+            if (this.vinculo instanceof Dec.Dec_type) this.tipo = new Tipo.Ok();
+            else {
+                GestorErrores.addError("Tipado incorrecto: " + id);
+                this.tipo = new Tipo.Error();
+            }
+        }
+
+        @Override
+        public void asig_espacio_tipo1(GestorMem gm) {
+
+            Dec.Dec_type dec = (Dec.Dec_type) this.vinculo;
+            this.tam = dec.getTipo().tam;
+        }
+
+        @Override
+        public void asig_espacio_tipo2(GestorMem gm) {
+
+            Dec.Dec_type dec = (Dec.Dec_type) this.vinculo;
+            this.tam = dec.getTipo().tam;
         }
     }
 }
