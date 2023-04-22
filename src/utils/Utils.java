@@ -1,9 +1,6 @@
 package utils;
 
-import sintaxis_abstracta.Dec;
-import sintaxis_abstracta.Exp;
-import sintaxis_abstracta.Nodo;
-import sintaxis_abstracta.Tipo;
+import sintaxis_abstracta.*;
 
 public class Utils {
 
@@ -24,6 +21,8 @@ public class Utils {
     public static boolean esArray(Tipo t) { return t instanceof Tipo.Array; }
     public static boolean esRef(Tipo t) { return t instanceof Tipo.Ref; }
     public static boolean esPointer(Tipo t) { return t instanceof Tipo.Pointer; }
+    public static boolean esRecord(Tipo t) { return t instanceof Tipo.Record; }
+
 
     public static Tipo ambos_ok(Tipo t1, Tipo t2) {
         return (t1 instanceof Tipo.Ok && t2 instanceof Tipo.Ok) ? new Tipo.Ok() : new Tipo.Error();
@@ -53,7 +52,8 @@ public class Utils {
     public static boolean es_desig(Nodo nodo) {
         return (nodo instanceof Exp.Exp_id ||
                 nodo instanceof  Exp.Exp_ind) ||
-                nodo instanceof  Exp.Exp_indireccion;
+                nodo instanceof  Exp.Exp_indireccion ||
+                nodo instanceof  Exp.Exp_acc;
     }
 
 
@@ -79,4 +79,5 @@ public class Utils {
     public static boolean tipado_igualdad(Tipo t1, Tipo t2){
         return false;
     }
+
 }

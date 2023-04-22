@@ -165,6 +165,44 @@ public abstract class Tipo extends Nodo {
         public Record(Campos campos){
             this.campos = campos;
         }
+
+        @Override
+        public void vincula(TablaSimbolos ts) {
+            campos.vincula(ts);
+        }
+
+        @Override
+        public void vincula_ref(TablaSimbolos ts) {
+            campos.vincula_ref(ts);
+        }
+
+        @Override
+        public void tipado() {
+            this.campos.tipado();
+            this.tipo =  new Tipo.Ok();
+        }
+
+        @Override
+        public void asig_espacio_tipo1(GestorMem gm) {
+            this.tam = this.campos.asig_despl(gm);
+        }
+
+        @Override
+        public void asig_espacio_tipo2(GestorMem gm) {
+            this.campos.asig_espacio_tipo2(gm);
+        }
+
+        public boolean existe_Campo(String c){
+            return this.campos.existe_campo(c);
+        }
+
+        public Tipo tipo_de_campo(String c){
+            return this.campos.tipo_de_campo(c);
+        }
+
+        public int desp_campo(String c) {
+            return this.campos.despl_campo(c);
+        }
     }
 
     public static class Pointer extends Tipo {
