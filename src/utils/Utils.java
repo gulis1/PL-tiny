@@ -1,9 +1,10 @@
 package utils;
 
-import sintaxis_abstracta.Dec;
-import sintaxis_abstracta.Exp;
-import sintaxis_abstracta.Nodo;
-import sintaxis_abstracta.Tipo;
+import maquinap.MaquinaP;
+import sintaxis_abstracta.*;
+
+import java.util.ArrayList;
+import java.util.Stack;
 
 public class Utils {
 
@@ -26,7 +27,7 @@ public class Utils {
     public static boolean esPointer(Tipo t) { return t instanceof Tipo.Pointer; }
 
     public static Tipo ambos_ok(Tipo t1, Tipo t2) {
-        return (t1 instanceof Tipo.Ok && t2 instanceof Tipo.Ok) ? new Tipo.Ok() : new Tipo.Error();
+        return (!(t1 instanceof Tipo.Error && t2 instanceof Tipo.Error)) ? new Tipo.Ok() : new Tipo.Error();
     }
 
     public static boolean son_compatibles(Tipo t1, Tipo t2) {
@@ -78,5 +79,29 @@ public class Utils {
     //TODO cuando ya se tengan punturos (no se si se pueden unir a la funcion de arriba)
     public static boolean tipado_igualdad(Tipo t1, Tipo t2){
         return false;
+    }
+
+
+    public static boolean comprobacion_parametros(Preales preals, ParFs pfs) {
+
+        if (preals instanceof Preales.No_pReal && pfs instanceof ParFs.No_Parf)
+            return true;
+
+        if (preals instanceof Preales.Muchos_pReales && pfs instanceof ParFs.No_Parf)
+            return false;
+
+        if (preals instanceof Preales.No_pReal && pfs instanceof ParFs.Muchos_ParF)
+            return false;
+
+        return comprobacion_parametros(((Preales.Muchos_pReales)preals).getPreales(), ((ParFs.Muchos_ParF)pfs).getParFs())
+            && comprobacion_parametro(((Preales.Muchos_pReales)preals).getExp(), ((ParFs.Muchos_ParF)pfs).getParF());
+    }
+
+    public static boolean comprobacion_parametro(Exp e, ParF pf){
+
+        if (pf instanceof ParF.ParF_Ref)
+            return es_desig(e) && son_compatibles(e.tipo, ((ParF.ParF_Ref)pf).getTipoParametro());
+        else
+            return son_compatibles(e.tipo, ((ParF.ParF_Valor)pf).getTipoParametro());
     }
 }
