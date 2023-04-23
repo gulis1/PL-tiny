@@ -106,6 +106,8 @@ public class Instruccion extends Nodo {
         @Override
         public void gen_cod(MaquinaP maquinap) {
             this.exp.gen_cod(maquinap);
+            if (Utils.es_desig(this.exp))
+                maquinap.ponInstruccion(maquinap.apilaInd());
             maquinap.ponInstruccion(maquinap.irF(this.i.sig));
             this.i.gen_cod(maquinap);
         }
@@ -116,6 +118,8 @@ public class Instruccion extends Nodo {
             this.ini = ge.etq;
 
             this.exp.etiquetado(ge);
+            if (Utils.es_desig(this.exp))
+                ge.etq +=1;
             ge.etq += 1;
             this.i.etiquetado(ge);
 
@@ -163,6 +167,8 @@ public class Instruccion extends Nodo {
         @Override
         public void gen_cod(MaquinaP maquinap) {
             this.exp.gen_cod(maquinap);
+            if (Utils.es_desig(this.exp))
+                maquinap.ponInstruccion(maquinap.apilaInd());
             maquinap.ponInstruccion(maquinap.irF(this.i2.ini));
             this.i1.gen_cod(maquinap);
             maquinap.ponInstruccion(maquinap.irA(this.sig));
@@ -174,6 +180,8 @@ public class Instruccion extends Nodo {
             this.ini = ge.etq;
 
             this.exp.etiquetado(ge);
+            if (Utils.es_desig(this.exp))
+                ge.etq +=1;
             ge.etq += 1;
             this.i1.etiquetado(ge);
             ge.etq += 1;
@@ -219,6 +227,8 @@ public class Instruccion extends Nodo {
         @Override
         public void gen_cod(MaquinaP maquinap) {
             this.exp.gen_cod(maquinap);
+            if (Utils.es_desig(this.exp))
+                maquinap.ponInstruccion(maquinap.apilaInd());
             maquinap.ponInstruccion(maquinap.irF(this.sig));
             this.i.gen_cod(maquinap);
             maquinap.ponInstruccion(maquinap.irA(this.ini));
@@ -229,6 +239,9 @@ public class Instruccion extends Nodo {
             this.ini = ge.etq;
 
             this.exp.etiquetado(ge);
+            if (Utils.es_desig(this.exp))
+                ge.etq +=1;
+
             ge.etq += 1;
             this.i.etiquetado(ge);
             ge.etq += 1;
@@ -245,6 +258,59 @@ public class Instruccion extends Nodo {
         public Read(Exp exp) {
             this.exp = exp;
         }
+
+        @Override
+        public void vincula_is(TablaSimbolos ts) {
+            this.exp.vincula_is(ts);
+        }
+
+        @Override
+        public void tipado() {
+
+            this.exp.tipado();
+            Tipo t = Utils.reff(this.exp.tipo);
+            if ((Utils.esEntero(t) ||
+                    Utils.esReal(t)   ||
+                    Utils.esCadena(t)) && Utils.es_desig(this.exp)) {
+
+                this.tipo = new Tipo.Ok();
+            }
+            else {
+                GestorErrores.addError("read: tipos incomaptibles.");
+                this.tipo= new Tipo.Error();
+            }
+        }
+
+        @Override
+        public void asig_espacio(GestorMem gm) {}
+
+        public void gen_cod(MaquinaP maquinap) {
+            this.exp.gen_cod(maquinap);
+
+            if(Utils.esCadena(this.exp.tipo))
+                maquinap.ponInstruccion(maquinap.readString());
+            else if (Utils.esEntero(this.exp.tipo))
+                maquinap.ponInstruccion(maquinap.readInt());
+            else if (Utils.esReal(this.exp.tipo))
+                maquinap.ponInstruccion(maquinap.readFloat());
+
+            maquinap.ponInstruccion(maquinap.desapilaInd());
+        }
+
+        @Override
+        public void etiquetado(GestorEtiquetado ge) {
+
+            this.ini = ge.etq;
+
+            this.exp.etiquetado(ge);
+            ge.etq += 2;
+
+            this.sig = ge.etq;
+        }
+
+
+
+
     }
 
     public static class Write extends Instruccion {
@@ -302,8 +368,42 @@ public class Instruccion extends Nodo {
     }
 
     public static class Nl extends Instruccion {
+
         public Nl() {}
-        //TODO
+
+        @Override
+        public void vincula_is(TablaSimbolos ts) { }
+
+        @Override
+        public void tipado() {
+            this.tipo = new Tipo.Ok();
+        }
+
+        @Override
+        public void asig_espacio(GestorMem gm) {}
+
+        @Override
+        public void gen_cod(MaquinaP maquinap) {
+            maquinap.ponInstruccion(maquinap.apilaString("\n"));
+            maquinap.ponInstruccion(maquinap.write());
+        }
+
+        @Override
+        public void etiquetado(GestorEtiquetado ge) {
+
+            this.ini = ge.etq;
+            ge.etq += 2;
+
+            this.sig = ge.etq;
+        }
+
+
+
+
+
+
+
+
     }
 
     public static class New extends Instruccion {

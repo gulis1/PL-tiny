@@ -2,6 +2,7 @@ package maquinap;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 import java.util.Stack;
 
 public class MaquinaP {
@@ -429,6 +430,42 @@ public class MaquinaP {
         }
    }
 
+   private  Instruccion IREADINT;
+   private  class  IReadInt implements  Instruccion{
+       public void ejecuta(){
+           Scanner leer = new Scanner(System.in);
+           pilaEvaluacion.push(new ValorInt(leer.nextInt()));
+           pc++;
+       }
+       public String toString() {
+           return "Read";
+       }
+   }
+
+    private  Instruccion IREADFLOAT;
+    private  class  IReadFloat implements  Instruccion{
+        public void ejecuta(){
+            Scanner leer = new Scanner(System.in);
+            pilaEvaluacion.push(new ValorReal(leer.nextFloat()));
+            pc++;
+        }
+        public String toString() {
+            return "Read";
+        }
+    }
+
+    private  Instruccion IREADSTRING;
+    private  class  IReadString implements  Instruccion{
+        public void ejecuta(){
+            Scanner leer = new Scanner(System.in);
+            pilaEvaluacion.push(new ValorCadena(leer.nextLine()));
+            pc++;
+        }
+        public String toString() {
+            return "Read";
+        }
+    }
+
     private Instruccion IINT2REAL;
     private class Iint2real implements Instruccion {
         public void ejecuta() {
@@ -683,14 +720,14 @@ public class MaquinaP {
    public Instruccion div(){return  IDIV;}
    public Instruccion divF(){return IDIVF;}
    public Instruccion mod(){return  IMOD;}
-   public  Instruccion menos(){return IMENOS;}
-   public  Instruccion menosF(){return IMENOSF;}
+   public Instruccion menos(){return IMENOS;}
+   public Instruccion menosF(){return IMENOSF;}
    public Instruccion and() {return IAND;}
-   public  Instruccion or(){return IOR;}
+   public Instruccion or(){return IOR;}
    public Instruccion eqInt(){return  IEQINT;}
    public Instruccion eqFloatInt(){return  IEQFI;}
    public Instruccion eqIntFloat(){return  IEQIF;}
-   public  Instruccion eqFloat(){return IEQF;}
+   public Instruccion eqFloat(){return IEQF;}
    public Instruccion eqBool(){return  IEQBOOL;}
    public Instruccion eqString(){return  IEQSTRING;}
    public Instruccion gtInt(){return IGTINT;}
@@ -718,6 +755,9 @@ public class MaquinaP {
    public Instruccion desapilad(int nivel) {return new IDesapilad(nivel);}
    public Instruccion dup() {return IDUP;}
    public Instruccion stop() {return ISTOP;}
+   public Instruccion readInt(){return IREADINT;}
+   public Instruccion readFloat(){return IREADFLOAT;}
+   public Instruccion readString(){return IREADSTRING;}
    public Instruccion write() {return IWRITE;}
    public Instruccion int2real(){return IINT2REAL;}
    public void ponInstruccion(Instruccion i) {
@@ -753,6 +793,9 @@ public class MaquinaP {
       IIRIND = new IIrind();
       IDUP = new IDup();
       ISTOP = new IStop();
+      IREADINT = new IReadInt();
+      IREADFLOAT = new IReadFloat();
+      IREADSTRING = new IReadString();
       IWRITE = new IWrite();
       IINT2REAL = new Iint2real();
       IEQINT= new IEqInt();

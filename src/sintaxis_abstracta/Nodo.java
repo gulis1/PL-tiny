@@ -14,6 +14,8 @@ public abstract class Nodo {
     public int tam = -1;
     public int ini = -1, sig = -1;
 
+    public int desp = -1;
+
     // Vinculación
     public void vincula(TablaSimbolos ts) { throw new UnsupportedOperationException("Vincula no implementado."); }
     public void vincula_ref(TablaSimbolos ts) { throw new UnsupportedOperationException("Vincula_ref no implementado."); }

@@ -1353,4 +1353,49 @@ public class Exp extends Nodo {
             ge.etq += 1;
         }
     }
+
+    public static class Exp_acc extends Exp {
+
+        private final Exp exp;
+        private final String str;
+        public Exp_acc(Exp exp, String str) {
+            this.exp = exp;
+            this.str = str;
+        }
+
+        @Override
+        public void vincula_is(TablaSimbolos ts) {
+            this.exp.vincula_is(ts);
+        }
+
+        @Override
+        public void tipado() {
+            this.exp.tipado();
+            if (Utils.esRecord(Utils.reff(this.exp.tipo))){
+                if( ((Tipo.Record) this.exp.tipo).existe_Campo(this.str)) {
+                    this.tipo = ((Tipo.Record) this.exp.tipo).tipo_de_campo(this.str);
+                }
+                else{
+                    GestorErrores.addError("No existe el campos en el registro");
+                }
+            }
+            else{
+                GestorErrores.addError("El operador . solo se puede usar con registros.");
+            }
+        }
+
+        @Override
+        public void gen_cod(MaquinaP maquinap) {
+            this.exp.gen_cod(maquinap);
+            int desp = ((Tipo.Record) this.exp.tipo).desp_campo(this.str);
+            maquinap.apilaInt(desp);
+            maquinap.suma();
+        }
+
+        @Override
+        public void etiquetado(GestorEtiquetado ge) {
+            this.exp.etiquetado(ge);
+            ge.etq += 2;
+        }
+    }
 }
