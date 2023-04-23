@@ -51,21 +51,18 @@ public class Exp extends Nodo {
                 maquinap.ponInstruccion(maquinap.apilad(this.vinculo.nivel));
                 maquinap.ponInstruccion(maquinap.apilaInt(this.vinculo.dir));
                 maquinap.ponInstruccion(maquinap.suma());
-               // if (this.vinculo instanceof ParF.ParF_Valor)
-               //     maquinap.ponInstruccion(maquinap.apilaInd());
+                if (this.vinculo instanceof ParF.ParF_Ref) maquinap.ponInstruccion(maquinap.apilaInd());
             }
         }
 
         @Override
         public void etiquetado(GestorEtiquetado ge) {
             // TODO: actualizar esto cuando se termine el gen_cod.
-            ge.etq += 1;
             if (this.vinculo.nivel == 0)
                 ge.etq++;
             else {
                 ge.etq += 3;
-                if (this.vinculo instanceof ParF.ParF_Valor)
-                    ge.etq++;
+                if (this.vinculo instanceof ParF.ParF_Ref) ge.etq++;
             }
         }
     }
@@ -83,7 +80,7 @@ public class Exp extends Nodo {
 
         @Override
         public void tipado() {
-            this.tipo= new Tipo.Entero();
+            this.tipo = new Tipo.Entero();
         }
 
         @Override

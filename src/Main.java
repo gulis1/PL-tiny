@@ -20,17 +20,22 @@ public class Main {
        // Instruccion i5 = new Instruccion.Asignacion(new Exp.Exp_indireccion(new Exp.Exp_id("p")), new Exp.Exp_entero("17"));
        // Instruccion i6 = new Instruccion.Write(new Exp.Exp_indireccion(new Exp.Exp_id("p")));
 
+        Dec dec_proc = new Dec.Dec_var(new Tipo.Entero(), "y");
 
         Instruccion iproc1 = new Instruccion.Write(new Exp.Exp_cadena("Hola, "));
         Instruccion iproc2 = new Instruccion.Write(new Exp.Exp_id("nombre"));
-        Instrucciones isProc = new Instrucciones.Muchas_Instr(new Instrucciones.Muchas_Instr(new Instrucciones.No_Instr(), iproc1), iproc2);
-        ParFs parFs = new ParFs.Muchos_ParF(new ParFs.No_Parf(), new ParF.ParF_Valor("nombre", new Tipo.Cadena()));
-        Dec f1 = new Dec.Dec_proc("saludar", parFs, new Decs.No_decs(), isProc);
-        Decs decs = new Decs.Muchas_decs(new Decs.No_decs(), f1);
+        Instruccion iproc3 = new Instruccion.Asignacion(new Exp.Exp_id("y"), new Exp.Exp_entero("3"));
+        Instruccion iproc4 = new Instruccion.Asignacion(new Exp.Exp_id("x"), new Exp.Exp_suma(new Exp.Exp_id("x"), new Exp.Exp_id("y")));
+        Instrucciones isProc = new Instrucciones.Muchas_Instr(new Instrucciones.Muchas_Instr(new Instrucciones.Muchas_Instr(new Instrucciones.Muchas_Instr(new Instrucciones.No_Instr(), iproc1), iproc2), iproc3), iproc4);
+        ParFs parFs = new ParFs.Muchos_ParF(new ParFs.Muchos_ParF(new ParFs.No_Parf(), new ParF.ParF_Valor("nombre", new Tipo.Cadena())), new ParF.ParF_Ref("x", new Tipo.Entero()));
+        Dec f1 = new Dec.Dec_proc("saludar", parFs, new Decs.Muchas_decs(new Decs.No_decs(), dec_proc), isProc);
+        Decs decs = new Decs.Muchas_decs(new Decs.Muchas_decs(new Decs.No_decs(), new Dec.Dec_var(new Tipo.Entero(), "num")), f1);
 
-        Preales preales = new Preales.Muchos_pReales(new Preales.No_pReal(), new Exp.Exp_cadena("Mamichan"));
-        Instruccion i1 = new Instruccion.Invoc("saludar", preales);
-        Instrucciones is = new Instrucciones.Muchas_Instr(new Instrucciones.No_Instr(), i1);
+        Preales preales = new Preales.Muchos_pReales(new Preales.Muchos_pReales(new Preales.No_pReal(), new Exp.Exp_cadena("Mamichan")), new Exp.Exp_id("num"));
+        Instruccion i1 = new Instruccion.Asignacion(new Exp.Exp_id("num"), new Exp.Exp_entero("4"));
+        Instruccion i2 = new Instruccion.Invoc("saludar", preales);
+        Instruccion i3 = new Instruccion.Write(new Exp.Exp_id("num"));
+        Instrucciones is = new Instrucciones.Muchas_Instr(new Instrucciones.Muchas_Instr(new Instrucciones.Muchas_Instr(new Instrucciones.No_Instr(), i1), i2), i3);
         Prog prog = new Prog(decs, is);
 
         ejecutar(prog);

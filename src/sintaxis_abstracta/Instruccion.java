@@ -586,9 +586,8 @@ public class Instruccion extends Nodo {
         @Override
         public void etiquetado(GestorEtiquetado ge) {
             this.ini = ge.etq;
-            Dec.Dec_proc dec = (Dec.Dec_proc) this.vinculo;
             ge.etq++;
-            etiqueta_params(ge, ((Dec.Dec_proc) this.vinculo).getPfs(), this.preales);
+            this.etiqueta_params(ge, ((Dec.Dec_proc) this.vinculo).getPfs(), this.preales);
             ge.etq += 2;
             this.sig = ge.etq;
         }

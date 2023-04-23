@@ -81,7 +81,7 @@ public class ParF extends Nodo {
             this.dir = gm.dir;
             this.nivel = gm.nivel;
             this.tipoParametro.asig_espacio_tipo(gm);
-            dir++;
+            gm.dir++;
         }
 
         public Tipo getTipoParametro() {
