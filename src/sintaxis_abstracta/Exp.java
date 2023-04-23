@@ -57,7 +57,6 @@ public class Exp extends Nodo {
 
         @Override
         public void etiquetado(GestorEtiquetado ge) {
-            // TODO: actualizar esto cuando se termine el gen_cod.
             if (this.vinculo.nivel == 0)
                 ge.etq++;
             else {

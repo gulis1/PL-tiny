@@ -60,8 +60,7 @@ public class Prog extends Nodo {
     @Override
     public void etiquetado(GestorEtiquetado ge) {
         this.is.etiquetado(ge);
-        ge.etq += 1; // TODO: revisar si esto está bien
-
+        ge.etq += 1;
         RecolectadorProcs.recolectaProcedimientos(this.decs);
         while (!RecolectadorProcs.isEmpty()) {
             Dec.Dec_proc proc = RecolectadorProcs.pop();
