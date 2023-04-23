@@ -421,7 +421,7 @@ public class MaquinaP {
     private Instruccion IWRITE;
     private class IWrite implements Instruccion {
         public void ejecuta() {
-           System.out.println(pilaEvaluacion.pop());
+           System.out.print(pilaEvaluacion.pop());
            pc++;
         }
         public String toString() {

@@ -1,10 +1,9 @@
 package sintaxis_abstracta;
 
 import maquinap.MaquinaP;
-import utils.GestorEtiquetado;
-import utils.GestorMem;
-import utils.TablaSimbolos;
-import utils.Utils;
+import utils.*;
+
+import java.util.Stack;
 
 public class Prog extends Nodo {
 
@@ -41,6 +40,13 @@ public class Prog extends Nodo {
     @Override
     public void gen_cod(MaquinaP maquinap) {
         this.is.gen_cod(maquinap);
+        maquinap.ponInstruccion(maquinap.stop());
+
+        RecolectadorProcs.recolectaProcedimientos(this.decs);
+        while (!RecolectadorProcs.isEmpty()) {
+            Dec.Dec_proc proc = RecolectadorProcs.pop();
+            proc.gen_cod(maquinap);
+        }
     }
 
     public Decs getDecs() {
@@ -54,5 +60,12 @@ public class Prog extends Nodo {
     @Override
     public void etiquetado(GestorEtiquetado ge) {
         this.is.etiquetado(ge);
+        ge.etq += 1; // TODO: revisar si esto está bien
+
+        RecolectadorProcs.recolectaProcedimientos(this.decs);
+        while (!RecolectadorProcs.isEmpty()) {
+            Dec.Dec_proc proc = RecolectadorProcs.pop();
+            proc.etiquetado(ge);
+        }
     }
 }

@@ -34,22 +34,39 @@ public class Exp extends Nodo {
         public void tipado() {
             if (this.vinculo instanceof Dec.Dec_var)
                 this.tipo = ((Dec.Dec_var) this.vinculo).getT();
+            else if (this.vinculo instanceof ParF.ParF_Valor)
+                this.tipo = ((ParF.ParF_Valor) this.vinculo).getTipoParametro();
+            else if (this.vinculo instanceof ParF.ParF_Ref)
+                this.tipo = ((ParF.ParF_Ref) this.vinculo).getTipoParametro();
             else {
-                throw new UnsupportedOperationException("Exp_id: tipado.");
-            } // TODO
+                GestorErrores.addError("Error: no es una de");
+            }
         }
 
         @Override
         public void gen_cod(MaquinaP maquinap) {
-//            maquinap.apilad(this.nivel);
-            maquinap.ponInstruccion(maquinap.apilaInt(this.vinculo.dir));
-//            maquinap.desapilad(0);
+            if (this.vinculo.nivel == 0)
+                maquinap.ponInstruccion(maquinap.apilaInt(this.vinculo.dir));
+            else {
+                maquinap.ponInstruccion(maquinap.apilad(this.vinculo.nivel));
+                maquinap.ponInstruccion(maquinap.apilaInt(this.vinculo.dir));
+                maquinap.ponInstruccion(maquinap.suma());
+               // if (this.vinculo instanceof ParF.ParF_Valor)
+               //     maquinap.ponInstruccion(maquinap.apilaInd());
+            }
         }
 
         @Override
         public void etiquetado(GestorEtiquetado ge) {
             // TODO: actualizar esto cuando se termine el gen_cod.
             ge.etq += 1;
+            if (this.vinculo.nivel == 0)
+                ge.etq++;
+            else {
+                ge.etq += 3;
+                if (this.vinculo instanceof ParF.ParF_Valor)
+                    ge.etq++;
+            }
         }
     }
 

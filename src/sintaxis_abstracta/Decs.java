@@ -41,6 +41,14 @@ public class Decs extends Nodo {
             this.decs.asig_espacio(gm);
             this.dec.asig_espacio(gm);
         }
+
+        public Dec getDec() {
+            return dec;
+        }
+
+        public Decs getDecs() {
+            return decs;
+        }
     }
 
     public static class No_decs extends Decs {

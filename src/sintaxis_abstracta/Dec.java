@@ -1,8 +1,7 @@
 package sintaxis_abstracta;
 
-import utils.GestorErrores;
-import utils.GestorMem;
-import utils.TablaSimbolos;
+import maquinap.MaquinaP;
+import utils.*;
 
 public class Dec extends Nodo {
 
@@ -28,7 +27,7 @@ public class Dec extends Nodo {
 
             this.T.vincula(ts);
             if (!ts.contiene(this.string)) ts.añadir(this.string, this);
-            else GestorErrores.addError("Identificador ya definido.");
+            else GestorErrores.addError("Identificador ya definido: " + string);
         }
 
         @Override
@@ -80,7 +79,7 @@ public class Dec extends Nodo {
 
             this.t.vincula(ts);
             if (!ts.contiene(this.string)) ts.añadir(this.string, this);
-            else GestorErrores.addError("Identificador ya definido.");
+            else GestorErrores.addError("Identificador ya definido: " + string);
         }
 
         @Override
@@ -102,32 +101,83 @@ public class Dec extends Nodo {
 
     public static class Dec_proc extends Dec {
 
-        private final String str;
+        private final String id;
         private final ParFs pfs;
         private final Decs decs;
         private final Instrucciones is;
+        private int tam_datos;
 
         public Dec_proc(String str, ParFs pfs, Decs decs, Instrucciones is) {
-            this.str = str;
+            this.id = str;
             this.pfs = pfs;
             this.decs = decs;
             this.is = is;
         }
 
-        public String getStr() {
-            return str;
+        @Override
+        public void vincula(TablaSimbolos ts) {
+
+            if (ts.contiene(this.id)) GestorErrores.addError("Identificador ya definido: " + id);
+            else ts.añadir(this.id, this);
+
+            ts.nuevo_nivel();
+            this.pfs.vincula(ts);
+            this.decs.vincula(ts);
+            this.decs.vincula_ref(ts);
+            this.is.vincula_is(ts);
+            ts.quitar_nivel();
         }
 
-        public ParFs getPfs() {
-            return pfs;
+        @Override
+        public void vincula_ref(TablaSimbolos ts) {
+           // TODO: revisar si esto tiene que ir vacio o no,.
         }
 
-        public Decs getDecs() {
-            return decs;
+        @Override
+        public void tipado() {
+
+           this.pfs.tipado();
+           this.decs.tipado();
+           this.is.tipado();
+           this.tipo = Utils.ambos_ok(Utils.ambos_ok(this.pfs.tipo, this.decs.tipo) , this.is.tipo);
         }
 
-        public Instrucciones getIs() {
-            return is;
+        @Override
+        public void asig_espacio(GestorMem gm) {
+
+            int dir_anterior = gm.dir;
+            gm.nivel++;
+            this.nivel = gm.nivel;
+            gm.dir = 0;
+            this.pfs.asig_espacio(gm);
+            this.decs.asig_espacio(gm);
+            this.tam_datos = gm.dir;
+            gm.dir = dir_anterior;
+            gm.nivel--;
+        }
+
+        @Override
+        public void gen_cod(MaquinaP maquinap) {
+            this.is.gen_cod(maquinap);
+            maquinap.ponInstruccion(maquinap.desactiva(this.nivel, this.tam_datos));
+            maquinap.ponInstruccion(maquinap.irInd());
+            RecolectadorProcs.recolectaProcedimientos(this.decs);
+        }
+
+        @Override
+        public void etiquetado(GestorEtiquetado ge) {
+            this.ini = ge.etq;
+            this.is.etiquetado(ge);
+            ge.etq += 2;
+            RecolectadorProcs.recolectaProcedimientos(this.decs);
+        }
+
+        public int get_TamDatos() {
+            return this.tam_datos;
+        }
+
+        public ParFs getPfs(){
+            return this.pfs;
         }
     }
 }

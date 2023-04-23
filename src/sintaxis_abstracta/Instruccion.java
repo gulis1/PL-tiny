@@ -301,7 +301,10 @@ public class Instruccion extends Nodo {
         }
     }
 
-    public static class Nl extends Instruccion { public Nl() {} }
+    public static class Nl extends Instruccion {
+        public Nl() {}
+        //TODO
+    }
 
     public static class New extends Instruccion {
 
@@ -438,13 +441,97 @@ public class Instruccion extends Nodo {
 
     public static class Invoc extends Instruccion {
 
-        private final Exp exp;
+        private final String id;
         private final Preales preales;
 
-        public Invoc(Exp exp, Preales preales) {
-            this.exp = exp;
+        public Invoc(String id, Preales preales) {
+            this.id = id;
             this.preales = preales;
         }
 
+        @Override
+        public void vincula_is(TablaSimbolos ts) {
+
+            if (ts.contiene(this.id)) this.vinculo = ts.valor_de(this.id);
+            else GestorErrores.addError("Identificador no definido: " + this.id);
+            this.preales.vincula_is(ts);
+        }
+
+        @Override
+        public void tipado() {
+
+            if (this.vinculo instanceof Dec.Dec_proc) {
+
+                this.preales.tipado();
+                Dec.Dec_proc dec = (Dec.Dec_proc) this.vinculo;
+                if (Utils.comprobacion_parametros(this.preales,dec.getPfs())) this.tipo = new Tipo.Ok();
+                else GestorErrores.addError("Los parámetros no son compatibles.");
+            }
+            else GestorErrores.addError("No es un procedimiento.");
+        }
+
+        @Override
+        public void asig_espacio(GestorMem gm) {}
+
+        @Override
+        public void gen_cod(MaquinaP maquinap) {
+
+            Dec.Dec_proc dec = (Dec.Dec_proc) this.vinculo;
+            maquinap.ponInstruccion(maquinap.activa(dec.nivel, dec.get_TamDatos(), this.sig));
+            this.gen_cod_params(maquinap, ((Dec.Dec_proc) this.vinculo).getPfs(), this.preales);
+            maquinap.ponInstruccion(maquinap.desapilad(dec.nivel));
+            maquinap.ponInstruccion(maquinap.irA(dec.ini));
+        }
+
+        @Override
+        public void etiquetado(GestorEtiquetado ge) {
+            this.ini = ge.etq;
+            Dec.Dec_proc dec = (Dec.Dec_proc) this.vinculo;
+            ge.etq++;
+            etiqueta_params(ge, ((Dec.Dec_proc) this.vinculo).getPfs(), this.preales);
+            ge.etq += 2;
+            this.sig = ge.etq;
+        }
+
+        private void gen_cod_params(MaquinaP maquinap, ParFs parfs, Preales preales) {
+
+            if (parfs instanceof ParFs.No_Parf && preales instanceof Preales.No_pReal)
+                return;
+
+            if (parfs instanceof ParFs.Muchos_ParF && preales instanceof Preales.Muchos_pReales) {
+                gen_cod_params(maquinap, ((ParFs.Muchos_ParF) parfs).getParFs(), ((Preales.Muchos_pReales) preales).getPreales());
+                gen_cod_paso(maquinap, ((Preales.Muchos_pReales) preales).getExp(), ((ParFs.Muchos_ParF) parfs).getParF());
+            }
+        }
+
+        private void gen_cod_paso(MaquinaP maquinap, Exp exp, ParF parf) {
+
+            maquinap.ponInstruccion(maquinap.dup());
+            maquinap.ponInstruccion(maquinap.apilaInt(parf.dir));
+            maquinap.ponInstruccion(maquinap.suma());
+            exp.gen_cod(maquinap);
+            if (Utils.es_desig(exp) && parf instanceof ParF.ParF_Valor)
+                maquinap.ponInstruccion(maquinap.mueve(((ParF.ParF_Valor) parf).getTipoParametro().tam));
+            else
+                maquinap.ponInstruccion(maquinap.desapilaInd());
+        }
+
+        private void etiqueta_params(GestorEtiquetado ge, ParFs parfs, Preales preales) {
+
+            if (parfs instanceof ParFs.No_Parf && preales instanceof Preales.No_pReal)
+                return;
+
+            if (parfs instanceof ParFs.Muchos_ParF && preales instanceof Preales.Muchos_pReales) {
+                etiqueta_params(ge, ((ParFs.Muchos_ParF) parfs).getParFs(), ((Preales.Muchos_pReales) preales).getPreales());
+                etiqueta_paso(ge, ((Preales.Muchos_pReales) preales).getExp(), ((ParFs.Muchos_ParF) parfs).getParF());
+            }
+        }
+
+        private void etiqueta_paso(GestorEtiquetado ge, Exp exp, ParF parf) {
+
+            ge.etq += 3;
+            exp.etiquetado(ge);
+            ge.etq++;
+        }
     }
 }
