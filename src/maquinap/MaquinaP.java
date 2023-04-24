@@ -467,16 +467,18 @@ public class MaquinaP {
     }
 
     private Instruccion IINT2REAL;
-    private class Iint2real implements Instruccion {
+    private class IInt2Real implements Instruccion {
         public void ejecuta() {
             Valor v = pilaEvaluacion.pop();
             pilaEvaluacion.push(new ValorReal((float) v.valorInt()));
             pc++;
         }
         public String toString() {
-            return "int2real";
+            return "Int2Real";
         }
     }
+
+
 
     private IMod IMOD;
     private class IMod implements Instruccion {
@@ -548,35 +550,6 @@ public class MaquinaP {
         public String toString(){return "igualdad";}
     }
 
-    private IEqFloatInt IEQFI;
-    private class IEqFloatInt implements Instruccion{
-
-        public void ejecuta(){
-            Valor opnd2 = pilaEvaluacion.pop();
-            Valor opnd1 = pilaEvaluacion.pop();
-
-            pilaEvaluacion.push(new ValorBool(opnd1.valorReal()==opnd2.valorInt()));
-
-            pc++;
-        }
-        public String toString(){return "igualdad";}
-    }
-
-    private IEqIntFloat IEQIF;
-    private class IEqIntFloat implements Instruccion{
-
-        public void ejecuta(){
-            Valor opnd2 = pilaEvaluacion.pop();
-            Valor opnd1 = pilaEvaluacion.pop();
-
-            pilaEvaluacion.push(new ValorBool(opnd1.valorInt()==opnd2.valorReal()));
-
-            pc++;
-        }
-        public String toString(){return "igualdad";}
-    }
-
-
     private IEqBool IEQBOOL;
     private class IEqBool implements Instruccion{
 
@@ -627,34 +600,6 @@ public class MaquinaP {
             Valor opnd1 = pilaEvaluacion.pop();
 
             pilaEvaluacion.push(new ValorBool(opnd1.valorReal() > opnd2.valorReal()));
-
-            pc++;
-        }
-        public String toString(){return "Mayor que";}
-    }
-
-    private IGTfloatInt IGTFLOATINT;
-    private class IGTfloatInt implements Instruccion{
-
-        public void ejecuta(){
-            Valor opnd2 = pilaEvaluacion.pop();
-            Valor opnd1 = pilaEvaluacion.pop();
-
-            pilaEvaluacion.push(new ValorBool(opnd1.valorReal() > opnd2.valorInt()));
-
-            pc++;
-        }
-        public String toString(){return "Mayor que";}
-    }
-
-    private IGTintFloat IGTINTFLOAT;
-    private class IGTintFloat implements Instruccion{
-
-        public void ejecuta(){
-            Valor opnd2 = pilaEvaluacion.pop();
-            Valor opnd1 = pilaEvaluacion.pop();
-
-            pilaEvaluacion.push(new ValorBool(opnd1.valorInt() > opnd2.valorReal()));
 
             pc++;
         }
@@ -725,15 +670,11 @@ public class MaquinaP {
    public Instruccion and() {return IAND;}
    public Instruccion or(){return IOR;}
    public Instruccion eqInt(){return  IEQINT;}
-   public Instruccion eqFloatInt(){return  IEQFI;}
-   public Instruccion eqIntFloat(){return  IEQIF;}
    public Instruccion eqFloat(){return IEQF;}
    public Instruccion eqBool(){return  IEQBOOL;}
    public Instruccion eqString(){return  IEQSTRING;}
    public Instruccion gtInt(){return IGTINT;}
    public Instruccion gtFloat(){return IGTFLOAT;}
-   public Instruccion gtIntFloat(){return IGTINTFLOAT;}
-   public Instruccion gtFloatInt(){return IGTFLOATINT;}
    public Instruccion gtString(){return IGTSTRING;}
    public Instruccion gtBool(){return  IGTBOOL;}
    public Instruccion not(){return INOT;}
@@ -797,17 +738,13 @@ public class MaquinaP {
       IREADFLOAT = new IReadFloat();
       IREADSTRING = new IReadString();
       IWRITE = new IWrite();
-      IINT2REAL = new Iint2real();
+      IINT2REAL = new IInt2Real();
       IEQINT= new IEqInt();
       IEQF = new IEqFloat();
-      IEQFI = new IEqFloatInt();
-      IEQIF = new IEqIntFloat();
       IEQBOOL = new IEqBool();
       IEQSTRING = new IEqString();
       IGTINT = new IGTint();
       IGTFLOAT = new IGTfloat();
-      IGTINTFLOAT = new IGTintFloat();
-      IGTFLOATINT = new IGTfloatInt();
       IGTSTRING = new IGTstring();
       IGTBOOL = new IGTbool();
       INOT = new INot();

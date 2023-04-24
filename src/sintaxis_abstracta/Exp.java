@@ -311,10 +311,15 @@ public class Exp extends Nodo {
             this.e1.gen_cod(maquinap);
             if (Utils.es_desig(e1))
                 maquinap.ponInstruccion(maquinap.apilaInd());
+            if(Utils.esEntero(this.e1.tipo) && Utils.esReal(this.e2.tipo))
+                maquinap.ponInstruccion(maquinap.int2real());
 
             this.e2.gen_cod(maquinap);
             if (Utils.es_desig(e2))
                 maquinap.ponInstruccion(maquinap.apilaInd());
+
+            if(Utils.esReal(this.e1.tipo) && Utils.esEntero(this.e2.tipo))
+                maquinap.ponInstruccion(maquinap.int2real());
 
             if(Utils.esBool(this.e1.tipo))
                 maquinap.ponInstruccion(maquinap.eqBool());
@@ -325,9 +330,11 @@ public class Exp extends Nodo {
             else if (Utils.esReal(this.e1.tipo) && Utils.esReal(this.e2.tipo))
                 maquinap.ponInstruccion(maquinap.eqFloat());
             else if (Utils.esReal(this.e1.tipo) && Utils.esEntero(this.e2.tipo))
-                maquinap.ponInstruccion(maquinap.eqFloatInt());
-            else if (Utils.esEntero(this.e1.tipo) && Utils.esReal(this.e2.tipo))
-                maquinap.ponInstruccion(maquinap.eqIntFloat());
+                maquinap.ponInstruccion(maquinap.eqFloat());
+            else if(Utils.esEntero(this.e1.tipo) && Utils.esReal(this.e2.tipo))
+                maquinap.ponInstruccion(maquinap.eqFloat());
+
+
         }
 
         @Override
@@ -340,6 +347,10 @@ public class Exp extends Nodo {
             this.e2.etiquetado(ge);
             if (Utils.es_desig(e2))
                 ge.etq += 1;
+
+            if(Utils.esReal(this.e1.tipo) && Utils.esEntero(this.e2.tipo)
+               || Utils.esEntero(this.e1.tipo) && Utils.esReal(this.e2.tipo))
+                ge.etq +=1;
 
             ge.etq+=1;
         }
@@ -381,10 +392,15 @@ public class Exp extends Nodo {
             this.e1.gen_cod(maquinap);
             if (Utils.es_desig(e1))
                 maquinap.ponInstruccion(maquinap.apilaInd());
+            if(Utils.esEntero(this.e1.tipo) && Utils.esReal(this.e2.tipo))
+                maquinap.ponInstruccion(maquinap.int2real());
 
             this.e2.gen_cod(maquinap);
             if (Utils.es_desig(e2))
                 maquinap.ponInstruccion(maquinap.apilaInd());
+
+            if(Utils.esReal(this.e1.tipo) && Utils.esEntero(this.e2.tipo))
+                maquinap.ponInstruccion(maquinap.int2real());
 
             if(Utils.esBool(this.e1.tipo))
                 maquinap.ponInstruccion(maquinap.eqBool());
@@ -395,9 +411,10 @@ public class Exp extends Nodo {
             else if (Utils.esReal(this.e1.tipo) && Utils.esReal(this.e2.tipo))
                 maquinap.ponInstruccion(maquinap.eqFloat());
             else if (Utils.esReal(this.e1.tipo) && Utils.esEntero(this.e2.tipo))
-                maquinap.ponInstruccion(maquinap.eqFloatInt());
-            else if (Utils.esEntero(this.e1.tipo) && Utils.esReal(this.e2.tipo))
-                maquinap.ponInstruccion(maquinap.eqIntFloat());
+                maquinap.ponInstruccion(maquinap.eqFloat());
+            else if(Utils.esEntero(this.e1.tipo) && Utils.esReal(this.e2.tipo))
+                maquinap.ponInstruccion(maquinap.eqFloat());
+
 
             maquinap.ponInstruccion(maquinap.not());
         }
@@ -412,6 +429,10 @@ public class Exp extends Nodo {
             this.e2.etiquetado(ge);
             if (Utils.es_desig(e2))
                 ge.etq += 1;
+
+            if(Utils.esReal(this.e1.tipo) && Utils.esEntero(this.e2.tipo)
+                    || Utils.esEntero(this.e1.tipo) && Utils.esReal(this.e2.tipo))
+                ge.etq +=1;
 
             ge.etq+=2;
         }
@@ -455,10 +476,15 @@ public class Exp extends Nodo {
             this.e1.gen_cod(maquinap);
             if (Utils.es_desig(e1))
                 maquinap.ponInstruccion(maquinap.apilaInd());
+            if(Utils.esEntero(this.e1.tipo) && Utils.esReal(this.e2.tipo))
+                maquinap.ponInstruccion(maquinap.int2real());
 
             this.e2.gen_cod(maquinap);
             if (Utils.es_desig(e2))
                 maquinap.ponInstruccion(maquinap.apilaInd());
+
+            if(Utils.esReal(this.e1.tipo) && Utils.esEntero(this.e2.tipo))
+                maquinap.ponInstruccion(maquinap.int2real());
 
             if(Utils.esBool(this.e1.tipo))
                 maquinap.ponInstruccion(maquinap.gtBool());
@@ -469,9 +495,11 @@ public class Exp extends Nodo {
             else if (Utils.esReal(this.e1.tipo) && Utils.esReal(this.e2.tipo))
                 maquinap.ponInstruccion(maquinap.gtFloat());
             else if (Utils.esReal(this.e1.tipo) && Utils.esEntero(this.e2.tipo))
-                maquinap.ponInstruccion(maquinap.gtFloatInt());
-            else if (Utils.esEntero(this.e1.tipo) && Utils.esReal(this.e2.tipo))
-                maquinap.ponInstruccion(maquinap.gtIntFloat());
+                maquinap.ponInstruccion(maquinap.gtFloat());
+
+            else if(Utils.esEntero(this.e1.tipo) && Utils.esReal(this.e2.tipo))
+                maquinap.ponInstruccion(maquinap.gtFloat());
+
         }
 
         @Override
@@ -484,6 +512,10 @@ public class Exp extends Nodo {
             this.e2.etiquetado(ge);
             if (Utils.es_desig(e2))
                 ge.etq += 1;
+
+            if(Utils.esReal(this.e1.tipo) && Utils.esEntero(this.e2.tipo)
+                    || Utils.esEntero(this.e1.tipo) && Utils.esReal(this.e2.tipo))
+                ge.etq +=1;
 
             ge.etq+=1;
         }
@@ -528,10 +560,15 @@ public class Exp extends Nodo {
             this.e1.gen_cod(maquinap);
             if (Utils.es_desig(e1))
                 maquinap.ponInstruccion(maquinap.apilaInd());
+            if(Utils.esEntero(this.e1.tipo) && Utils.esReal(this.e2.tipo))
+                maquinap.ponInstruccion(maquinap.int2real());
 
             this.e2.gen_cod(maquinap);
             if (Utils.es_desig(e2))
                 maquinap.ponInstruccion(maquinap.apilaInd());
+
+            if(Utils.esReal(this.e1.tipo) && Utils.esEntero(this.e2.tipo))
+                maquinap.ponInstruccion(maquinap.int2real());
 
             if(Utils.esBool(this.e1.tipo))
                 maquinap.ponInstruccion(maquinap.gtBool());
@@ -542,18 +579,25 @@ public class Exp extends Nodo {
             else if (Utils.esReal(this.e1.tipo) && Utils.esReal(this.e2.tipo))
                 maquinap.ponInstruccion(maquinap.gtFloat());
             else if (Utils.esReal(this.e1.tipo) && Utils.esEntero(this.e2.tipo))
-                maquinap.ponInstruccion(maquinap.gtFloatInt());
-            else if (Utils.esEntero(this.e1.tipo) && Utils.esReal(this.e2.tipo))
-                maquinap.ponInstruccion(maquinap.gtIntFloat());
+                maquinap.ponInstruccion(maquinap.gtFloat());
+
+            else if(Utils.esEntero(this.e1.tipo) && Utils.esReal(this.e2.tipo))
+                maquinap.ponInstruccion(maquinap.gtFloat());
+
 
             //Se vuelven a meter los valores para hacer el ==
             this.e1.gen_cod(maquinap);
             if (Utils.es_desig(e1))
                 maquinap.ponInstruccion(maquinap.apilaInd());
+            if(Utils.esEntero(this.e1.tipo) && Utils.esReal(this.e2.tipo))
+                maquinap.ponInstruccion(maquinap.int2real());
 
             this.e2.gen_cod(maquinap);
             if (Utils.es_desig(e2))
                 maquinap.ponInstruccion(maquinap.apilaInd());
+
+            if(Utils.esReal(this.e1.tipo) && Utils.esEntero(this.e2.tipo))
+                maquinap.ponInstruccion(maquinap.int2real());
 
             if(Utils.esBool(this.e1.tipo))
                 maquinap.ponInstruccion(maquinap.eqBool());
@@ -564,9 +608,10 @@ public class Exp extends Nodo {
             else if (Utils.esReal(this.e1.tipo) && Utils.esReal(this.e2.tipo))
                 maquinap.ponInstruccion(maquinap.eqFloat());
             else if (Utils.esReal(this.e1.tipo) && Utils.esEntero(this.e2.tipo))
-                maquinap.ponInstruccion(maquinap.eqFloatInt());
-            else if (Utils.esEntero(this.e1.tipo) && Utils.esReal(this.e2.tipo))
-                maquinap.ponInstruccion(maquinap.eqIntFloat());
+                maquinap.ponInstruccion(maquinap.eqFloat());
+            else if(Utils.esEntero(this.e1.tipo) && Utils.esReal(this.e2.tipo))
+                maquinap.ponInstruccion(maquinap.eqFloat());
+
 
             //se hace la or logica de los resultados previos
             maquinap.ponInstruccion(maquinap.or());
@@ -593,6 +638,10 @@ public class Exp extends Nodo {
             this.e2.etiquetado(ge);
             if (Utils.es_desig(e2))
                 ge.etq += 1;
+
+            if(Utils.esReal(this.e1.tipo) && Utils.esEntero(this.e2.tipo)
+                    || Utils.esEntero(this.e1.tipo) && Utils.esReal(this.e2.tipo))
+                ge.etq +=2;
 
             //se le suman las dos operaciones anteriores (> y == ) y la operacion de or logica
             ge.etq+=3;
@@ -638,10 +687,15 @@ public class Exp extends Nodo {
             this.e1.gen_cod(maquinap);
             if (Utils.es_desig(e1))
                 maquinap.ponInstruccion(maquinap.apilaInd());
+            if(Utils.esEntero(this.e1.tipo) && Utils.esReal(this.e2.tipo))
+                maquinap.ponInstruccion(maquinap.int2real());
 
             this.e2.gen_cod(maquinap);
             if (Utils.es_desig(e2))
                 maquinap.ponInstruccion(maquinap.apilaInd());
+
+            if(Utils.esReal(this.e1.tipo) && Utils.esEntero(this.e2.tipo))
+                maquinap.ponInstruccion(maquinap.int2real());
 
             if(Utils.esBool(this.e1.tipo))
                 maquinap.ponInstruccion(maquinap.gtBool());
@@ -652,9 +706,11 @@ public class Exp extends Nodo {
             else if (Utils.esReal(this.e1.tipo) && Utils.esReal(this.e2.tipo))
                 maquinap.ponInstruccion(maquinap.gtFloat());
             else if (Utils.esReal(this.e1.tipo) && Utils.esEntero(this.e2.tipo))
-                maquinap.ponInstruccion(maquinap.gtFloatInt());
-            else if (Utils.esEntero(this.e1.tipo) && Utils.esReal(this.e2.tipo))
-                maquinap.ponInstruccion(maquinap.gtIntFloat());
+                maquinap.ponInstruccion(maquinap.gtFloat());
+
+            else if(Utils.esEntero(this.e1.tipo) && Utils.esReal(this.e2.tipo))
+                maquinap.ponInstruccion(maquinap.gtFloat());
+
 
             maquinap.ponInstruccion(maquinap.not());
         }
@@ -669,6 +725,10 @@ public class Exp extends Nodo {
             this.e2.etiquetado(ge);
             if (Utils.es_desig(e2))
                 ge.etq += 1;
+
+            if(Utils.esReal(this.e1.tipo) && Utils.esEntero(this.e2.tipo)
+                    || Utils.esEntero(this.e1.tipo) && Utils.esReal(this.e2.tipo))
+                ge.etq +=1;
 
             ge.etq+=2;
         }
@@ -713,10 +773,15 @@ public class Exp extends Nodo {
             this.e1.gen_cod(maquinap);
             if (Utils.es_desig(e1))
                 maquinap.ponInstruccion(maquinap.apilaInd());
+            if(Utils.esEntero(this.e1.tipo) && Utils.esReal(this.e2.tipo))
+                maquinap.ponInstruccion(maquinap.int2real());
 
             this.e2.gen_cod(maquinap);
             if (Utils.es_desig(e2))
                 maquinap.ponInstruccion(maquinap.apilaInd());
+
+            if(Utils.esReal(this.e1.tipo) && Utils.esEntero(this.e2.tipo))
+                maquinap.ponInstruccion(maquinap.int2real());
 
             if(Utils.esBool(this.e1.tipo))
                 maquinap.ponInstruccion(maquinap.gtBool());
@@ -727,9 +792,11 @@ public class Exp extends Nodo {
             else if (Utils.esReal(this.e1.tipo) && Utils.esReal(this.e2.tipo))
                 maquinap.ponInstruccion(maquinap.gtFloat());
             else if (Utils.esReal(this.e1.tipo) && Utils.esEntero(this.e2.tipo))
-                maquinap.ponInstruccion(maquinap.gtFloatInt());
-            else if (Utils.esEntero(this.e1.tipo) && Utils.esReal(this.e2.tipo))
-                maquinap.ponInstruccion(maquinap.gtIntFloat());
+                maquinap.ponInstruccion(maquinap.gtFloat());
+
+            else if(Utils.esEntero(this.e1.tipo) && Utils.esReal(this.e2.tipo))
+                maquinap.ponInstruccion(maquinap.gtFloat());
+
 
             //se niega lo anterior para hacer la operacion de <
             maquinap.ponInstruccion(maquinap.not());
@@ -738,10 +805,15 @@ public class Exp extends Nodo {
             this.e1.gen_cod(maquinap);
             if (Utils.es_desig(e1))
                 maquinap.ponInstruccion(maquinap.apilaInd());
+            if(Utils.esEntero(this.e1.tipo) && Utils.esReal(this.e2.tipo))
+                maquinap.ponInstruccion(maquinap.int2real());
 
             this.e2.gen_cod(maquinap);
             if (Utils.es_desig(e2))
                 maquinap.ponInstruccion(maquinap.apilaInd());
+
+            if(Utils.esReal(this.e1.tipo) && Utils.esEntero(this.e2.tipo))
+                maquinap.ponInstruccion(maquinap.int2real());
 
             if(Utils.esBool(this.e1.tipo))
                 maquinap.ponInstruccion(maquinap.eqBool());
@@ -752,9 +824,10 @@ public class Exp extends Nodo {
             else if (Utils.esReal(this.e1.tipo) && Utils.esReal(this.e2.tipo))
                 maquinap.ponInstruccion(maquinap.eqFloat());
             else if (Utils.esReal(this.e1.tipo) && Utils.esEntero(this.e2.tipo))
-                maquinap.ponInstruccion(maquinap.eqFloatInt());
-            else if (Utils.esEntero(this.e1.tipo) && Utils.esReal(this.e2.tipo))
-                maquinap.ponInstruccion(maquinap.eqIntFloat());
+                maquinap.ponInstruccion(maquinap.eqFloat());
+            else if(Utils.esEntero(this.e1.tipo) && Utils.esReal(this.e2.tipo))
+                maquinap.ponInstruccion(maquinap.eqFloat());
+
 
             //se hace la or logica de los resultados previos
             maquinap.ponInstruccion(maquinap.or());
@@ -781,6 +854,10 @@ public class Exp extends Nodo {
             this.e2.etiquetado(ge);
             if (Utils.es_desig(e2))
                 ge.etq += 1;
+
+            if(Utils.esReal(this.e1.tipo) && Utils.esEntero(this.e2.tipo)
+                    || Utils.esEntero(this.e1.tipo) && Utils.esReal(this.e2.tipo))
+                ge.etq +=2;
 
             //se le suman las tres operaciones anteriores (> , != y  == ) y la operacion de or logica
             ge.etq+=4;
