@@ -108,4 +108,27 @@ public class Utils {
         else
             return son_compatibles(e.tipo, ((ParF.ParF_Valor)pf).getTipoParametro());
     }
+
+    public static Exp get_exp_cmp(Exp exp1, Exp exp2, String operador) {
+
+        switch (operador) {
+            case "==": return new Exp.Exp_eq(exp1, exp2);
+            case "!=": return new Exp.Exp_neq(exp1, exp2);
+            case ">":  return new Exp.Exp_gt(exp1, exp2);
+            case ">=": return new Exp.Exp_ge(exp1, exp2);
+            case "<":  return new Exp.Exp_lt(exp1, exp2);
+            case "<=": return new Exp.Exp_le(exp1, exp2);
+            default: throw new IllegalArgumentException("Operador no válido.");
+        }
+    }
+
+    public static Exp get_exp_op3(Exp exp1, Exp exp2, String operador) {
+
+        switch (operador) {
+            case "*": return new Exp.Exp_mul(exp1, exp2);
+            case "/": return new Exp.Exp_div(exp1, exp2);
+            case "%":  return new Exp.Exp_mod(exp1, exp2);
+            default: throw new IllegalArgumentException("Operador no válido.");
+        }
+    }
 }

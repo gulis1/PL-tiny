@@ -1,0 +1,301 @@
+package ascendente.analisis_sintactico;
+
+import java_cup.runtime.*;
+
+import sintaxis_abstracta.Campo;
+import sintaxis_abstracta.Campos;
+import sintaxis_abstracta.Dec;
+import sintaxis_abstracta.Decs;
+import sintaxis_abstracta.Exp;
+import sintaxis_abstracta.Instruccion;
+import sintaxis_abstracta.Instrucciones;
+import sintaxis_abstracta.ParF;
+import sintaxis_abstracta.ParFs;
+import sintaxis_abstracta.Preales;
+import sintaxis_abstracta.Prog;
+import sintaxis_abstracta.Tipo;
+import utils.GestorErrores;
+import java_cup.runtime.Symbol;
+import utils.Utils;
+import ascendente.analisis_lexico.Jflexer;
+
+
+scan with {: return getScanner().next_token(); :};
+parser code {:
+   public void syntax_error(Symbol unidadLexica) {
+     GestorErrores.addError("Error: " + unidadLexica.toString());
+   }
+:};
+init with {:
+   Jflexer jflexer = (Jflexer)getScanner();
+:};
+
+terminal String     ID, BEGIN, END, DO, TYPE, VAR, PROC,
+                    IF, THEN, ELSE, WHILE, NL, READ, WRITE, NEW, DELETE, SEQ,
+                    STRING, ARRAY, RECORD, INT, OF, BOOL, REAL,
+                    OP_SUMA, OP_RESTA, ASTERISCO, SLASH, SOMBRERO, PUNTO, ASIGN, EQ, NEQ, GT, GE, LT, LE, AND, OR, NOT, DOSPUNTOS, MODULO,
+                    PAP, PCI, CAP, CCI, PCOMA, COMA,
+                    LIT_ENTERO, LIT_STRING, LIT_DECIMAL, NULL, TRUE, FALSE;
+
+non terminal Prog PROG;
+non terminal Instrucciones MUCHAS_INST, INSTRUCCIONES;
+non terminal Instruccion INSTR_READ, INSTR_NEW, INSTR_SEQ, INSTR_WHILE, INSTR_IF, INSTR_INVOC, INSTR_NL, INSTR_IF_ELSE, INSTR_WRITE, INSTR_ASIGN, INSTR_DELETE, INSTRUCCION;
+non terminal Campo CAMPO;
+non terminal Campos CAMPOS, MUCHOS_CAMPOS, UN_CAMPO;
+non terminal Tipo TIPO, TARRAY, TRECORD, REF, POINTER;
+non terminal ParF PFR_VALOR, PFORMAL, PFR_REF;
+non terminal ParFs PFORMALES, MUCHOS_PFORMALES;
+non terminal Dec DEC_PROC, DEC_TYPE, DEC, DEC_VAR;
+non terminal Decs DECS, MUCHAS_DEC;
+non terminal Exp E0, E1, E2, E3, E4, E5, E6;
+non terminal String OP0, OP3;
+non terminal Preales PREALES, MUCHOS_PREALES;
+
+PROG ::= DECS:decs BEGIN INSTRUCCIONES:is END PUNTO
+        {: RESULT = new Prog(decs, is); :};
+
+TIPO ::= STRING:s
+        {: RESULT = new Tipo.Cadena(); :}
+    | TARRAY:array
+        {: RESULT = array; :}
+    | TRECORD:record
+        {: RESULT = record; :}
+    | INT
+        {: RESULT = new Tipo.Entero(); :}
+    | BOOL
+        {: RESULT = new Tipo.Bool(); :}
+    | REF:ref
+        {: RESULT = ref; :}
+    | POINTER:pointer
+        {: RESULT = pointer; :}
+    | REAL
+        {: RESULT = new Tipo.Real(); :}
+    | NULL
+        {: RESULT = new Tipo.Null(); :};
+
+
+POINTER ::= SOMBRERO TIPO:tipoBase
+        {: RESULT = new Tipo.Pointer(tipoBase); :};
+
+REF ::= ID:id
+        {: RESULT = new Tipo.Ref(id); :};
+
+TARRAY ::= ARRAY CAP LIT_ENTERO:tamArray CCI OF TIPO:tipoArray
+        {: RESULT = new Tipo.Array(tipoArray, tamArray); :};
+
+TRECORD ::= RECORD CAMPOS:campos END
+        {: RESULT = new Tipo.Record(campos); :};
+
+CAMPOS ::= MUCHOS_CAMPOS:campos
+        {: RESULT = campos; :}
+    | UN_CAMPO:campos
+        {: RESULT = campos; :};
+
+UN_CAMPO::= CAMPO:campo
+        {: RESULT = new Campos.Un_Campo(campo); :};
+
+MUCHOS_CAMPOS ::= CAMPOS:campos CAMPO:campo
+        {: RESULT = new Campos.Muchos_Campos(campos,campo); :};
+
+CAMPO ::= ID:nombre DOSPUNTOS TIPO:tipo PCOMA
+        {: RESULT = new Campo(nombre,tipo); :};
+
+
+DECS ::= MUCHAS_DEC:decs
+        {: RESULT = decs; :}
+    |
+        {: RESULT = new Decs.No_decs(); :};
+
+MUCHAS_DEC ::= DECS:decs DEC:dec
+    {: RESULT = new Decs.Muchas_decs(decs, dec); :};
+
+DEC ::= DEC_VAR:dec
+        {: RESULT = dec; :}
+    | DEC_TYPE:dec
+        {: RESULT = dec; :}
+    | DEC_PROC:dec
+        {: RESULT = dec; :};
+
+DEC_VAR ::= VAR ID:nombre DOSPUNTOS TIPO:tipo PCOMA
+        {: RESULT = new Dec.Dec_var(tipo, nombre); :};
+
+DEC_TYPE ::= TYPE ID:nombre DOSPUNTOS TIPO:tipo PCOMA
+        {: RESULT = new Dec.Dec_type(nombre, tipo); :};
+
+DEC_PROC ::= PROC ID:nombre PAP PFORMALES:pfs PCI DECS:decs BEGIN INSTRUCCIONES:is END PCOMA
+        {: RESULT = new Dec.Dec_proc(nombre, pfs, decs, is); :};
+
+PFORMALES ::= MUCHOS_PFORMALES:pfs
+        {: RESULT = pfs; :}
+    |
+        {: RESULT = new ParFs.No_Parf(); :};
+
+MUCHOS_PFORMALES ::= PFORMALES:pfs COMA PFORMAL:pf
+        {: RESULT = new ParFs.Muchos_ParF(pfs, pf); :}
+    | PFORMAL:pf
+          {: RESULT = new ParFs.Muchos_ParF(new ParFs.No_Parf(), pf); :};
+
+PFORMAL ::= PFR_VALOR:pf
+        {: RESULT = pf; :}
+    | PFR_REF:pf
+        {: RESULT = pf; :};
+
+PFR_VALOR ::= ID:nombre DOSPUNTOS TIPO:tipo
+        {: RESULT = new ParF.ParF_Valor(nombre, tipo); :};
+
+PFR_REF ::= VAR ID:id DOSPUNTOS TIPO:tipo
+        {: RESULT = new ParF.ParF_Ref(id, tipo); :};
+
+
+E0 ::= E1:exp1 OP0:op E1:exp2
+        {: RESULT = Utils.get_exp_cmp(exp1, exp2, op); :}
+    | E1:exp
+        {: RESULT = exp; :};
+
+E1 ::= E2:exp1 OP_SUMA E2:exp2
+        {: RESULT = new Exp.Exp_suma(exp1, exp2); :}
+    | E1:exp1 OP_RESTA E2:exp2
+        {: RESULT = new Exp.Exp_resta(exp1, exp2); :}
+    | E2:exp
+        {: RESULT = exp; :};
+
+E2 ::= E3:exp1 AND E3:exp2
+        {: RESULT = new Exp.Exp_and(exp1, exp2); :}
+    | E3:exp1 OR E2:exp2
+        {: RESULT = new Exp.Exp_or(exp1, exp2); :}
+    | E3:exp
+        {: RESULT = exp; :};
+
+E3 ::= E3:exp1 OP3:op E4:exp2
+        {: RESULT = Utils.get_exp_op3(exp1, exp2, op); :}
+    | E4:exp
+        {: RESULT = exp; :};
+
+E4 ::= NOT E4:exp
+        {: RESULT = new Exp.Exp_not(exp); :}
+    | OP_RESTA E4:exp
+        {: RESULT = new Exp.Exp_menos(exp); :}
+    | E5:exp
+        {: RESULT = exp; :};
+
+E5 ::= E5:exp1 CAP E0:exp2 CCI
+        {: RESULT = new Exp.Exp_ind(exp1, exp2); :}
+    | E5:exp PUNTO ID:str
+        {: RESULT = new Exp.Exp_acc(exp, str); :}
+    | E5:exp SOMBRERO
+        {: RESULT = new Exp.Exp_indireccion(exp); :}
+    | E6:exp
+        {: RESULT = exp; :};
+
+E6 ::= LIT_ENTERO:l
+        {: RESULT = new Exp.Exp_entero(l); :}
+    | LIT_DECIMAL:l
+        {: RESULT = new Exp.Exp_real(l); :}
+    | ID:id
+        {: RESULT = new Exp.Exp_id(id); :}
+    | LIT_STRING:l
+        {: RESULT = new Exp.Exp_cadena(l); :}
+    | NULL
+        {: RESULT = new Exp.Exp_null(); :}
+    | TRUE
+        {: RESULT = new Exp.Exp_bool("true"); :}
+    | FALSE
+        {: RESULT = new Exp.Exp_bool("false"); :}
+    | PAP E0:e PCI
+        {: RESULT = e; :};
+
+OP0 ::= EQ
+        {: RESULT = "=="; :}
+    | NEQ
+        {: RESULT = "!="; :}
+    | GT
+        {: RESULT = ">"; :}
+    | GE
+        {: RESULT = ">="; :}
+    | LT
+        {: RESULT = "<"; :}
+    | LE
+        {: RESULT = "<="; :};
+
+OP3 ::= ASTERISCO
+        {: RESULT = "*"; :}
+    | SLASH
+        {: RESULT = "/"; :}
+    | MODULO
+        {: RESULT = "%"; :};
+
+INSTRUCCIONES ::= MUCHAS_INST:is
+                  {: RESULT = is; :}
+              |
+                  {: RESULT = new Instrucciones.No_Instr(); :};
+
+MUCHAS_INST ::= INSTRUCCIONES:is INSTRUCCION:i
+               {: RESULT = new Instrucciones.Muchas_Instr(is, i); :};
+
+INSTRUCCION ::= INSTR_IF:i
+        {: RESULT = i; :}
+    | INSTR_IF_ELSE: i
+        {: RESULT = i; :}
+    | INSTR_ASIGN: i
+        {: RESULT = i; :}
+    | INSTR_INVOC: i
+        {: RESULT = i; :}
+    | INSTR_WHILE: i
+        {: RESULT = i; :}
+    | INSTR_READ: i
+        {: RESULT = i; :}
+    | INSTR_WRITE: i
+        {: RESULT = i; :}
+    | INSTR_NL: i
+        {: RESULT = i; :}
+    | INSTR_NEW: i
+        {: RESULT = i; :}
+    | INSTR_DELETE: i
+        {: RESULT = i; :}
+    | INSTR_SEQ: i
+        {: RESULT = i; :};
+
+
+INSTR_IF ::= IF E0:exp THEN INSTRUCCIONES:is END PCOMA
+            {: RESULT = new Instruccion.If_then(exp, is); :};
+
+INSTR_IF_ELSE ::= IF E0:exp THEN INSTRUCCIONES:is1 ELSE INSTRUCCIONES:is2 END PCOMA
+            {: RESULT = new Instruccion.If_then_else(exp, is1, is2); :};
+
+INSTR_ASIGN ::= E0:e1 ASIGN E0:e2 PCOMA
+            {: RESULT = new Instruccion.Asignacion(e1, e2); :};
+
+INSTR_INVOC ::= ID:id PAP PREALES:preales PCI PCOMA
+            {: RESULT = new Instruccion.Invoc(id, preales); :};
+
+INSTR_WHILE ::= WHILE E0:exp DO INSTRUCCIONES:is END PCOMA
+            {: RESULT = new Instruccion.While(exp, is); :};
+
+INSTR_READ ::= READ E0:exp PCOMA
+            {: RESULT = new Instruccion.Read(exp); :};
+
+INSTR_WRITE ::= WRITE E0:exp PCOMA
+            {: RESULT = new Instruccion.Write(exp); :};
+
+INSTR_NL ::= NL PCOMA
+        {: RESULT = new Instruccion.Nl(); :};
+
+INSTR_NEW ::= NEW E0:exp PCOMA
+        {: RESULT = new Instruccion.New(exp); :};
+
+INSTR_DELETE ::= DELETE E0:exp PCOMA
+        {: RESULT = new Instruccion.Delete(exp); :};
+
+INSTR_SEQ ::= SEQ DECS:decs BEGIN INSTRUCCIONES:is END PCOMA
+        {: RESULT = new Instruccion.Mix(decs, is); :};
+
+PREALES ::= MUCHOS_PREALES:preales
+        {: RESULT = preales; :}
+    |
+        {: RESULT = new Preales.No_pReal(); :};
+
+MUCHOS_PREALES ::= PREALES:preales COMA E0: exp
+        {: RESULT = new Preales.Muchos_pReales(preales, exp); :}
+    | E0: exp
+        {: RESULT = new Preales.Muchos_pReales(new Preales.No_pReal(), exp); :};
+

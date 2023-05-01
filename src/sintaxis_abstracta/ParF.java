@@ -18,8 +18,10 @@ public class ParF extends Nodo {
 
         @Override
         public void vincula(TablaSimbolos ts) {
+
             this.tipoParametro.vincula(ts);
-            if (ts.contiene(this.nombre)) GestorErrores.addError("Identificador duplicado: " + this.nombre);
+            if (ts.contiene(this.nombre))
+                GestorErrores.addError("Identificador duplicado: " + this.nombre);
             else ts.añadir(this.nombre, this);
         }
 
@@ -53,7 +55,7 @@ public class ParF extends Nodo {
         private final String nombre;
         private final Tipo tipoParametro;
 
-        public ParF_Ref(String nombre,Tipo tipo) {
+        public ParF_Ref(String nombre, Tipo tipo) {
             this.nombre = nombre;
             this.tipoParametro = tipo;
         }

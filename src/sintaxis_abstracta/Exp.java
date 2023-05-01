@@ -221,7 +221,7 @@ public class Exp extends Nodo {
     }
 
 
-    public static class Exp_menos extends Exp{
+    public static class Exp_menos extends Exp {
 
         private final Exp e1;
         public Exp_menos(Exp e1){
@@ -1399,7 +1399,9 @@ public class Exp extends Nodo {
 
         Exp exp;
 
-        public Exp_indireccion(Exp exp) { this.exp = exp; }
+        public Exp_indireccion(Exp exp) {
+            this.exp = exp;
+        }
 
         @Override
         public void vincula_is(TablaSimbolos ts) { this.exp.vincula_is(ts); }

@@ -73,25 +73,25 @@ public class Instruccion extends Nodo {
     public static class If_then extends Instruccion {
 
         private final Exp exp;
-        private final Instruccion i;
+        private final Instrucciones is;
 
-        public If_then(Exp exp, Instruccion i) {
+        public If_then(Exp exp, Instrucciones is) {
             this.exp = exp;
-            this.i = i;
+            this.is = is;
         }
 
         @Override
         public void vincula_is(TablaSimbolos ts) {
             this.exp.vincula_is(ts);
-            this.i.vincula_is(ts);
+            this.is.vincula_is(ts);
         }
 
         @Override
         public void tipado() {
             this.exp.tipado();
-            this.i.tipado();
+            this.is.tipado();
 
-            if (Utils.esBool(this.exp.tipo) && Utils.esOk(this.i.tipo)) this.tipo = new Tipo.Ok();
+            if (Utils.esBool(this.exp.tipo) && Utils.esOk(this.is.tipo)) this.tipo = new Tipo.Ok();
             else {
                 GestorErrores.addError("Error tipado if_then.");
                 this.tipo = new Tipo.Error();
@@ -100,128 +100,7 @@ public class Instruccion extends Nodo {
 
         @Override
         public void asig_espacio(GestorMem gm) {
-            this.i.asig_espacio(gm);
-        }
-
-        @Override
-        public void gen_cod(MaquinaP maquinap) {
-            this.exp.gen_cod(maquinap);
-            if (Utils.es_desig(this.exp))
-                maquinap.ponInstruccion(maquinap.apilaInd());
-            maquinap.ponInstruccion(maquinap.irF(this.i.sig));
-            this.i.gen_cod(maquinap);
-        }
-
-        @Override
-        public void etiquetado(GestorEtiquetado ge) {
-
-            this.ini = ge.etq;
-
-            this.exp.etiquetado(ge);
-            if (Utils.es_desig(this.exp))
-                ge.etq +=1;
-            ge.etq += 1;
-            this.i.etiquetado(ge);
-
-            this.sig = ge.etq;
-        }
-    }
-
-    public static class If_then_else extends Instruccion {
-
-        private final Exp exp;
-        private final Instruccion i1, i2;
-
-        public If_then_else(Exp exp, Instruccion i1, Instruccion i2) {
-            this.exp = exp;
-            this.i1 = i1;
-            this.i2 = i2;
-        }
-
-        @Override
-        public void vincula_is(TablaSimbolos ts) {
-            this.exp.vincula_is(ts);
-            this.i1.vincula_is(ts);
-            this.i2.vincula_is(ts);
-        }
-
-        @Override
-        public void tipado() {
-            this.exp.tipado();
-            this.i1.tipado();
-            this.i2.tipado();
-
-            if (Utils.esBool(this.exp.tipo) && Utils.esOk(this.i1.tipo) && Utils.esOk(this.i2.tipo)) this.tipo = new Tipo.Ok();
-            else {
-                GestorErrores.addError("Error tipado if_else_then.");
-                this.tipo = new Tipo.Error();
-            }
-        }
-
-        @Override
-        public void asig_espacio(GestorMem gm) {
-            this.i1.asig_espacio(gm);
-            this.i2.asig_espacio(gm);
-        }
-
-        @Override
-        public void gen_cod(MaquinaP maquinap) {
-            this.exp.gen_cod(maquinap);
-            if (Utils.es_desig(this.exp))
-                maquinap.ponInstruccion(maquinap.apilaInd());
-            maquinap.ponInstruccion(maquinap.irF(this.i2.ini));
-            this.i1.gen_cod(maquinap);
-            maquinap.ponInstruccion(maquinap.irA(this.sig));
-            this.i2.gen_cod(maquinap);
-        }
-
-        @Override
-        public void etiquetado(GestorEtiquetado ge) {
-            this.ini = ge.etq;
-
-            this.exp.etiquetado(ge);
-            if (Utils.es_desig(this.exp))
-                ge.etq +=1;
-            ge.etq += 1;
-            this.i1.etiquetado(ge);
-            ge.etq += 1;
-            this.i2.etiquetado(ge);
-
-            this.sig = ge.etq;
-        }
-    }
-
-    public static class While extends Instruccion {
-
-        private final Exp exp;
-        private final Instruccion i;
-
-        public While(Exp exp, Instruccion i) {
-            this.exp = exp;
-            this.i = i;
-        }
-
-        @Override
-        public void vincula_is(TablaSimbolos ts) {
-            this.exp.vincula_is(ts);
-            this.i.vincula_is(ts);
-        }
-
-        @Override
-        public void tipado() {
-            this.exp.tipado();
-            this.i.tipado();
-
-            if (Utils.esBool(this.exp.tipo) && Utils.esOk(this.i.tipo)) this.tipo = new Tipo.Ok();
-            else {
-                GestorErrores.addError("Error tipado while.");
-                this.tipo = new Tipo.Error();
-            }
-        }
-
-        @Override
-        public void asig_espacio(GestorMem gm) {
-            this.i.asig_espacio(gm);
+            this.is.asig_espacio(gm);
         }
 
         @Override
@@ -230,7 +109,128 @@ public class Instruccion extends Nodo {
             if (Utils.es_desig(this.exp))
                 maquinap.ponInstruccion(maquinap.apilaInd());
             maquinap.ponInstruccion(maquinap.irF(this.sig));
-            this.i.gen_cod(maquinap);
+            this.is.gen_cod(maquinap);
+        }
+
+        @Override
+        public void etiquetado(GestorEtiquetado ge) {
+
+            this.ini = ge.etq;
+
+            this.exp.etiquetado(ge);
+            if (Utils.es_desig(this.exp))
+                ge.etq +=1;
+            ge.etq += 1;
+            this.is.etiquetado(ge);
+
+            this.sig = ge.etq;
+        }
+    }
+
+    public static class If_then_else extends Instruccion {
+
+        private final Exp exp;
+        private final Instrucciones is1, is2;
+
+        public If_then_else(Exp exp, Instrucciones is1, Instrucciones is2) {
+            this.exp = exp;
+            this.is1 = is1;
+            this.is2 = is2;
+        }
+
+        @Override
+        public void vincula_is(TablaSimbolos ts) {
+            this.exp.vincula_is(ts);
+            this.is1.vincula_is(ts);
+            this.is2.vincula_is(ts);
+        }
+
+        @Override
+        public void tipado() {
+            this.exp.tipado();
+            this.is1.tipado();
+            this.is2.tipado();
+
+            if (Utils.esBool(this.exp.tipo) && Utils.esOk(this.is1.tipo) && Utils.esOk(this.is2.tipo)) this.tipo = new Tipo.Ok();
+            else {
+                GestorErrores.addError("Error tipado if_else_then.");
+                this.tipo = new Tipo.Error();
+            }
+        }
+
+        @Override
+        public void asig_espacio(GestorMem gm) {
+            this.is1.asig_espacio(gm);
+            this.is2.asig_espacio(gm);
+        }
+
+        @Override
+        public void gen_cod(MaquinaP maquinap) {
+            this.exp.gen_cod(maquinap);
+            if (Utils.es_desig(this.exp))
+                maquinap.ponInstruccion(maquinap.apilaInd());
+            maquinap.ponInstruccion(maquinap.irF(this.is2.ini));
+            this.is1.gen_cod(maquinap);
+            maquinap.ponInstruccion(maquinap.irA(this.sig));
+            this.is2.gen_cod(maquinap);
+        }
+
+        @Override
+        public void etiquetado(GestorEtiquetado ge) {
+            this.ini = ge.etq;
+
+            this.exp.etiquetado(ge);
+            if (Utils.es_desig(this.exp))
+                ge.etq +=1;
+            ge.etq += 1;
+            this.is1.etiquetado(ge);
+            ge.etq += 1;
+            this.is2.etiquetado(ge);
+
+            this.sig = ge.etq;
+        }
+    }
+
+    public static class While extends Instruccion {
+
+        private final Exp exp;
+        private final Instrucciones is;
+
+        public While(Exp exp, Instrucciones is) {
+            this.exp = exp;
+            this.is = is;
+        }
+
+        @Override
+        public void vincula_is(TablaSimbolos ts) {
+            this.exp.vincula_is(ts);
+            this.is.vincula_is(ts);
+        }
+
+        @Override
+        public void tipado() {
+            this.exp.tipado();
+            this.is.tipado();
+
+            if (Utils.esBool(this.exp.tipo) && Utils.esOk(this.is.tipo)) this.tipo = new Tipo.Ok();
+            else {
+                GestorErrores.addError("Error tipado while.");
+                this.tipo = new Tipo.Error();
+            }
+        }
+
+        @Override
+        public void asig_espacio(GestorMem gm) {
+            this.is.asig_espacio(gm);
+        }
+
+        @Override
+        public void gen_cod(MaquinaP maquinap) {
+            this.exp.gen_cod(maquinap);
+            if (Utils.es_desig(this.exp))
+                maquinap.ponInstruccion(maquinap.apilaInd());
+            maquinap.ponInstruccion(maquinap.irF(this.sig));
+            this.is.gen_cod(maquinap);
             maquinap.ponInstruccion(maquinap.irA(this.ini));
         }
 
@@ -243,11 +243,10 @@ public class Instruccion extends Nodo {
                 ge.etq +=1;
 
             ge.etq += 1;
-            this.i.etiquetado(ge);
+            this.is.etiquetado(ge);
             ge.etq += 1;
 
             this.sig = ge.etq;
-
         }
     }
 

@@ -46,8 +46,44 @@ public class Instrucciones extends Nodo {
 
         @Override
         public void etiquetado(GestorEtiquetado ge) {
+            this.ini = ge.etq;
             this.is.etiquetado(ge);
             this.i.etiquetado(ge);
+            this.sig = ge.etq; // TODO: comprobar esto
+        }
+    }
+
+    public static class Una_Instr extends Instrucciones {
+
+        private final Instruccion i;
+
+        public Una_Instr(Instruccion i) {
+            this.i = i;
+        }
+
+        @Override
+        public void vincula_is(TablaSimbolos ts) {
+            this.i.vincula_is(ts);
+        }
+
+        @Override
+        public void tipado() { this.tipo = this.i.tipo; }
+
+        @Override
+        public void asig_espacio(GestorMem gm) {
+            this.i.asig_espacio(gm);
+        }
+
+        @Override
+        public void gen_cod(MaquinaP maquinap) {
+            this.i.gen_cod(maquinap);
+        }
+
+        @Override
+        public void etiquetado(GestorEtiquetado ge) {
+            this.ini = ge.etq;
+            this.i.etiquetado(ge);
+            this.sig = ge.etq;
         }
     }
 

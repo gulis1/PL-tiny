@@ -1,3 +1,6 @@
+import ascendente.analisis_lexico.Jflexer;
+import ascendente.analisis_lexico.UnidadLexica;
+import ascendente.analisis_sintactico.Parser;
 import maquinap.MaquinaP;
 import sintaxis_abstracta.*;
 import utils.GestorErrores;
@@ -5,21 +8,56 @@ import utils.GestorEtiquetado;
 import utils.GestorMem;
 import utils.TablaSimbolos;
 
+import java.io.File;
+import java.io.FileReader;
+
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
+        FileReader reader = new FileReader(new File("aaa.txt"));
 
-       // Dec dec_type = new Dec.Dec_type("tipoMamichan", new Tipo.Cadena());
-       // Dec dec_ptr = new Dec.Dec_var(new Tipo.Pointer(new Tipo.Ref("tipoMamichan")), "p");
-       // Decs decs = new Decs.Muchas_decs( new Decs.Muchas_decs(new Decs.No_decs(), dec_type), dec_ptr);
+        Jflexer jflexer = new Jflexer(reader);
+//        while (true) {
+//            try {
+//                UnidadLexica token = jflexer.next_token();
+//                System.out.println(token + ": " + jflexer.lexema());
+//                if (token.toString().equals("EOF"))
+//                    break;
+//            }
+//
+//            catch (Error e) {
+//                System.out.println("Error en: " + jflexer.fila() + ", " + jflexer.columna());
+//            }
+//        }
+//
+//        reader = new FileReader(new File("aaa.txt"));
+//        jflexer = new Jflexer(reader);
+        Parser parser = new Parser(jflexer);
 
-       // Instruccion i1 = new Instruccion.New(new Exp.Exp_id("p"));
-       // Instruccion i2 = new Instruccion.Asignacion(new Exp.Exp_indireccion(new Exp.Exp_id("p")), new Exp.Exp_entero("9"));
-       // Instruccion i3 = new Instruccion.Delete(new Exp.Exp_id("p"));
-       // Instruccion i4 = new Instruccion.New(new Exp.Exp_id("p"));
-       // Instruccion i5 = new Instruccion.Asignacion(new Exp.Exp_indireccion(new Exp.Exp_id("p")), new Exp.Exp_entero("17"));
-       // Instruccion i6 = new Instruccion.Write(new Exp.Exp_indireccion(new Exp.Exp_id("p")));
+        try {
+            Prog prog = (Prog) parser.parse().value;
+            ejecutar(prog);
+        }
 
+        catch (Exception e) {
+            GestorErrores.printErrores();
+            throw(e);
+        }
+    }
+
+//    public static void main(String[] args) {
+//
+//       // Dec dec_type = new Dec.Dec_type("tipoMamichan", new Tipo.Cadena());
+//       // Dec dec_ptr = new Dec.Dec_var(new Tipo.Pointer(new Tipo.Ref("tipoMamichan")), "p");
+//       // Decs decs = new Decs.Muchas_decs( new Decs.Muchas_decs(new Decs.No_decs(), dec_type), dec_ptr);
+//
+//       // Instruccion i1 = new Instruccion.New(new Exp.Exp_id("p"));
+//       // Instruccion i2 = new Instruccion.Asignacion(new Exp.Exp_indireccion(new Exp.Exp_id("p")), new Exp.Exp_entero("9"));
+//       // Instruccion i3 = new Instruccion.Delete(new Exp.Exp_id("p"));
+//       // Instruccion i4 = new Instruccion.New(new Exp.Exp_id("p"));
+//       // Instruccion i5 = new Instruccion.Asignacion(new Exp.Exp_indireccion(new Exp.Exp_id("p")), new Exp.Exp_entero("17"));
+//       // Instruccion i6 = new Instruccion.Write(new Exp.Exp_indireccion(new Exp.Exp_id("p")));
+//
 //        Dec dec_proc = new Dec.Dec_var(new Tipo.Entero(), "y");
 //
 //        Instruccion iproc1 = new Instruccion.Write(new Exp.Exp_cadena("Hola, "));
@@ -37,28 +75,9 @@ public class Main {
 //        Instruccion i3 = new Instruccion.Write(new Exp.Exp_id("num"));
 //        Instrucciones is = new Instrucciones.Muchas_Instr(new Instrucciones.Muchas_Instr(new Instrucciones.Muchas_Instr(new Instrucciones.No_Instr(), i1), i2), i3);
 //        Prog prog = new Prog(decs, is);
-
-        Decs decs = new Decs.No_decs();
-
-        Dec dec_mix = new Dec.Dec_var(new Tipo.Entero(), "y");
-        Decs decs_mix = new Decs.Muchas_decs(new Decs.No_decs(), dec_mix);
-
-        Instruccion imix_1 = new Instruccion.Asignacion(new Exp.Exp_id("y"), new Exp.Exp_entero("5"));
-        Instruccion imix_2 = new Instruccion.Write(new Exp.Exp_id("y"));
-        Instrucciones is_mix = new Instrucciones.Muchas_Instr(new Instrucciones.Muchas_Instr(new Instrucciones.No_Instr(), imix_1), imix_2);
-        Instruccion mix = new Instruccion.Mix(decs_mix, is_mix);
-
-
-        Instruccion i1 = new Instruccion.If_then(new Exp.Exp_neq(new Exp.Exp_entero("4"),new Exp.Exp_real("4.46454")) , mix);
-        Instrucciones is = new Instrucciones.Muchas_Instr(new Instrucciones.No_Instr(), i1);
-
-
-
-        Prog prog = new Prog(decs, is);
-
-
-        ejecutar(prog);
-    }
+//
+//        ejecutar(prog);
+//    }
 
     private static void ejecutar(Prog programa) {
 

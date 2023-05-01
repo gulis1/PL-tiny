@@ -18,14 +18,14 @@ public class Decs extends Nodo {
 
         @Override
         public void vincula(TablaSimbolos ts) {
-            this.dec.vincula(ts);
             this.decs.vincula(ts);
+            this.dec.vincula(ts);
         }
 
         @Override
         public void vincula_ref(TablaSimbolos ts) {
-            this.dec.vincula_ref(ts);
             this.decs.vincula_ref(ts);
+            this.dec.vincula_ref(ts);
         }
 
         @Override
