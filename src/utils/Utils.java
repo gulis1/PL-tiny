@@ -79,6 +79,7 @@ public class Utils {
 
         return false;
     }
+
     //TODO cuando ya se tengan punturos (no se si se pueden unir a la funcion de arriba)
     public static boolean tipado_igualdad(Tipo t1, Tipo t2){
         return false;
