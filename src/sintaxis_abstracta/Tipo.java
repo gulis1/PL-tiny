@@ -156,6 +156,10 @@ public abstract class Tipo extends Nodo {
         public Tipo getT() {
             return this.tipoArray;
         }
+
+        public int getTamArray() {
+            return this.tamArray;
+        }
     }
 
     public static class Record extends Tipo {
@@ -179,7 +183,7 @@ public abstract class Tipo extends Nodo {
         @Override
         public void tipado() {
             this.campos.tipado();
-            this.tipo =  new Tipo.Ok();
+            this.tipo = new Tipo.Ok();
         }
 
         @Override
@@ -202,6 +206,10 @@ public abstract class Tipo extends Nodo {
 
         public int desp_campo(String c) {
             return this.campos.despl_campo(c);
+        }
+
+        public Campos getCampos() {
+            return this.campos;
         }
     }
 
@@ -253,7 +261,7 @@ public abstract class Tipo extends Nodo {
 
             if (Utils.esRef(this.tipoBase)) {
                 Dec.Dec_type dec_tipo = (Dec.Dec_type) this.tipoBase.vinculo;
-                this.tipoBase.asig_espacio_tipo(gm);
+                dec_tipo.getTipo().asig_espacio_tipo(gm); //ASDasd
                 this.tam = dec_tipo.getTipo().tam;
             }
 
@@ -297,10 +305,6 @@ public abstract class Tipo extends Nodo {
         }
 
         @Override
-        public void asig_espacio_tipo2(GestorMem gm) {
-
-            Dec.Dec_type dec = (Dec.Dec_type) this.vinculo;
-            this.tam = dec.getTipo().tam;
-        }
+        public void asig_espacio_tipo2(GestorMem gm) {}
     }
 }

@@ -9,114 +9,122 @@ import utils.GestorMem;
 import utils.TablaSimbolos;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
+
+import static java.lang.System.exit;
 
 public class Main {
 
-    public static void main(String[] args) throws Exception {
-        FileReader reader = new FileReader(new File("aaa.txt"));
+    public static void main(String[] args) throws IOException {
 
-        Jflexer jflexer = new Jflexer(reader);
-//        while (true) {
-//            try {
-//                UnidadLexica token = jflexer.next_token();
-//                System.out.println(token + ": " + jflexer.lexema());
-//                if (token.toString().equals("EOF"))
-//                    break;
-//            }
-//
-//            catch (Error e) {
-//                System.out.println("Error en: " + jflexer.fila() + ", " + jflexer.columna());
-//            }
-//        }
-//
-//        reader = new FileReader(new File("aaa.txt"));
-//        jflexer = new Jflexer(reader);
+        if (args.length != 2) {
+            System.out.println("Argumentos incorrectos.");
+            exit(1);
+        }
+
+        try {
+            FileReader reader = new FileReader(args[1]);
+            switch (args[0]) {
+
+                case "lex":
+                    imprimir_tokens(reader);
+                    break;
+                case "sasc":
+                    System.out.println("No sé que hacer aquí.");
+                    break;
+                case "asc":
+                    procesar_asc(reader);
+                    break;
+                case "sdesc":
+                case "desc":
+                    System.out.println("No implementado.");
+                    break;
+                default:
+                    System.out.println("Modo desconocido: " + args[0]);
+            }
+        }
+        catch (FileNotFoundException e) {
+            System.out.println("Fichero no encontrado.");
+            exit(1);
+        }
+    }
+
+    private static void imprimir_tokens(FileReader fileReader) throws IOException {
+        System.out.println("Lista de tokens: \n");
+        Jflexer jflexer = new Jflexer(fileReader);
+        while (true) {
+            try {
+                UnidadLexica token = jflexer.next_token();
+                System.out.println(token + ": " + jflexer.lexema());
+                if (token.toString().equals("EOF"))
+                    break;
+            }
+            catch (Error e) {
+                System.out.println("Error en: " + jflexer.fila() + ", " + jflexer.columna());
+            }
+        }
+    }
+
+    private static void procesar_asc(FileReader fileReader) {
+
+        Jflexer jflexer = new Jflexer(fileReader);
         Parser parser = new Parser(jflexer);
 
         try {
             Prog prog = (Prog) parser.parse().value;
             ejecutar(prog);
         }
-
         catch (Exception e) {
+            System.out.println("Error en la construcción del AST:");
             GestorErrores.printErrores();
-            throw(e);
         }
     }
-
-//    public static void main(String[] args) {
-//
-//       // Dec dec_type = new Dec.Dec_type("tipoMamichan", new Tipo.Cadena());
-//       // Dec dec_ptr = new Dec.Dec_var(new Tipo.Pointer(new Tipo.Ref("tipoMamichan")), "p");
-//       // Decs decs = new Decs.Muchas_decs( new Decs.Muchas_decs(new Decs.No_decs(), dec_type), dec_ptr);
-//
-//       // Instruccion i1 = new Instruccion.New(new Exp.Exp_id("p"));
-//       // Instruccion i2 = new Instruccion.Asignacion(new Exp.Exp_indireccion(new Exp.Exp_id("p")), new Exp.Exp_entero("9"));
-//       // Instruccion i3 = new Instruccion.Delete(new Exp.Exp_id("p"));
-//       // Instruccion i4 = new Instruccion.New(new Exp.Exp_id("p"));
-//       // Instruccion i5 = new Instruccion.Asignacion(new Exp.Exp_indireccion(new Exp.Exp_id("p")), new Exp.Exp_entero("17"));
-//       // Instruccion i6 = new Instruccion.Write(new Exp.Exp_indireccion(new Exp.Exp_id("p")));
-//
-//        Dec dec_proc = new Dec.Dec_var(new Tipo.Entero(), "y");
-//
-//        Instruccion iproc1 = new Instruccion.Write(new Exp.Exp_cadena("Hola, "));
-//        Instruccion iproc2 = new Instruccion.Write(new Exp.Exp_id("nombre"));
-//        Instruccion iproc3 = new Instruccion.Asignacion(new Exp.Exp_id("y"), new Exp.Exp_entero("3"));
-//        Instruccion iproc4 = new Instruccion.Asignacion(new Exp.Exp_id("x"), new Exp.Exp_suma(new Exp.Exp_id("x"), new Exp.Exp_id("y")));
-//        Instrucciones isProc = new Instrucciones.Muchas_Instr(new Instrucciones.Muchas_Instr(new Instrucciones.Muchas_Instr(new Instrucciones.Muchas_Instr(new Instrucciones.No_Instr(), iproc1), iproc2), iproc3), iproc4);
-//        ParFs parFs = new ParFs.Muchos_ParF(new ParFs.Muchos_ParF(new ParFs.No_Parf(), new ParF.ParF_Valor("nombre", new Tipo.Cadena())), new ParF.ParF_Ref("x", new Tipo.Entero()));
-//        Dec f1 = new Dec.Dec_proc("saludar", parFs, new Decs.Muchas_decs(new Decs.No_decs(), dec_proc), isProc);
-//        Decs decs = new Decs.Muchas_decs(new Decs.Muchas_decs(new Decs.No_decs(), new Dec.Dec_var(new Tipo.Entero(), "num")), f1);
-//
-//        Preales preales = new Preales.Muchos_pReales(new Preales.Muchos_pReales(new Preales.No_pReal(), new Exp.Exp_cadena("Mamichan")), new Exp.Exp_id("num"));
-//        Instruccion i1 = new Instruccion.Asignacion(new Exp.Exp_id("num"), new Exp.Exp_entero("4"));
-//        Instruccion i2 = new Instruccion.Invoc("saludar", preales);
-//        Instruccion i3 = new Instruccion.Write(new Exp.Exp_id("num"));
-//        Instrucciones is = new Instrucciones.Muchas_Instr(new Instrucciones.Muchas_Instr(new Instrucciones.Muchas_Instr(new Instrucciones.No_Instr(), i1), i2), i3);
-//        Prog prog = new Prog(decs, is);
-//
-//        ejecutar(prog);
-//    }
 
     private static void ejecutar(Prog programa) {
 
         TablaSimbolos ts = new TablaSimbolos();
         GestorMem gm = new GestorMem();
         GestorEtiquetado ge = new GestorEtiquetado();
-        MaquinaP maquina = new MaquinaP(10, 20 ,10 ,2);
+        MaquinaP maquina = new MaquinaP(200, 200 ,400 ,10);
 
         programa.vincula(ts);
         if (GestorErrores.hayErrores()) {
+            System.out.println("Error(es) en proceso de vinculación:");
             GestorErrores.printErrores();
             return;
         }
 
         programa.tipado();
         if (GestorErrores.hayErrores()) {
+            System.out.println("Error(es) en proceso de tipado:");
             GestorErrores.printErrores();
             return;
         }
 
         programa.asig_espacio(gm);
         if (GestorErrores.hayErrores()) {
+            System.out.println("Error(es) en proceso de asignación espacio:");
             GestorErrores.printErrores();
             return;
         }
 
         programa.etiquetado(ge);
         if (GestorErrores.hayErrores()) {
+            System.out.println("Error(es) en proceso de etiquetado:");
             GestorErrores.printErrores();
             return;
         }
 
         programa.gen_cod(maquina);
         if (GestorErrores.hayErrores()) {
+            System.out.println("Error(es) en proceso de generación de código:");
             GestorErrores.printErrores();
             return;
         }
 
-        maquina.muestraCodigo();
+//        maquina.muestraCodigo();
         maquina.ejecuta();
     }
 }

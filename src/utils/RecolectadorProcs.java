@@ -21,9 +21,10 @@ public class RecolectadorProcs {
 
         if (decs instanceof Decs.Muchas_decs) {
             Decs.Muchas_decs muchas_decs = (Decs.Muchas_decs) decs;
-            recolectaProcedimientos(muchas_decs.getDecs());
             if (muchas_decs.getDec() instanceof Dec.Dec_proc)
                 procedimientos.push((Dec.Dec_proc) muchas_decs.getDec());
+            recolectaProcedimientos(muchas_decs.getDecs());
+
         }
     }
 }

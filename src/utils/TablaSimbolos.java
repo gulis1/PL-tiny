@@ -27,9 +27,9 @@ public class TablaSimbolos {
     public void quitar_nivel() { this.tabla.remove(this.tabla.size() - 1); }
     public void añadir(String clave, Nodo valor) {
 
-//        if (this.tabla.get(this.tabla.size() - 1).containsKey(clave))
-//            GestorErrores.addError("Identificador duplicado: " + clave);
-//        else
+        if (this.tabla.get(this.tabla.size() - 1).containsKey(clave))
+            GestorErrores.addError("Identificador duplicado: " + clave);
+        else
             this.tabla.get(tabla.size() - 1).put(clave, valor);
     }
     public Nodo valor_de(String clave) {

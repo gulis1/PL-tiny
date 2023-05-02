@@ -26,8 +26,7 @@ public class Dec extends Nodo {
         public void vincula(TablaSimbolos ts) {
 
             this.T.vincula(ts);
-            if (!ts.contiene(this.string)) ts.añadir(this.string, this);
-            else GestorErrores.addError("Identificador ya definido: " + string);
+            ts.añadir(this.string, this);
         }
 
         @Override
@@ -78,8 +77,8 @@ public class Dec extends Nodo {
         public void vincula(TablaSimbolos ts) {
 
             this.t.vincula(ts);
-            if (!ts.contiene(this.string)) ts.añadir(this.string, this);
-            else GestorErrores.addError("Identificador ya definido: " + string);
+            ts.añadir(this.string, this);
+
         }
 
         @Override
@@ -117,8 +116,7 @@ public class Dec extends Nodo {
         @Override
         public void vincula(TablaSimbolos ts) {
 
-            if (ts.contiene(this.id)) GestorErrores.addError("Identificador ya definido: " + id);
-            else ts.añadir(this.id, this);
+            ts.añadir(this.id, this);
 
             ts.nuevo_nivel();
             this.pfs.vincula(ts);
@@ -130,6 +128,7 @@ public class Dec extends Nodo {
 
         @Override
         public void vincula_ref(TablaSimbolos ts) {
+            this.pfs.vincula_ref(ts);
            // TODO: revisar si esto tiene que ir vacio o no,.
         }
 
@@ -151,6 +150,7 @@ public class Dec extends Nodo {
             gm.dir = 0;
             this.pfs.asig_espacio(gm);
             this.decs.asig_espacio(gm);
+            this.is.asig_espacio(gm);
             this.tam_datos = gm.dir;
             gm.dir = dir_anterior;
             gm.nivel--;

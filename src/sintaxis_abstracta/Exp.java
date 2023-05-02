@@ -1,7 +1,6 @@
 package sintaxis_abstracta;
 
 
-import jdk.jshell.execution.Util;
 import maquinap.MaquinaP;
 import utils.GestorErrores;
 import utils.GestorEtiquetado;
@@ -9,8 +8,6 @@ import utils.TablaSimbolos;
 import utils.Utils;
 
 public class Exp extends Nodo {
-
-    public static class Null extends Exp { public Null() {} }
 
     /**
      * EXPRESIONES BÁSICAS
@@ -39,7 +36,7 @@ public class Exp extends Nodo {
             else if (this.vinculo instanceof ParF.ParF_Ref)
                 this.tipo = ((ParF.ParF_Ref) this.vinculo).getTipoParametro();
             else {
-                GestorErrores.addError("Error: no es una de");
+                GestorErrores.addError("Error: no es una dec");
             }
         }
 
@@ -166,6 +163,17 @@ public class Exp extends Nodo {
 
         @Override
         public void vincula_is(TablaSimbolos ts) { }
+
+        @Override
+        public void tipado() { this.tipo = new Tipo.Null(); }
+
+        @Override
+        public void gen_cod(MaquinaP maquinaP) {
+            maquinaP.ponInstruccion(maquinaP.apilaInt(0));
+        }
+
+        @Override
+        public void etiquetado(GestorEtiquetado ge) { ge.etq += 1; }
     }
 
     /*
@@ -296,8 +304,8 @@ public class Exp extends Nodo {
             this.e1.tipado();
             this.e2.tipado();
 
-            if(Utils.tipado_relacional(this.e1.tipo,this.e2.tipo) || Utils.tipado_igualdad(this.e1.tipo,this.e2.tipo)){
-                this.tipo= new Tipo.Bool();
+            if(Utils.tipado_eq(this.e1.tipo,this.e2.tipo)){
+                this.tipo = new Tipo.Bool();
             }
             else {
                 this.tipo = new Tipo.Error();
@@ -333,8 +341,8 @@ public class Exp extends Nodo {
                 maquinap.ponInstruccion(maquinap.eqFloat());
             else if(Utils.esEntero(this.e1.tipo) && Utils.esReal(this.e2.tipo))
                 maquinap.ponInstruccion(maquinap.eqFloat());
-
-
+            else // Estamos comparando punteros
+                maquinap.ponInstruccion(maquinap.eqInt());
         }
 
         @Override
@@ -377,7 +385,7 @@ public class Exp extends Nodo {
             this.e1.tipado();
             this.e2.tipado();
 
-            if(Utils.tipado_relacional(this.e1.tipo,this.e2.tipo) || Utils.tipado_igualdad(this.e1.tipo,this.e2.tipo)){
+            if(Utils.tipado_eq(this.e1.tipo,this.e2.tipo)){
                 this.tipo= new Tipo.Bool();
             }
             else {
@@ -414,6 +422,8 @@ public class Exp extends Nodo {
                 maquinap.ponInstruccion(maquinap.eqFloat());
             else if(Utils.esEntero(this.e1.tipo) && Utils.esReal(this.e2.tipo))
                 maquinap.ponInstruccion(maquinap.eqFloat());
+            else // Estamos comparando punteros
+                maquinap.ponInstruccion(maquinap.eqInt());
 
 
             maquinap.ponInstruccion(maquinap.not());
@@ -458,7 +468,7 @@ public class Exp extends Nodo {
             this.e1.tipado();
             this.e2.tipado();
 
-            if(Utils.tipado_relacional(this.e1.tipo,this.e2.tipo)){
+            if(Utils.tipado_ord(this.e1.tipo,this.e2.tipo)){
                 this.tipo= new Tipo.Bool();
             }
             else {
@@ -499,6 +509,8 @@ public class Exp extends Nodo {
 
             else if(Utils.esEntero(this.e1.tipo) && Utils.esReal(this.e2.tipo))
                 maquinap.ponInstruccion(maquinap.gtFloat());
+            else // Estamos comparando punteros
+                maquinap.ponInstruccion(maquinap.gtInt());
 
         }
 
@@ -541,17 +553,14 @@ public class Exp extends Nodo {
             this.e1.tipado();
             this.e2.tipado();
 
-            if(Utils.tipado_relacional(this.e1.tipo,this.e2.tipo)){
+            if(Utils.tipado_ord(this.e1.tipo,this.e2.tipo)){
                 this.tipo= new Tipo.Bool();
             }
             else {
                 this.tipo = new Tipo.Error();
                 GestorErrores.addError("Los tipos de E0 y E1 no son operables");
             }
-
-
         }
-
 
         @Override
         public void gen_cod(MaquinaP maquinap) {
@@ -580,9 +589,10 @@ public class Exp extends Nodo {
                 maquinap.ponInstruccion(maquinap.gtFloat());
             else if (Utils.esReal(this.e1.tipo) && Utils.esEntero(this.e2.tipo))
                 maquinap.ponInstruccion(maquinap.gtFloat());
-
             else if(Utils.esEntero(this.e1.tipo) && Utils.esReal(this.e2.tipo))
                 maquinap.ponInstruccion(maquinap.gtFloat());
+            else // Estamos comparando punteros
+                maquinap.ponInstruccion(maquinap.gtInt());
 
 
             //Se vuelven a meter los valores para hacer el ==
@@ -611,6 +621,8 @@ public class Exp extends Nodo {
                 maquinap.ponInstruccion(maquinap.eqFloat());
             else if(Utils.esEntero(this.e1.tipo) && Utils.esReal(this.e2.tipo))
                 maquinap.ponInstruccion(maquinap.eqFloat());
+            else // Estamos comparando punteros
+                maquinap.ponInstruccion(maquinap.eqInt());
 
 
             //se hace la or logica de los resultados previos
@@ -669,17 +681,14 @@ public class Exp extends Nodo {
             this.e1.tipado();
             this.e2.tipado();
 
-            if(Utils.tipado_relacional(this.e1.tipo,this.e2.tipo)){
+            if(Utils.tipado_ord(this.e1.tipo,this.e2.tipo)){
                 this.tipo= new Tipo.Bool();
             }
             else {
                 this.tipo = new Tipo.Error();
                 GestorErrores.addError("Los tipos de E0 y E1 no son operables");
             }
-
-
         }
-
 
         @Override
         public void gen_cod(MaquinaP maquinap) {
@@ -698,21 +707,19 @@ public class Exp extends Nodo {
                 maquinap.ponInstruccion(maquinap.int2real());
 
             if(Utils.esBool(this.e1.tipo))
-                maquinap.ponInstruccion(maquinap.gtBool());
+                maquinap.ponInstruccion(maquinap.ltBool());
             else if (Utils.esCadena(this.e1.tipo))
-                maquinap.ponInstruccion(maquinap.gtString());
+                maquinap.ponInstruccion(maquinap.ltString());
             else if (Utils.esEntero(this.e1.tipo) && Utils.esEntero(this.e2.tipo))
-                maquinap.ponInstruccion(maquinap.gtInt());
+                maquinap.ponInstruccion(maquinap.ltInt());
             else if (Utils.esReal(this.e1.tipo) && Utils.esReal(this.e2.tipo))
-                maquinap.ponInstruccion(maquinap.gtFloat());
+                maquinap.ponInstruccion(maquinap.ltFloat());
             else if (Utils.esReal(this.e1.tipo) && Utils.esEntero(this.e2.tipo))
-                maquinap.ponInstruccion(maquinap.gtFloat());
-
+                maquinap.ponInstruccion(maquinap.ltFloat());
             else if(Utils.esEntero(this.e1.tipo) && Utils.esReal(this.e2.tipo))
-                maquinap.ponInstruccion(maquinap.gtFloat());
-
-
-            maquinap.ponInstruccion(maquinap.not());
+                maquinap.ponInstruccion(maquinap.ltFloat());
+            else // Estamos comparando punteros
+                maquinap.ponInstruccion(maquinap.ltInt());
         }
 
         @Override
@@ -730,7 +737,7 @@ public class Exp extends Nodo {
                     || Utils.esEntero(this.e1.tipo) && Utils.esReal(this.e2.tipo))
                 ge.etq +=1;
 
-            ge.etq+=2;
+            ge.etq++;
         }
     }
 
@@ -754,7 +761,7 @@ public class Exp extends Nodo {
             this.e1.tipado();
             this.e2.tipado();
 
-            if(Utils.tipado_relacional(this.e1.tipo,this.e2.tipo)){
+            if(Utils.tipado_ord(this.e1.tipo,this.e2.tipo)){
                 this.tipo= new Tipo.Bool();
             }
             else {
@@ -793,9 +800,10 @@ public class Exp extends Nodo {
                 maquinap.ponInstruccion(maquinap.gtFloat());
             else if (Utils.esReal(this.e1.tipo) && Utils.esEntero(this.e2.tipo))
                 maquinap.ponInstruccion(maquinap.gtFloat());
-
             else if(Utils.esEntero(this.e1.tipo) && Utils.esReal(this.e2.tipo))
                 maquinap.ponInstruccion(maquinap.gtFloat());
+            else // Estamos comparando punteros
+                maquinap.ponInstruccion(maquinap.gtInt());
 
 
             //se niega lo anterior para hacer la operacion de <
@@ -827,6 +835,8 @@ public class Exp extends Nodo {
                 maquinap.ponInstruccion(maquinap.eqFloat());
             else if(Utils.esEntero(this.e1.tipo) && Utils.esReal(this.e2.tipo))
                 maquinap.ponInstruccion(maquinap.eqFloat());
+            else // Estamos comparando punteros
+                maquinap.ponInstruccion(maquinap.eqInt());
 
 
             //se hace la or logica de los resultados previos
@@ -1391,6 +1401,9 @@ public class Exp extends Nodo {
             this.e1.etiquetado(ge);
             this.e2.etiquetado(ge);
 
+            if (Utils.es_desig(e2))
+                ge.etq++;
+
             ge.etq += 3;
         }
     }
@@ -1411,7 +1424,7 @@ public class Exp extends Nodo {
 
             this.exp.tipado();
             if (Utils.esPointer(Utils.reff(this.exp.tipo)))
-                this.tipo = ((Tipo.Pointer) this.exp.tipo).getTipoBase();
+                this.tipo = ((Tipo.Pointer) Utils.reff(this.exp.tipo)).getTipoBase();
             else
                 GestorErrores.addError("El operador ^ solo se puede usar con punteros.");
         }
@@ -1447,8 +1460,8 @@ public class Exp extends Nodo {
         public void tipado() {
             this.exp.tipado();
             if (Utils.esRecord(Utils.reff(this.exp.tipo))){
-                if( ((Tipo.Record) this.exp.tipo).existe_Campo(this.str)) {
-                    this.tipo = ((Tipo.Record) this.exp.tipo).tipo_de_campo(this.str);
+                if( ((Tipo.Record) Utils.reff(this.exp.tipo)).existe_Campo(this.str)) {
+                    this.tipo = ((Tipo.Record) Utils.reff(this.exp.tipo)).tipo_de_campo(this.str);
                 }
                 else{
                     GestorErrores.addError("No existe el campos en el registro");
@@ -1462,9 +1475,9 @@ public class Exp extends Nodo {
         @Override
         public void gen_cod(MaquinaP maquinap) {
             this.exp.gen_cod(maquinap);
-            int desp = ((Tipo.Record) this.exp.tipo).desp_campo(this.str);
-            maquinap.apilaInt(desp);
-            maquinap.suma();
+            int desp = ((Tipo.Record) Utils.reff(this.exp.tipo)).desp_campo(this.str);
+            maquinap.ponInstruccion(maquinap.apilaInt(desp));
+            maquinap.ponInstruccion(maquinap.suma());
         }
 
         @Override

@@ -44,13 +44,26 @@ public class Instruccion extends Nodo {
             this.e1.gen_cod(maquinap);
             this.e2.gen_cod(maquinap);
 
-            if (Utils.esReal(this.e1.tipo) && Utils.esEntero(this.e2.tipo))
-                maquinap.ponInstruccion(maquinap.int2real());
+            // El proceso es un poco distinto si hay que convertit cosas.
+            if (Utils.esReal(this.e1.tipo) && Utils.esEntero(this.e2.tipo)) {
+                if (Utils.es_desig(this.e2)) {
+                    maquinap.ponInstruccion(maquinap.desapilaInd());
+                    maquinap.ponInstruccion(maquinap.int2real());
+                    maquinap.ponInstruccion(maquinap.apilaInd());
+                }
+                else {
+                    maquinap.ponInstruccion(maquinap.int2real());
+                    maquinap.ponInstruccion(maquinap.desapilaInd());
+                }
+            }
 
-            if (Utils.es_desig(this.e2))
-                maquinap.ponInstruccion(maquinap.mueve(this.e2.tipo.tam));
-            else
-                maquinap.ponInstruccion(maquinap.desapilaInd());
+            else {
+                if (Utils.es_desig(this.e2))
+                    maquinap.ponInstruccion(maquinap.mueve(this.e2.tipo.tam));
+                //----------------------------------------------------------------
+                else
+                    maquinap.ponInstruccion(maquinap.desapilaInd());
+            }
         }
 
         @Override
@@ -61,10 +74,12 @@ public class Instruccion extends Nodo {
             this.e1.etiquetado(ge);
             this.e2.etiquetado(ge);
 
-            if (Utils.esReal(this.e1.tipo) && Utils.esEntero(this.e2.tipo))
-                ge.etq += 1;
-
-            ge.etq += 1;
+            // El proceso es un poco distinto si hay que convertit cosas.
+            if (Utils.esReal(this.e1.tipo) && Utils.esEntero(this.e2.tipo)) {
+                if (Utils.es_desig(this.e2)) ge.etq += 3;
+                else ge.etq += 2;
+            }
+            else ge.etq++;
 
             this.sig = ge.etq;
         }
@@ -306,10 +321,6 @@ public class Instruccion extends Nodo {
 
             this.sig = ge.etq;
         }
-
-
-
-
     }
 
     public static class Write extends Instruccion {
@@ -436,7 +447,7 @@ public class Instruccion extends Nodo {
         @Override
         public void gen_cod(MaquinaP maquinap) {
             this.exp.gen_cod(maquinap);
-            maquinap.ponInstruccion(maquinap.alloc(((Tipo.Pointer)(Utils.reff(this.exp.tipo))).getTipoBase().tam));
+            maquinap.ponInstruccion(maquinap.alloc(Utils.reff(((Tipo.Pointer)(Utils.reff(this.exp.tipo))).getTipoBase()).tam));
             maquinap.ponInstruccion(maquinap.desapilaInd());
         }
 

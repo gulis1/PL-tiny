@@ -21,7 +21,7 @@ public class Campos extends Nodo {
 
     public static class Un_Campo extends Campos{
 
-        private Campo campo;
+        private final Campo campo;
 
         public Un_Campo(Campo campo){
             this.campo=campo;
@@ -74,12 +74,16 @@ public class Campos extends Nodo {
             }
             return -1;
         }
+
+        public Campo getCampo() {
+            return this.campo;
+        }
     }
 
     public static class Muchos_Campos extends Campos {
 
-        private Campos campos;
-        private Campo campo;
+        private final Campos campos;
+        private final Campo campo;
 
         public Muchos_Campos(Campos campos,Campo campo){
 
@@ -140,6 +144,14 @@ public class Campos extends Nodo {
             if(this.campo.getNombre().equals(c))
                 return this.campo.desp;
             return campos.despl_campo(c);
+        }
+
+        public Campo getCampo() {
+            return this.campo;
+        }
+
+        public Campos getCampos() {
+            return this.campos;
         }
     }
 

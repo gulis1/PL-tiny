@@ -175,7 +175,7 @@ public class MaquinaP {
             pilaEvaluacion.push(new ValorBool(opnd1.valorBool() || opnd2.valorBool()));
             pc++;
         }
-        public String toString() {return "and";};
+        public String toString() {return "or";};
     }
 
    private class IApilaInt implements Instruccion {
@@ -613,7 +613,7 @@ public class MaquinaP {
             Valor opnd2 = pilaEvaluacion.pop();
             Valor opnd1 = pilaEvaluacion.pop();
 
-            if(opnd1.valorCadena().compareTo(opnd2.valorCadena()) < 0)
+            if(opnd1.valorCadena().compareTo(opnd2.valorCadena()) > 0)
                  pilaEvaluacion.push(new ValorBool(true));
             else
                 pilaEvaluacion.push(new ValorBool(false));
@@ -639,6 +639,69 @@ public class MaquinaP {
         }
         public String toString(){return "Mayor que";}
     }
+
+    private ILTint ILTINT;
+    private class ILTint implements Instruccion{
+
+        public void ejecuta(){
+            Valor opnd2 = pilaEvaluacion.pop();
+            Valor opnd1 = pilaEvaluacion.pop();
+
+            pilaEvaluacion.push(new ValorBool(opnd1.valorInt() < opnd2.valorInt()));
+
+            pc++;
+        }
+        public String toString(){return "Menor que";}
+    }
+
+    private ILTfloat ILTFLOAT;
+    private class ILTfloat implements Instruccion{
+
+        public void ejecuta(){
+            Valor opnd2 = pilaEvaluacion.pop();
+            Valor opnd1 = pilaEvaluacion.pop();
+
+            pilaEvaluacion.push(new ValorBool(opnd1.valorReal() < opnd2.valorReal()));
+
+            pc++;
+        }
+        public String toString(){return "Menor que";}
+    }
+
+    private ILTstring ILTSTRING;
+    private class ILTstring implements Instruccion{
+
+        public void ejecuta(){
+            Valor opnd2 = pilaEvaluacion.pop();
+            Valor opnd1 = pilaEvaluacion.pop();
+
+            if(opnd1.valorCadena().compareTo(opnd2.valorCadena()) < 0)
+                pilaEvaluacion.push(new ValorBool(true));
+            else
+                pilaEvaluacion.push(new ValorBool(false));
+
+            pc++;
+        }
+        public String toString(){return "Menor que";}
+    }
+
+    private ILTbool ILTBOOL;
+    private class ILTbool implements Instruccion{
+
+        public void ejecuta(){
+            Valor opnd2 = pilaEvaluacion.pop();
+            Valor opnd1 = pilaEvaluacion.pop();
+
+            int op1= (opnd1.valorBool())? 1:0;
+            int op2 = (opnd2.valorBool()) ? 1 :0;
+
+            pilaEvaluacion.push(new ValorBool( op1 < op2 ));
+
+            pc++;
+        }
+        public String toString(){return "Menor que";}
+    }
+
     private INot INOT;
     private class INot implements Instruccion{
 
@@ -677,6 +740,10 @@ public class MaquinaP {
    public Instruccion gtFloat(){return IGTFLOAT;}
    public Instruccion gtString(){return IGTSTRING;}
    public Instruccion gtBool(){return  IGTBOOL;}
+   public Instruccion ltInt(){return ILTINT;}
+   public Instruccion ltFloat(){return ILTFLOAT;}
+   public Instruccion ltString(){return ILTSTRING;}
+   public Instruccion ltBool(){return  ILTBOOL;}
    public Instruccion not(){return INOT;}
    public Instruccion apilaInt(int val) {return new IApilaInt(val);}
    public Instruccion apilaFloat(float val) {return new IApilaFloat(val);}
@@ -747,6 +814,10 @@ public class MaquinaP {
       IGTFLOAT = new IGTfloat();
       IGTSTRING = new IGTstring();
       IGTBOOL = new IGTbool();
+      ILTINT= new ILTint();
+      ILTFLOAT = new ILTfloat();
+      ILTSTRING = new ILTstring();
+      ILTBOOL = new ILTbool();
       INOT = new INot();
       gestorPilaActivaciones = new GestorPilaActivaciones(tamdatos,(tamdatos+tampila)-1,ndisplays);
       gestorMemoriaDinamica = new GestorMemoriaDinamica(tamdatos+tampila,(tamdatos+tampila+tamheap)-1);
