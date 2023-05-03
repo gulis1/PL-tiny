@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Arrays;
 
 import static java.lang.System.exit;
 
@@ -71,15 +72,23 @@ public class Main {
 
         Jflexer jflexer = new Jflexer(fileReader);
         Parser parser = new Parser(jflexer);
-
+        Prog prog = null;
         try {
-            Prog prog = (Prog) parser.parse().value;
-            ejecutar(prog);
+             prog = (Prog) parser.parse().value;
         }
-        catch (Exception e) {
+        catch (Exception e){
             System.out.println("Error en la construcción del AST:");
             GestorErrores.printErrores();
         }
+
+        try {
+            ejecutar(prog);
+        }
+        catch (Exception e) {
+            System.out.println("Error en ejecucion:");
+            System.out.println(Arrays.toString(e.getStackTrace()));
+        }
+
     }
 
     private static void ejecutar(Prog programa) {

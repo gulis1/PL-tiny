@@ -2,7 +2,58 @@ package utils;
 
 import sintaxis_abstracta.*;
 
+import java.util.HashSet;
+
 public class Utils {
+
+    public static class Pair<U,V>{
+
+        private final U first;
+        private final V second;
+
+        private Pair(U first, V second){
+            this.first = first;
+            this.second = second;
+        }
+        @Override
+        public boolean equals (Object o){
+
+            if(this==o){
+                return true;
+            }
+            if(o== null || getClass() != o.getClass()){
+                return false;
+            }
+
+            Pair<?,?> pair = (Pair<?, ?>) o;
+
+            if(!first.equals(pair.first)){
+                return false;
+            }
+            return second.equals(pair.second);
+        }
+        @Override
+        public String toString() {
+            return "(" + first + ", " + second + ")";
+        }
+        @Override
+        public int hashCode(){
+            return first.hashCode() + second.hashCode();
+        }
+
+        public static <U, V> Pair <U, V> of(U a, V b)
+        {
+            // llama al constructor privado
+            return new Pair<>(a, b);
+        }
+        public U first() {
+            return this.first;
+        }
+
+        public V second() {
+            return this.second;
+        }
+    }
 
     public static Tipo reff(Tipo tipo) {
         if (Utils.esRef(tipo)) {
@@ -30,13 +81,24 @@ public class Utils {
         return (!(t1 instanceof Tipo.Error && t2 instanceof Tipo.Error)) ? new Tipo.Ok() : new Tipo.Error();
     }
 
-    public static boolean son_compatibles(Tipo t1, Tipo t2) {
+    public static boolean tiposRecursivos(Tipo t1){
+
+        return (esPointer(t1)||esArray(t1)||esRef(t1 )|| esRecord(t1));
+
+    }
+
+    public static  boolean son_compatibles(Tipo t1, Tipo t2){
+
+        HashSet<Pair<Tipo,Tipo>> reftipos = new HashSet<Pair<Tipo,Tipo>>();
+
+        return  son_compatible(t1,t2,reftipos);
+    }
+    public static boolean son_compatible(Tipo t1, Tipo t2,HashSet<Pair<Tipo,Tipo>> refTipos) {
 
         if (esRef(t1))
-            return son_compatibles(reff(t1), t2);
+            return son_compatible(reff(t1), t2,refTipos);
         if (esRef(t2))
-            return son_compatibles(t1, reff(t2));
-
+            return son_compatible(t1, reff(t2),refTipos);
 
         if (esEntero(t1) && esEntero(t2))
             return true;
@@ -50,20 +112,32 @@ public class Utils {
             return true;
         if (esPointer(t1) && esNull(t2))
             return true;
-        if (esPointer(t1) && esPointer(t2))
-//            return son_compatibles(((Tipo.Pointer)t1).getTipoBase(), ((Tipo.Pointer)t2).getTipoBase());
-            return true;
+
         if(esNull(t1) && esPointer(t2))
             return true;
+
+        if (esPointer(t1))
+            return son_compatible(reff(t1), t2,refTipos);
+        if (esPointer(t2))
+            return son_compatible(t1, reff(t2),refTipos);
+
+        Pair<Tipo,Tipo> p1 = Pair.of(t1,t2);
+        if(!refTipos.contains(p1))
+            refTipos.add(p1);
+        else
+            return true;
+
         if (esArray(t1) && esArray(t2)) {
             Tipo.Array array1 = (Tipo.Array) t1;
             Tipo.Array array2 = (Tipo.Array) t2;
-
-            return (array1.getTamArray() == array1.getTamArray()) && son_compatibles(array1.getT(), array2.getT());
+            boolean igualTamanio= array1.getTamArray() == array2.getTamArray();
+            return igualTamanio && son_compatible(((Tipo.Array)t1).getT(),((Tipo.Array)t2).getT(),refTipos);
         }
         if (esRecord(t1) && esRecord(t2))
-            return t1 == t2;
-//            return campos_compatibles(((Tipo.Record) t1).getCampos(), ((Tipo.Record) t2).getCampos());
+            return campos_compatibles(((Tipo.Record) t1).getCampos(), ((Tipo.Record) t2).getCampos(),refTipos);
+
+
+
 
         return false;
     }
@@ -155,19 +229,38 @@ public class Utils {
         }
     }
 
-    public static boolean campos_compatibles(Campos campos1, Campos campos2) {
+    public static boolean campos_compatibles(Campos campos1, Campos campos2,HashSet<Pair<Tipo,Tipo>> refTipos) {
 
         if (campos1 instanceof Campos.Muchos_Campos && campos2 instanceof Campos.Muchos_Campos) {
             Campos.Muchos_Campos muchos_campos1 = (Campos.Muchos_Campos) campos1;
             Campos.Muchos_Campos muchos_campos2 = (Campos.Muchos_Campos) campos2;
-            return campos_compatibles(muchos_campos1.getCampos(), muchos_campos2.getCampos())
-                    && son_compatibles(muchos_campos1.getCampo().getT(), muchos_campos2.getCampo().getT());
+
+//            if(tiposRecursivos((muchos_campos1.getCampo().getT()) )&& tiposRecursivos(muchos_campos2.getCampo().getT())){
+//                Pair<Tipo,Tipo> p1 = Pair.of((muchos_campos1.getCampo().getT()),(muchos_campos2.getCampo().getT()));
+//                if(!refTipos.contains(p1)){
+//                    refTipos.add(p1);
+//                    return campos_compatibles(muchos_campos1.getCampos(), muchos_campos2.getCampos(),refTipos)
+//                            && son_compatible(muchos_campos1.getCampo().getT(), muchos_campos2.getCampo().getT(),refTipos);
+//                }
+//                return campos_compatibles(muchos_campos1.getCampos(), muchos_campos2.getCampos(),refTipos);
+//            }
+
+            return campos_compatibles(muchos_campos1.getCampos(), muchos_campos2.getCampos(),refTipos)
+                    && son_compatible(muchos_campos1.getCampo().getT(), muchos_campos2.getCampo().getT(),refTipos);
         }
         else if (campos1 instanceof Campos.Un_Campo && campos2 instanceof Campos.Un_Campo) {
             Campos.Un_Campo unCampo1 = (Campos.Un_Campo) campos1;
             Campos.Un_Campo unCampo2 = (Campos.Un_Campo) campos2;
 
-            return son_compatibles(unCampo1.getCampo().getT(), unCampo2.getCampo().getT());
+//            if(tiposRecursivos((unCampo1.getCampo().getT())) && tiposRecursivos(unCampo1.getCampo().getT())) {
+//                Pair<Tipo, Tipo> p1 = Pair.of((unCampo1.getCampo().getT()), (unCampo1.getCampo().getT()));
+//                if (!refTipos.contains(p1)) {
+//                    refTipos.add(p1);
+//                    return son_compatible(unCampo1.getCampo().getT(), unCampo1.getCampo().getT(), refTipos);
+//                }
+//                return true;
+//            }
+            return son_compatible(unCampo1.getCampo().getT(), unCampo2.getCampo().getT(),refTipos);
         }
         else
             return false;
