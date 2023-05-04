@@ -133,7 +133,7 @@ public class Main {
             return;
         }
 
-//        maquina.muestraCodigo();
+        maquina.muestraCodigo();
         maquina.ejecuta();
     }
 }

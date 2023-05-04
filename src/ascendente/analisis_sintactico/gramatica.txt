@@ -1,0 +1,339 @@
+PROG: DECS BEGIN INSTRUCCIONES END PUNTO
+    PROG.a = Prog(DECS.a, INSTRUCCIONES.a)
+
+TIPO: STRING
+    TIPO.a = Tipo.Cadena
+TIPO: TARRAY
+    TIPO.a = TARRAY.a
+TIPO: TRECORD
+    TIPO.a = TRECORD.a
+TIPO: INT
+    TIPO.a = Tipo.Entero
+TIPO: BOOL
+    TIPO.a = Tipo.Bool
+TIPO: REF
+    TIPO.a = REF.a
+TIPO: POINTER
+    TIPO.a = POINTER.a
+TIPO: REAL
+    TIPO.a = Tipo.Real
+TIPO: NULL
+    TIPO.a = Tipo.Null
+
+
+POINTER: SOMBRERO TIPO1
+    POINTER.a = Tipo.POINTER(TIPO.a)
+
+REF: ID
+    REF.a = Tipo.Ref(ID)
+
+TARRAY: ARRAY CAP LIT_ENTERO CCI OF TIPO
+    TARRAY.a = Tipo.Array(TIPO.a, TAMARRAY)
+
+TRECORD: RECORD CAMPOS END
+    TRECORD.a = Tipo.Record(CAMPOS.a)
+
+CAMPOS: MUCHOS_CAMPOS
+    CAMPOS.a = MUCHOS_CAMPOS.a
+CAMPOS: UN_CAMPO
+    CAMPOS.a = UN_CAMPO.a
+
+UN_CAMPO: CAMPO
+    UN_CAMPO.a = Campos.Un_campo(CAMPO.a)
+
+MUCHOS_CAMPOS: CAMPOS CAMPO
+    MUCHOS_CAMPOS.a = Campos.Muchos_Campos(CAMPOS.a, CAMPOS)
+
+CAMPO: ID DOSPUNTOS TIPO PCOMA
+    CAMPO = Campo(nombre, TIPO.a)
+
+
+DECS: MUCHAS_DEC
+    DECS.a = MUCHAS_DEC.a
+DECS: NO_DEC
+    DECS.a = NO_DEC.a
+
+MUCHAS_DEC: DECS DEC
+    MUCHAS_DEC.a= Decs.Muchas_decs(DECS.a, DEC.a)
+
+NO_DEC: Ɛ
+    NO_DEC.a= Desc.No_decs
+
+DEC: DEC_VAR
+    DECS.a = DEC_VAR.a
+DEC: DEC_TYPE
+    DECS.a = DEC_TYPE.a
+DEC: DEC_PROC
+    DECS.a = DEC_PROC.a
+
+DEC_VAR: VAR ID DOSPUNTOS TIPO PCOMA
+    DEC_VAR.a = Dec.Dec_var(TIPO.a, NOMBRE)
+
+DEC_TYPE: TYPE ID DOSPUNTOS TIPO PCOMA
+    DEC_TYPE.a = Dec.Dec_type(NOMBRE, TIPO.a)
+
+DEC_PROC: PROC ID PAP PFORMALES PCI DECS BEGIN INSTRUCCIONES END PCOMA
+    DEC_PROC.a = Dec.Dec_proc(NOBRE, PFORMALES.a, DECS.a, IS.a)
+
+PFORMALES: MUCHOS_PFORMALES
+    PFORMALES.a = MUCHOS_PFORMALES.a
+PFORMALES: NO_PARF
+    PFORMALES.a = NO_PARF.a
+
+MUCHOS_PFORMALES: PFORMALES COMA PFORMAL
+    MUCHOS_PFORMALES = ParFs.Muchos_ParF(PFORMALES.a, PF.a)
+
+NO_PARF: Ɛ
+    NO_PARF.a = Parfs.No_Parfs
+
+PFORMAL: PFR_VALOR
+    PFORMAL.a = PFR_VALOR.a
+PFORMAL: PFR_REF
+    PFORMAL.a = PFR_REF.a
+
+PFR_VALOR: ID DOSPUNTOS TIPO
+    PFR_VALOR = ParF.ParF_Valor(ID.a, TIPO.a)
+
+PFR_REF: VAR ID DOSPUNTOS TIPO
+    PRF_REF = ParF.ParF_Ref(ID.a, TIPO.a)
+
+
+E0: E1 OP0 E1    # Factor comun
+    E0.a = Utils.get_exp_cmp(E1_1, E1_2, OP.a)
+E0: E1
+    E0.a = E1.a  # Factor comun
+------------------------------------------------
+E0: E1 RE0
+    RE0.ah = E1.a
+    E0.a = RE0.a
+RE0: OP0 E1
+    RE0.a =  Utils.get_exp_cmp(RE0.ah, E1.a, OP.a)
+RE0: Ɛ
+    R0.a = R0.ah
+
+
+
+
+E1: E2 OP_SUMA E2
+    E1.a = Exp.Exp_suma(E2_1, E2_2)
+E1: E1 OP_RESTA E2
+    E1_1.a = Exp.Exp_resta(E1_2, E2_a)
+E1: E2
+    E1.a = E2.a
+-----------------------------------------
+E1: E2 RE1 RE1' #Factor Comun y Recursion a IZq
+    RE1.ah = E2.a
+    RE1'.ah = RE1.ah
+    E1.a = RE1'.a
+RE1': OP_RESTA E1 RE1'
+    RE1'.ah =  Exp.Exp_suma(RE1'.ah, E1.a)
+RE1': Ɛ
+    RE1'.a = RE1'.ah
+
+RE1: OP_SUMA E2
+    RE1.a = Exp.Exp_suma(RE1.ah, E2.a)
+RE1: Ɛ
+    RE1.a = RE1.ah
+
+
+
+
+
+E2: E3 AND E3  # Factor comun
+    E2.a = Exp.Exp_and(E3_1.a, E3_2.a)
+E2: E3 OR E2   # Factor comun
+    E2_1.a = Exp.Exp_or(E3.a, E2_2.a)
+E2: E3         # Factor comun
+    E2.a = E3.a
+-----------------------------------------
+E2: E3 RE2
+    RE2.ah = E3.a
+    E0.a = RE2.a
+RE2: AND E3
+    RE2.a = Exp.Exp_and(RE2.ah, E3.a)
+
+RE2: OR E2   # Factor comun
+    RE2.a = Exp.Exp_or(RE2.ah, E2.a)
+RE2: Ɛ
+    RE2.a = RE2.ah
+
+
+
+E3: E3 OP3 E4
+    E3_1.a = Utils.get_exp_op3(E3_2, E4, op); :}
+E3: E4
+    E3.a = E4.a
+-----------------------------------------
+E3: E4 RE3
+    RE3.ah = E4.a
+    E3.a = RE3.a
+RE3: OP3 E4 RE3
+    RE3_2.ah = Utils.get_exp_op3(RE3_1.ah, E4.a, OP3.a)
+    RE3_1.a = RE3_2.a
+RE3: Ɛ
+    RE3.a = RE3.ah
+
+
+
+E4: NOT E4
+    E4.a = new Exp.Exp_not(E4_2.a)
+E4: OP_RESTA E4
+    E4.a = new Exp.Exp_menos(E4_2.a)
+E4: E5
+    E4.a = E5.a
+
+
+E5: E5 CAP E0 CCI
+    E5_1.a = Exp.Exp_ind(E5.a, E0.a)
+E5: E5 PUNTO ID
+    E5_1.a = Exp.Exp_acc(E5_2, ID.a)
+E5: E5 SOMBRERO
+    E5_1.a = Exp.Exp_indireccion(E5_2.a)
+E5: E6
+    E5.a = E6.a
+---------------------------------------------
+E5: E6 RE5
+    RE5.ah = E6.a
+    E5.a = RE5.ah
+RE5: CAP E0 CCI RE5
+     RE5.ah = Exp.Exp_ind(RE.ah, E0.a)
+     RE5_0.a = RE5_1.a
+RE5: PUNTO ID RE5
+     RE5.ah = Exp.Exp_acc(RE5.ah, ID.a)
+     RE5_0.a = RE5_1.a
+RE5: SOMBRERO RE5
+     RE5_1.ah = Exp.Exp_indireccion(RE5_0.ah)
+     RE5_0.a = RE5_1.a
+RE5: Ɛ
+     RE5.a = RE5.ah
+
+E6: LIT_ENTERO
+    E6.a = Exp.Exp_entero(LIT_ENTERO)
+E6: LIT_DECIMAL
+    E6.a = Exp.Exp_real(LIT_DECIMAL)
+E6: ID
+    E6.a = Exp.Exp_id(ID.a)
+E6: LIT_STRING
+    E6.a = Exp.Exp_cadena(l)
+E6: NULL
+    E6.a = Exp.Exp_null()
+E6: TRUE
+    E6.a = Exp.Exp_bool("true")
+E6: FALSE
+    E6.a = Exp.Exp_bool("false")
+E6: PAP E0 PCI
+    E6.a = E0.a
+
+OP0: EQ
+    OP0.a = "=="
+OP0: NEQ
+    OP0.a = "!="
+OP0: GT
+    OP0.a = ">"
+OP0: GE
+    OP0.a = ">="
+OP0: LT
+    OP0.a = "<"
+OP0: LE
+    OP0.a = "<="
+
+OP3: ASTERISCO
+    OP3.a = "*"
+OP3: SLASH
+    OP3.a = "/"
+OP3: MODULO
+    OP3.a = "%"
+
+INSTRUCCIONES: MUCHAS_INST
+    INSTRUCCIONES.a = MUCHAS_INST.a
+INSTRUCCIONES: Ɛ
+    INSTRUCCIONES.a = Instrucciones.No_Instr
+
+MUCHAS_INST: INSTRUCCIONES INSTRUCCION
+    MUCHAS_INST.a = Instrucciones.Muchas_Instr(INSTRUCCIONES.a, INSTRUCCION.a)
+
+INSTRUCCION: INSTR_COND
+    INTRUCCION.a = INSTR_COND.a
+
+INSTRUCCION: INSTR_ASIGN
+    INTRUCCION.a = INSTR_ASIGN.a
+
+INSTRUCCION: INSTR_INVOC
+    INTRUCCION.a = INSTR_INVOC.a
+
+INSTRUCCION: INSTR_WHILE
+    INTRUCCION.a = INSTR_WHILE.a
+
+INSTRUCCION: INSTR_READ
+    INTRUCCION.a = INSTR_READ.a
+
+INSTRUCCION: INSTR_WRITE
+    INTRUCCION.a = INSTR_WRITE.a
+
+INSTRUCCION: INSTR_NL
+    INTRUCCION.a = INSTR_NL.a
+
+INSTRUCCION: INSTR_NEW
+    INTRUCCION.a = INSTR_NEW.a
+
+INSTRUCCION: INSTR_DELETE
+    INTRUCCION.a = INSTR_DELETE.a
+
+INSTRUCCION: INSTR_SEQ
+    INTRUCCION.a = INSTR_SEQ.a
+
+
+
+INSTR_COND: IF E0 THEN INSTRUCCIONES END PCOMA
+    INSTR_COND.a = Instruccion.If_then(E0.a, INSTRUCCIONES.a)
+
+INSTR_COND: IF E0 THEN INSTRUCCIONES ELSE INSTRUCCIONES END PCOMA
+    INSTR_COND.a = Instruccion.If_then_else(E0.a, INSTRUCCIONES_1.a, INSTRUCCIONES_2.a)
+-------------------------------------------------------------------------------------------
+INSTR_COND: IF E0 THEN INSTRUCCIONES RINSTR_COND
+    RINSTR_COND.ah = (E0.a, INSTRUCCIONES.a)
+    INSTR_COND.a = RINSTR_COND.a
+RINSTR_COND: END PCOMA
+    RINSTR_COND.a = Instruccion.If_then(RINSTR_COND.ah[0], RINSTR_COND.ah[1])
+RINSTR_COND: ELSE INSTRUCCIONES END PCOMA
+    RINSTR_COND.a = Instruccion.If_then_else(RINSTR_COND.ah[0], RINSTR_COND.ah[1], INSTRUCCIONES.a)
+
+
+
+
+INSTR_ASIGN: E0 ASIGN E0 PCOMA
+    INSTR_ASIGN.a = Instruccion.Asignacion(E0_1.a, E0_2.a)
+
+INSTR_INVOC: ID PAP PREALES PCI PCOMA
+    INSTR_INVOC.a = Instruccion.Invoc(ID.a, PREALES.a)
+
+INSTR_WHILE: WHILE E0DO INSTRUCCIONES END PCOMA
+    INSTR_WHILE.a = Instruccion.While(E0.a, INSTRUCCIONES.a)
+
+INSTR_READ: READ E0 PCOMA
+    INSTR_READ.a = Instruccion.Read(E0.a)
+
+INSTR_WRITE: WRITE E0 PCOMA
+    INSTR_WRITE.a = Instruccion.Write(E0.a)
+
+INSTR_NL: NL PCOMA
+    INSTR_NL.a = Instruccion.Nl
+
+INSTR_NEW: NEW E0 PCOMA
+    INSTR_NEW.a = Instruccion.New(E0.a)
+
+INSTR_DELETE: DELETE E0 PCOMA
+    INSTR_DELETE.a = Instruccion.Delete(E0.a)
+
+INSTR_SEQ: SEQ DECS BEGIN INSTRUCCIONES END PCOMA
+    INSTR_SEQ.a = Instruccion.Mix(DECS.a, INSTRUCCIONES.a)
+
+PREALES: MUCHOS_PREALES
+    PREALES.a = MUCHOS_PREALES.a
+PREALES: Ɛ
+    PREALES.a = Preales.No_pReal
+
+MUCHOS_PREALES: PREALES COMA E0
+    MUCHOS_PREALES.a = Preales.Muchos_pReales(preales.a, E0.a)
+MUCHOS_PREALES: E0
+   MUCHOS_PREALES.a = Preales.Muchos_pReales(Preales.No_pReal, E0.a)

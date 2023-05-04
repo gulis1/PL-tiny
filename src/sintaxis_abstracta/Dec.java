@@ -78,7 +78,6 @@ public class Dec extends Nodo {
 
             this.t.vincula(ts);
             ts.añadir(this.string, this);
-
         }
 
         @Override
