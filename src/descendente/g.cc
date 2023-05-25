@@ -25,87 +25,278 @@ TOKEN:{<#parteDecimal: (<digito>)* <digitoPositivo>>}
 SKIP:{<["\t"," ","\r","\b","\n"]>}
 SKIP:{<"@"(~["\n"])*>}
 
-TOKEN:{<begin:("B"|"b")("E"|"e")("G"|"g")("I"|"i")("N"|"n")>}
-TOKEN:{<end:("E"|"e")("N"|"n")("D"|"d")>}
-TOKEN:{<do:("D"|"d")("O"|"o")>}
-TOKEN:{<type:("T"|"t")("Y"|"y")("P"|"p")("E"|"e")>}
-TOKEN:{<var:("V"|"v")("A"|"a")("R"|"r")>}
-TOKEN:{<proc:("P"|"p")("R"|"r")("O"|"o")("C"|"c")>}
-TOKEN:{<if:("I"|"i")("F"|"f")>}
-TOKEN:{<then:("T"|"t")("H"|"h")("E"|"e")("N"|"n")>}
-TOKEN:{<else:("E"|"e")("L"|"l")("S"|"s")("E"|"e")>}
-TOKEN:{<while:("W"|"w")("H"|"h")("I"|"i")("L"|"l")("E"|"e")>}
-TOKEN:{<nl:("N"|"n")("L"|"l")>}
-TOKEN:{<read:("R"|"r")("E"|"e")("A"|"a")("D"|"d")>}
-TOKEN:{<write:("W"|"w")("R"|"r")("I"|"i")("T"|"t")("E"|"e")>}
-TOKEN:{<new:("N"|"n")("E"|"e")("W"|"w")>}
-TOKEN:{<seq:("S"|"s")("E"|"e")("q"|"q")>}
-TOKEN:{<string:("S"|"s")("T"|"t")("R"|"r")("I"|"i")("N"|"n")("G"|"g")>}
-TOKEN:{<array:("A"|"a")("R"|"r")("R"|"r")("A"|"a")("Y"|"y")>}
-TOKEN:{<record:("R"|"r")("E"|"e")("C"|"c")("O"|"o")("R"|"r")("D"|"d")>}
-TOKEN:{<int:("I"|"i")("N"|"n")("T"|"t")>}
-TOKEN:{<of:("O"|"o")("F"|"f")>}
-TOKEN:{<bool:("B"|"b")("O"|"o")("O"|"o")("L"|"l")>}
-TOKEN:{<null:("N"|"n")("U"|"u")("L"|"l")("L"|"l")>}
-TOKEN:{<true:("T"|"t")("R"|"r")("U"|"u")("E"|"e")>}
-TOKEN:{<false:("F"|"f")("A"|"a")("L"|"l")("S"|"s")("E"|"e")>}
-TOKEN:{<and:("A"|"a")("N"|"n")("D"|"d")>}
-TOKEN:{<not:("N"|"n")("O"|"o")("T"|"t")>}
-TOKEN:{<or:("O"|"o")("R"|"r")>}
+TOKEN:{<BEGIN:("B"|"b")("E"|"e")("G"|"g")("I"|"i")("N"|"n")>}
+TOKEN:{<END:("E"|"e")("N"|"n")("D"|"d")>}
+TOKEN:{<DO:("D"|"d")("O"|"o")>}
+TOKEN:{<TYPE:("T"|"t")("Y"|"y")("P"|"p")("E"|"e")>}
+TOKEN:{<VAR:("V"|"v")("A"|"a")("R"|"r")>}
+TOKEN:{<PROC:("P"|"p")("R"|"r")("O"|"o")("C"|"c")>}
+TOKEN:{<IF:("I"|"i")("F"|"f")>}
+TOKEN:{<THEN:("T"|"t")("H"|"h")("E"|"e")("N"|"n")>}
+TOKEN:{<ELSE:("E"|"e")("L"|"l")("S"|"s")("E"|"e")>}
+TOKEN:{<WHILE:("W"|"w")("H"|"h")("I"|"i")("L"|"l")("E"|"e")>}
+TOKEN:{<NL:("N"|"n")("L"|"l")>}
+TOKEN:{<READ:("R"|"r")("E"|"e")("A"|"a")("D"|"d")>}
+TOKEN:{<WRITE:("W"|"w")("R"|"r")("I"|"i")("T"|"t")("E"|"e")>}
+TOKEN:{<NEW:("N"|"n")("E"|"e")("W"|"w")>}
+TOKEN:{<DELETE:("D"|"d")("E"|"e")("L"|"l")("E"|"e")("T"|"t")("E"|"e")>}
+TOKEN:{<SEQ:("S"|"s")("E"|"e")("q"|"q")>}
+TOKEN:{<STRING:("S"|"s")("T"|"t")("R"|"r")("I"|"i")("N"|"n")("G"|"g")>}
+TOKEN:{<ARRAY:("A"|"a")("R"|"r")("R"|"r")("A"|"a")("Y"|"y")>}
+TOKEN:{<RECORD:("R"|"r")("E"|"e")("C"|"c")("O"|"o")("R"|"r")("D"|"d")>}
+TOKEN:{<INT:("I"|"i")("N"|"n")("T"|"t")>}
+TOKEN:{<REAL:("R"|"r")("E"|"e")("A"|"a")("L"|"l")>}
+TOKEN:{<OF:("O"|"o")("F"|"f")>}
+TOKEN:{<BOOL:("B"|"b")("O"|"o")("O"|"o")("L"|"l")>}
+TOKEN:{<NULL:("N"|"n")("U"|"u")("L"|"l")("L"|"l")>}
+TOKEN:{<TRUE:("T"|"t")("R"|"r")("U"|"u")("E"|"e")>}
+TOKEN:{<FALSE:("F"|"f")("A"|"a")("L"|"l")("S"|"s")("E"|"e")>}
+TOKEN:{<AND:("A"|"a")("N"|"n")("D"|"d")>}
+TOKEN:{<NOT:("N"|"n")("O"|"o")("T"|"t")>}
+TOKEN:{<OR:("O"|"o")("R"|"r")>}
 
-TOKEN:{<operadorSuma:\+>}
-TOKEN:{<operadorResta:\->}
-TOKEN:{<operadorModulo:\%>}
-TOKEN:{<operadorAsterisco:\*>}
-TOKEN:{<operadorSlash:\/>}
-TOKEN:{<operadorSombrero:\^>}
-TOKEN:{<operadorPunto:\.>}
-TOKEN:{<operadorAsign:\=>}
-TOKEN:{<operadorEq:\=\=>}
-TOKEN:{<operadorNeq:\!\=>}
-TOKEN:{<operadorGt:\>>}
-TOKEN:{<operadorGe:\>\=>}
-TOKEN:{<operadorLt:\<>}
-TOKEN:{<operadorLe:\<\=>}
-TOKEN:{<dospuntos:\:>}
-TOKEN:{<pap:\(>}
-TOKEN:{<pci:\)>}
-TOKEN:{<cap:\[>}
-TOKEN:{<cci:\]>}
-TOKEN:{<pcoma:\;>}
-TOKEN:{<coma:\,>}
-TOKEN:{<litEntero:[\+,\-]?{<parteEntera>}>}
-TOKEN:{<litDecimal:[\+,\-]?{<parteEntera>}\.(0|{<parteDecimal>})>}
-TOKEN:{<litString:\'.*\'>}
-TOKEN:{<identificador:{<letra>}({<letra>}|{<digito>}|"_")*>}
+TOKEN:{<OP_SUMA:"+">}
+TOKEN:{<OP_RESTA:"-">}
+TOKEN:{<MODULO:"%">}
+TOKEN:{<ASTERISCO:"*">}
+TOKEN:{<SLASH:"/">}
+TOKEN:{<SOMBRERO:"^">}
+TOKEN:{<PUNTO:".">}
+TOKEN:{<OP_ASIG:"=">}
+TOKEN:{<EQ:"==">}
+TOKEN:{<NEQ:"!=">}
+TOKEN:{<GT:">">}
+TOKEN:{<GE:">=">}
+TOKEN:{<LT:"<">}
+TOKEN:{<LE:"<=">}
+TOKEN:{<DOSPUNTOS:":">}
+TOKEN:{<PAP:"(">}
+TOKEN:{<PCI:")">}
+TOKEN:{<CAP:"[">}
+TOKEN:{<CCI:"]">}
+TOKEN:{<PCOMA:";">}
+TOKEN:{<COMA:",">}
+TOKEN:{<LIT_ENTERO:("+"|"-")?<parteEntera>>}
+TOKEN:{<LIT_DECIMAL:("+"|"-")?<parteEntera>"."("0"|<parteDecimal>)>}
+TOKEN:{<LIT_STRING:"\'"(~["\t","\b","\r","\n"])"\'">}
+TOKEN:{<ID:<letra>(<letra>|<digito>|"_")*>}
 
-Prog Init()    : {Prog prog;} {prog=Prog() <EOF> {return prog;}}
-Prog Prog()    : {Exp exp; Instrucciones is;}
-                    {<evalua> exp=E0() decs=PDonde() {return sem.prog(exp,decs);}}
 
-  Decs PDonde()  : {Decs decs;}
-                       {<donde> decs=Decs() {return decs;} |
-                       {return null;}}
-  Exp E0()       : {Exp exp1, resul;} {exp1=E1() resul=RE0(exp1) {return resul;}}
-  Exp RE0(Exp exph) : {char op; Exp exp1; Exp exp;}
-                       {op=OP0() exp1=E2() exp=RE0(sem.exp(op,exph,exp1)) {return exp;} |
-                       {return exph;}}
-  Exp E1()       : {Exp exp2, resul;} {exp2=E2() resul=RE1(exp2) {return resul;}}
-  Exp RE1(Exp exph) : {char op; Exp exp2; Exp exp;}
-                       {op=OP1() exp2=E2() exp=RE1(sem.exp(op,exph,exp2)) {return exp;} |
-                       {return exph;}}
-  Exp E2()         : {Exp exp; Token t;}
-                        {t=<num> {return sem.num(sem.str(t.image,t.beginLine,t.beginColumn));} |
-                         t=<id>  {return sem.id(sem.str(t.image,t.beginLine,t.beginColumn));} |
-						"(" exp=E0() ")" {return exp;}}
-  char OP0() : {} {"+" {return '+';} |
-                   "-" {return '-';}}
-  char OP1() : {} {"*" {return '*';} |
-                   "/" {return '/';}}
-  Decs Decs() : {Dec dec; Decs decs;} {dec=Dec() decs=RDecs(sem.decs_una(dec)) {return decs;}}
-  Decs RDecs(Decs decsh) : {Dec dec; Decs decs;}
-                             {"," dec=Dec() decs=RDecs(sem.decs_muchas(decsh,dec)) {return decs;} |
-                             {return decsh;}}
-  Dec Dec() : {Token iden,numb;} {iden=<id> "=" numb=<num>
-                                    {return sem.dec(sem.str(iden.image,iden.beginLine,iden.beginColumn),
-                                                    sem.str(numb.image,numb.endLine,numb.endColumn));}}
+
+Prog PROG(): {Decs decs; Instrucciones is;} {decs=DECS() <BEGIN> is=INSTRUCCIONES() <END> <PUNTO> {return new Prog(decs, is);}}
+
+Tipo TIPO():   {Tipo t;}  {
+
+    <STRING> {return Tipo.Cadena;}  |
+    t=TARRAY() {return t;}          |
+    t=TRECORD() {return t;}         |
+    <INT> {return Tipo.Entero;}     |
+    <BOOL> {return Tipo.Bool;}      |
+    t=REF() {return t;}             |
+    t=POINTER() {return t;}         |
+    <REAL> {return Tipo.Real;}      |
+    <NULL> {return Tipo.Null;}
+}
+
+Tipo POINTER(): {Tipo t;} {<SOMBRERO> t=TIPO() {return new Tipo.Pointer(t);}}
+
+Tipo REF(): {Token t;} {t=<ID> {return new Tipo.Ref(t.image);}}
+
+Tipo TARRAY(): {Token ent; Tipo tipo;} { <ARRAY> <CAP> ent=<LIT_ENTERO> <CCI> <OF> tipo=TIPO() {return new Tipo.Array(tipo, ent.image);}}
+
+
+Tipo TRECORD(): {Campos campos;} { <RECORD> campos=CAMPOS() <END> {return new  Tipo.Record(campos);}}
+
+Campos CAMPOS():  {Campos campos;} {
+
+    campos=MUCHOS_CAMPOS() {return campos;} |
+    campos=UN_CAMPO() {return campos;}
+}
+
+Campos UN_CAMPO(): {Campo campo;} {campo=CAMPO() {return new Campos.Un_campo(campo);}}
+
+Campos MUCHOS_CAMPOS(): {Campos campos; Campo campo;} {campos=CAMPOS() campo=CAMPO() {return new Campos.Muchos_Campos(campos, campo);}}
+
+Campo CAMPO(): {Token id; Tipo tipo;} {id=<ID> <DOSPUNTOS> tipo=TIPO() <PCOMA> {return new Campo(id.image, tipo);}}
+
+Decs DECS(): {Dec dec;Decs result;} {dec=DEC() resul=RDECS(dec) {return resul;}}
+
+Decs RDECS(Dec dech): {Dec dec;Decs resul;} {
+    dec=DEC() resul=RDECS(new Decs.Muchas_decs(dech, dec)){return resul;} |
+        {return dech;}
+}
+
+Dec DEC(): {Dec dec;} {
+
+    dec=DEC_VAR() {return dec;}  |
+    dec=DEC_TYPE() {return dec;} |
+    dec=DEC_PROC() {return dec;}
+}
+
+Dec DEC_VAR(): {Tipo tipo; Token id;} {<VAR> id=<ID> <DOSPUNTOS> tipo=TIPO() <PCOMA> {return new Dec.Dec_var(tipo, id.image);}}
+
+Dec DEC_TYPE(): {Tipo tipo; Token id;} {<TYPE> id=<ID> <DOSPUNTOS> tipo=TIPO() <PCOMA> {return new  Dec.Dec_type(id.image, tipo);}}
+
+Dec DEC_PROC(): {Token id; ParFs parfs; Decs decs; Instrucciones is;} {<PROC> id=<ID> <PAP> parfs=PFORMALES() <PCI> decs=DECS() <BEGIN> is=INSTRUCCIONES() <END> <PCOMA> {return new Dec.Dec_proc(id.image, parfs, decs, is);} }
+
+ParFs PFORMALES(): {ParFs parfs;} {
+
+    parfs=MUCHOS_PFORMALES() {return parfs;} |
+    parfs=NO_PARF() {return parfs;}
+}
+
+ParFs MUCHOS_PFORMALES(): {ParFs parfs; ParF parf;} {parfs=PFORMALES() <COMA> parf=PFORMAL() {return new ParFs.Muchos_ParF(parfs, parf);}}
+ParFs NO_PARF(): {} { {return new  Parfs.No_Parfs();}}
+
+ParF PFORMAL(): {ParF parf;} {
+    parf=PFR_VALOR() {return parf;}
+    parf=PFR_REF() {return parf;}
+}
+
+ParF PFR_VALOR(): {Token id; Tipo tipo;} {id=<ID> <DOSPUNTOS> tipo=TIPO() {return new ParF.ParF_Valor(id.image, tipo);}}
+ParF PFR_REF(): {Token id; Tipo tipo;} {<VAR> id=<ID> <DOSPUNTOS> tipo=TIPO() {return new ParF.ParF_Ref(id.image, tipo);}}
+
+Exp E0(): {Exp e1, resul;}  {e1=E1() resul=RE0(e1) {return resul;}}
+
+Exp RE0(Exp eh): {Exp e1; String op;} {
+
+    op=OP0() e1=E1() {return Utils.get_exp_cmp(eh, E1, OP);} |
+     {return eh;}
+}
+
+
+Exp E1(): {Exp resul, e2, expre1;} {e2=E2() expre1=RE1(e2) resul=RE1P(expre1) {return resul;}}
+
+Exp RE1(Exp eh): {Exp e2;} {
+    <OP_SUMA> e2=E2() {return new Exp.Exp_suma(eh, e2);} |
+     {return eh;}
+
+}
+
+Exp RE1P(Exp eh): {Exp e1;} {
+
+    <OP_RESTA> e1=E1() RE1P() {return new Exp.Exp_suma(eh, e1);} |
+     {return eh;}
+}
+
+Exp E2(): {Exp e3, resul;} {e3=E3() resul=RE2(e3) {return resul;}}
+
+Exp RE2(Exp eh): {Exp ed;} {
+    <AND> ed=E3() {return new Exp.Exp_and(eh, ed);} |
+    <OR> ed=E2() {return new Exp.Exp_or(eh, ed);} |
+      {return eh;}
+}
+
+Exp E3(): {Exp e4, resul;} {e4=E4() resul=RE3() {return resul;}}
+
+Exp RE3(Exp eh): {Exp e4, resul; String op;} {
+    op=OP3() e4=E4() resul=RE3(Utils.get_exp_op3(eh, e4, op)) {return resul;} |
+      {return eh;}
+}
+
+Exp E4(): {Exp exp;} {
+    <NOT> exp=E4() {return new Exp.Exp_not(exp);}        |
+    <OP_RESTA> exp=E4() {return new Exp.Exp_menos(exp);} |
+    exp=E5() {return exp;}
+}
+
+Exp E5(): {Exp e6, resul;} {e6=E6() resul=RE5(e6) {return resul;}}
+Exp RE5(Exp eh): {Exp e0, resul; Token id;} {
+    
+    <CAP> e=E0() <CCI> resul=RE5(new Exp.Exp_ind(eh, e0)) {return resul;}   |
+    <PUNTO> id=<ID> resul=RE5(new Exp.Exp_acc(eh, id.image)) {return resul;} |
+    <SOMBRERO> resul=RE5(new Exp.Exp_indireccion(eh)) {return resul;}       |
+      {return eh;}
+}
+Exp E6(): {Token token; Exp e0;} {
+
+    token=<LIT_ENTERO> {return new Exp.Exp_entero(token.image);} |
+    token=<LIT_DECIMAL> {return new Exp.Exp_real(token.image);}  |
+    token=<ID> {return new Exp.Exp_id(id.image);}                |
+    token=<LIT_STRING> {return new Exp.Exp_cadena(token.image);} |
+    <NULL> {return new Exp.Exp_null();}                          |
+    <TRUE> {return new Exp.Exp_bool("true");}                    |
+    <FALSE> {return new Exp.Exp_bool("false");}                  |
+    <PAP> e0=E0() <PCI> {return e0;}
+}
+
+String OP0(): {} {
+
+    <EQ> {return "==";}  |
+    <NEQ> {return "!=";} |
+    <GT> {return ">";}   |
+    <GE> {return ">=";}  |
+    <LT> {return "<";}   |
+    <LE> {return "<=";}
+}
+
+String OP3(): {} {
+
+    <ASTERISCO> {return  "*";}
+    <SLASH> {return  "/";}
+    <MODULO> {return  "%";}
+}
+
+
+Instrucciones INSTRUCCIONES(): {Instrucciones instrucciones;}{
+    instrucciones=MUCHAS_INST(){return instrucciones;} |
+    instrucciones=NO_INST(){return instrucciones;}
+}
+
+Instrucciones MUCHAS_INST():{Instrucciones instrucciones; Instruccion instruccion;} {instrucciones=INSTRUCCIONES() instruccion=INSTRUCCION() {return new Instrucciones.Muchas_Instr(instrucciones,instruccion);}}
+
+Instrucciones NO_INST(): {} { {return new Instrucciones.No_Instr();}}
+
+Instruccion INSTRUCCION(): {Instruccion instr;} {
+
+    instr=INSTR_COND() {return instr;} |
+    instr=INSTR_ASIGN() {return instr;} |
+    instr=INSTR_INVOC() {return instr;} |
+    instr=INSTR_WHILE() {return instr;} |
+    instr=INSTR_READ() {return instr;} |
+    instr=INSTR_WRITE() {return instr;} |
+    instr=INSTR_NL() {return instr;} |
+    instr=INSTR_NEW() {return instr;} |
+    instr=INSTR_DELETE() {return instr;} |
+    instr=INSTR_SEQ() {return instr;}
+
+
+}
+
+Instruccion INSTR_COND(): { Exp e0; Instrucciones instrs; Instruccion resul;} {<IF> e0=E0() <THEN> instrs=INSTRUCCIONES() resul=INSTR_COND(e0, instrs) {return resul;}}
+
+Instruccion RINSTR_COND(Exp eh, Instrucciones ish): { Instrucciones is; }{
+    <END> <PCOMA>{ return new Instruccion.If_then(eh,ish);} |
+    <ELSE> is=INSTRUCCIONES() <END> <PCOMA> { return new Instruccion.If_then_else(eh,ish,is);}
+}
+Instruccion INSTR_ASIGN(): { Exp e0; Exp e1;} {e0=E0() <OP_ASIG> e1=E0() <PCOMA> {return new Instruccion.Asignacion(e0,e1);}}
+
+Instruccion INSTR_INVOC(): {Token id; Preales preales;} {id=<ID> <PAP> Preales=PREALES() <PCI> <PCOMA> {return new Instruccion.Invoc (id.image,preales);}}
+
+Instruccion INSTR_WHILE(): { Exp e0; Instrucciones is;} {<WHILE> e0=E0() <DO> is=INSTRUCCIONES() <END> <PCOMA> {return new Instruccion.While (eo,is); }}
+
+Instruccion INSTR_READ(): {Exp e0;} {<READ> e0=E0() <PCOMA> {return new Instruccion.Read(e0);} }
+
+Instruccion INSTR_WRITE(): {Exp e0;} {<WRITE> e0=E0() <PCOMA> {return new Instruccion.Write(e0);} }
+
+Instruccion INSTR_NL(): {} {<NL> <PCOMA> {return new Instruccion.Nl();} }
+
+Instruccion INSTR_NEW(): {Exp e0;} {<NEW> e0=E0() <PCOMA> {return new Instruccion.New(e0);} }
+
+Instruccion INSTR_DELETE(): {Exp e0;} {<DELETE> e0=E0() <PCOMA> {return new Instruccion.Delete(e0);} }
+
+Instruccion INSTR_SEQ(): {Decs decs; INSTRUCCIONES is;} {<SEQ> decs=DECS() <BEGIN> is=INSTRUCCIONES() <END> <PCOMA> {return new Instruccion.mix(decs,is);}}
+
+Preales PREALES(): {Preales preales;}{
+    preales=MUCHOS_PREALES(){return preales;} |
+    preales=NO_PREAL(){return preales;}
+
+}
+
+Preales MUCHOS_PREALES():{Preales preales; Exp e0;} {
+
+    preales=PREALES() <COMA> e0=E0() {return new Preales.Muchos_pReales(preales, e0);} |
+    e0=E0() {return new Preales.Muchos_pReales(new Preales.No_pReal(), e0);}
+}
+
+Preales NO_PREAL():{} {{return new Preales.No_pReal();}}
