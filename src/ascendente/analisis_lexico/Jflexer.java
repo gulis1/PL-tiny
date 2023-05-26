@@ -4,8 +4,6 @@
 
 package ascendente.analisis_lexico;
 
-import ascendente.analisis_sintactico.Token;
-
 // See https://github.com/jflex-de/jflex/issues/222
 @SuppressWarnings("FallThrough")
 public class Jflexer implements java_cup.runtime.Scanner {

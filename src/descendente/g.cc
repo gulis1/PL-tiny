@@ -2,18 +2,15 @@ options  {
   STATIC=false;
 }
 PARSER_BEGIN(ConstructorAST)
-package c_ast_descendente;
+package descendente;
 
-import asint.TinyASint.Exp;
-import asint.TinyASint.Dec;
-import asint.TinyASint.Decs;
-import asint.TinyASint.Prog;
-import semops.SemOps;
+import sintaxis_abstracta.*;
+import utils.Utils;
 
 
 
 public class ConstructorAST {
-   private SemOps sem = new SemOps();
+   
 }
 PARSER_END(ConstructorAST)
 
@@ -87,15 +84,15 @@ Prog PROG(): {Decs decs; Instrucciones is;} {decs=DECS() <BEGIN> is=INSTRUCCIONE
 
 Tipo TIPO():   {Tipo t;}  {
 
-    <STRING> {return Tipo.Cadena;}  |
+    <STRING> {return new Tipo.Cadena();}  |
     t=TARRAY() {return t;}          |
     t=TRECORD() {return t;}         |
-    <INT> {return Tipo.Entero;}     |
-    <BOOL> {return Tipo.Bool;}      |
+    <INT> {return new Tipo.Entero();}     |
+    <BOOL> {return new Tipo.Bool();}      |
     t=REF() {return t;}             |
     t=POINTER() {return t;}         |
-    <REAL> {return Tipo.Real;}      |
-    <NULL> {return Tipo.Null;}
+    <REAL> {return new Tipo.Real();}      |
+    <NULL> {return new Tipo.Null();}
 }
 
 Tipo POINTER(): {Tipo t;} {<SOMBRERO> t=TIPO() {return new Tipo.Pointer(t);}}
@@ -107,23 +104,21 @@ Tipo TARRAY(): {Token ent; Tipo tipo;} { <ARRAY> <CAP> ent=<LIT_ENTERO> <CCI> <O
 
 Tipo TRECORD(): {Campos campos;} { <RECORD> campos=CAMPOS() <END> {return new  Tipo.Record(campos);}}
 
-Campos CAMPOS():  {Campos campos;} {
+Campos CAMPOS(): {Campo campo; Campos resul;} {campo=CAMPO() resul=RCAMPOS(new Campos.Un_Campo(campo)) {return resul;}}
 
-    campos=MUCHOS_CAMPOS() {return campos;} |
-    campos=UN_CAMPO() {return campos;}
+Campos RCAMPOS(Campos campoh): {Campo campo; Campos resul;}{
+    campo=CAMPO() resul=RCAMPOS(new Campos.Muchos_Campos(campoh,campo)){return resul;} |
+        {return campoh;} 
+
 }
-
-Campos UN_CAMPO(): {Campo campo;} {campo=CAMPO() {return new Campos.Un_campo(campo);}}
-
-Campos MUCHOS_CAMPOS(): {Campos campos; Campo campo;} {campos=CAMPOS() campo=CAMPO() {return new Campos.Muchos_Campos(campos, campo);}}
 
 Campo CAMPO(): {Token id; Tipo tipo;} {id=<ID> <DOSPUNTOS> tipo=TIPO() <PCOMA> {return new Campo(id.image, tipo);}}
 
-Decs DECS(): {Dec dec;Decs result;} {dec=DEC() resul=RDECS(dec) {return resul;}}
+Decs DECS(): {Decs  resul;} {resul=RDECS(new Decs.No_decs()) {return resul;}}
 
-Decs RDECS(Dec dech): {Dec dec;Decs resul;} {
+Decs RDECS(Decs dech): {Dec dec;Decs resul;} {
     dec=DEC() resul=RDECS(new Decs.Muchas_decs(dech, dec)){return resul;} |
-        {return dech;}
+        {return dech;} 
 }
 
 Dec DEC(): {Dec dec;} {
@@ -139,14 +134,14 @@ Dec DEC_TYPE(): {Tipo tipo; Token id;} {<TYPE> id=<ID> <DOSPUNTOS> tipo=TIPO() <
 
 Dec DEC_PROC(): {Token id; ParFs parfs; Decs decs; Instrucciones is;} {<PROC> id=<ID> <PAP> parfs=PFORMALES() <PCI> decs=DECS() <BEGIN> is=INSTRUCCIONES() <END> <PCOMA> {return new Dec.Dec_proc(id.image, parfs, decs, is);} }
 
-ParFs PFORMALES(): {ParFs parfs;} {
 
-    parfs=MUCHOS_PFORMALES() {return parfs;} |
-    parfs=NO_PARF() {return parfs;}
+ParFs PFORMALES(): {ParFs resul;} {resul=RPFORMALES(new ParFs.No_Parf()) {return resul;}}
+
+ParFs RPFORMALES(ParFs parfh): {ParF parf; ParFs resul;} {
+    parf=PFORMAL() <COMA> resul=RPFORMALES(new ParFs.Muchos_ParF(parfh,parf)) {return resul;} |
+        {return parfh;}
 }
 
-ParFs MUCHOS_PFORMALES(): {ParFs parfs; ParF parf;} {parfs=PFORMALES() <COMA> parf=PFORMAL() {return new ParFs.Muchos_ParF(parfs, parf);}}
-ParFs NO_PARF(): {} { {return new  Parfs.No_Parfs();}}
 
 ParF PFORMAL(): {ParF parf;} {
     parf=PFR_VALOR() {return parf;}
@@ -160,7 +155,7 @@ Exp E0(): {Exp e1, resul;}  {e1=E1() resul=RE0(e1) {return resul;}}
 
 Exp RE0(Exp eh): {Exp e1; String op;} {
 
-    op=OP0() e1=E1() {return Utils.get_exp_cmp(eh, E1, OP);} |
+    op=OP0() e1=E1() {return Utils.get_exp_cmp(eh, e1, op);} |
      {return eh;}
 }
 
@@ -173,9 +168,9 @@ Exp RE1(Exp eh): {Exp e2;} {
 
 }
 
-Exp RE1P(Exp eh): {Exp e1;} {
+Exp RE1P(Exp eh): {Exp e1,resul;} {
 
-    <OP_RESTA> e1=E1() RE1P() {return new Exp.Exp_suma(eh, e1);} |
+    <OP_RESTA> e1=E1() resul=RE1P(new Exp.Exp_suma(eh, e1)) {return resul;} |
      {return eh;}
 }
 
@@ -187,7 +182,7 @@ Exp RE2(Exp eh): {Exp ed;} {
       {return eh;}
 }
 
-Exp E3(): {Exp e4, resul;} {e4=E4() resul=RE3() {return resul;}}
+Exp E3(): {Exp e4, resul;} {e4=E4() resul=RE3(e4) {return resul;}}
 
 Exp RE3(Exp eh): {Exp e4, resul; String op;} {
     op=OP3() e4=E4() resul=RE3(Utils.get_exp_op3(eh, e4, op)) {return resul;} |
@@ -203,7 +198,7 @@ Exp E4(): {Exp exp;} {
 Exp E5(): {Exp e6, resul;} {e6=E6() resul=RE5(e6) {return resul;}}
 Exp RE5(Exp eh): {Exp e0, resul; Token id;} {
     
-    <CAP> e=E0() <CCI> resul=RE5(new Exp.Exp_ind(eh, e0)) {return resul;}   |
+    <CAP> e0=E0() <CCI> resul=RE5(new Exp.Exp_ind(eh, e0)) {return resul;}   |
     <PUNTO> id=<ID> resul=RE5(new Exp.Exp_acc(eh, id.image)) {return resul;} |
     <SOMBRERO> resul=RE5(new Exp.Exp_indireccion(eh)) {return resul;}       |
       {return eh;}
@@ -212,7 +207,7 @@ Exp E6(): {Token token; Exp e0;} {
 
     token=<LIT_ENTERO> {return new Exp.Exp_entero(token.image);} |
     token=<LIT_DECIMAL> {return new Exp.Exp_real(token.image);}  |
-    token=<ID> {return new Exp.Exp_id(id.image);}                |
+    token=<ID> {return new Exp.Exp_id(token.image);}                |
     token=<LIT_STRING> {return new Exp.Exp_cadena(token.image);} |
     <NULL> {return new Exp.Exp_null();}                          |
     <TRUE> {return new Exp.Exp_bool("true");}                    |
@@ -237,21 +232,18 @@ String OP3(): {} {
     <MODULO> {return  "%";}
 }
 
+Instrucciones INSTRUCCIONES(): {Instrucciones resul;} {resul=RINSTRUCCIONES(new Instrucciones.No_Instr()) {return resul;}}
 
-Instrucciones INSTRUCCIONES(): {Instrucciones instrucciones;}{
-    instrucciones=MUCHAS_INST(){return instrucciones;} |
-    instrucciones=NO_INST(){return instrucciones;}
+Instrucciones RINSTRUCCIONES(Instrucciones insth): {Instruccion inst; Instrucciones resul;}{
+    inst=INSTRUCCION() resul=RINSTRUCCIONES(new Instrucciones.Muchas_Instr(insth,inst)){return resul;} |
+        {return insth;}
+
 }
-
-Instrucciones MUCHAS_INST():{Instrucciones instrucciones; Instruccion instruccion;} {instrucciones=INSTRUCCIONES() instruccion=INSTRUCCION() {return new Instrucciones.Muchas_Instr(instrucciones,instruccion);}}
-
-Instrucciones NO_INST(): {} { {return new Instrucciones.No_Instr();}}
 
 Instruccion INSTRUCCION(): {Instruccion instr;} {
 
     instr=INSTR_COND() {return instr;} |
-    instr=INSTR_ASIGN() {return instr;} |
-    instr=INSTR_INVOC() {return instr;} |
+    instr=INSTR_ASIGNOINVOC() {return instr;} |
     instr=INSTR_WHILE() {return instr;} |
     instr=INSTR_READ() {return instr;} |
     instr=INSTR_WRITE() {return instr;} |
@@ -263,17 +255,21 @@ Instruccion INSTRUCCION(): {Instruccion instr;} {
 
 }
 
-Instruccion INSTR_COND(): { Exp e0; Instrucciones instrs; Instruccion resul;} {<IF> e0=E0() <THEN> instrs=INSTRUCCIONES() resul=INSTR_COND(e0, instrs) {return resul;}}
+Instruccion INSTR_COND(): { Exp e0; Instrucciones instrs; Instruccion resul;} {<IF> e0=E0() <THEN> instrs=INSTRUCCIONES() resul=RINSTR_COND(e0, instrs) {return resul;}}
 
 Instruccion RINSTR_COND(Exp eh, Instrucciones ish): { Instrucciones is; }{
     <END> <PCOMA>{ return new Instruccion.If_then(eh,ish);} |
     <ELSE> is=INSTRUCCIONES() <END> <PCOMA> { return new Instruccion.If_then_else(eh,ish,is);}
 }
-Instruccion INSTR_ASIGN(): { Exp e0; Exp e1;} {e0=E0() <OP_ASIG> e1=E0() <PCOMA> {return new Instruccion.Asignacion(e0,e1);}}
 
-Instruccion INSTR_INVOC(): {Token id; Preales preales;} {id=<ID> <PAP> Preales=PREALES() <PCI> <PCOMA> {return new Instruccion.Invoc (id.image,preales);}}
+Instruccion INSTR_ASIGNOINVOC(): {Exp e0; Instruccion resul;} {e0=E0() resul=RINSTR_ASIGNOINVOC(e0){return resul;}}
 
-Instruccion INSTR_WHILE(): { Exp e0; Instrucciones is;} {<WHILE> e0=E0() <DO> is=INSTRUCCIONES() <END> <PCOMA> {return new Instruccion.While (eo,is); }}
+Instruccion RINSTR_ASIGNOINVOC(Exp eh): {Exp e1; Preales preales;}{
+    <PAP> preales=PREALES() <PCI> <PCOMA> {return new Instruccion.Invoc (eh,preales);} |
+    <OP_ASIG> e1=E0() <PCOMA> {return new Instruccion.Asignacion(eh,e1);}
+}
+
+Instruccion INSTR_WHILE(): { Exp e0; Instrucciones is;} {<WHILE> e0=E0() <DO> is=INSTRUCCIONES() <END> <PCOMA> {return new Instruccion.While (e0,is); }}
 
 Instruccion INSTR_READ(): {Exp e0;} {<READ> e0=E0() <PCOMA> {return new Instruccion.Read(e0);} }
 
@@ -285,18 +281,11 @@ Instruccion INSTR_NEW(): {Exp e0;} {<NEW> e0=E0() <PCOMA> {return new Instruccio
 
 Instruccion INSTR_DELETE(): {Exp e0;} {<DELETE> e0=E0() <PCOMA> {return new Instruccion.Delete(e0);} }
 
-Instruccion INSTR_SEQ(): {Decs decs; INSTRUCCIONES is;} {<SEQ> decs=DECS() <BEGIN> is=INSTRUCCIONES() <END> <PCOMA> {return new Instruccion.mix(decs,is);}}
+Instruccion INSTR_SEQ(): {Decs decs; Instrucciones is;} {<SEQ> decs=DECS() <BEGIN> is=INSTRUCCIONES() <END> <PCOMA> {return new Instruccion.Mix(decs,is);}}
 
-Preales PREALES(): {Preales preales;}{
-    preales=MUCHOS_PREALES(){return preales;} |
-    preales=NO_PREAL(){return preales;}
+Preales PREALES(): {Preales resul;} {  resul=RPREALES(new Preales.No_pReal()) {return resul;}}
 
+Preales RPREALES(Preales prealh): {Exp e0; Preales resul;} {
+    e0=E0() <COMA> resul=RPREALES(new Preales.Muchos_pReales(prealh, e0)){return resul;} |
+        {return prealh;}
 }
-
-Preales MUCHOS_PREALES():{Preales preales; Exp e0;} {
-
-    preales=PREALES() <COMA> e0=E0() {return new Preales.Muchos_pReales(preales, e0);} |
-    e0=E0() {return new Preales.Muchos_pReales(new Preales.No_pReal(), e0);}
-}
-
-Preales NO_PREAL():{} {{return new Preales.No_pReal();}}

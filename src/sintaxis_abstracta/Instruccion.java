@@ -551,19 +551,24 @@ public class Instruccion extends Nodo {
 
     public static class Invoc extends Instruccion {
 
-        private final String id;
+        private final Exp exp;
         private final Preales preales;
 
-        public Invoc(String id, Preales preales) {
-            this.id = id;
+        public Invoc(Exp exp, Preales preales) {
+            this.exp =exp;
             this.preales = preales;
         }
 
         @Override
         public void vincula_is(TablaSimbolos ts) {
+            if(!(exp instanceof Exp.Exp_id))
+                GestorErrores.addError("no es identificador");
+            else {
+                String id = ((Exp.Exp_id)exp).getId();
+                if (ts.contiene(id))this.vinculo = ts.valor_de(id);
+                else GestorErrores.addError("Identificador no definido: " + id);
 
-            if (ts.contiene(this.id)) this.vinculo = ts.valor_de(this.id);
-            else GestorErrores.addError("Identificador no definido: " + this.id);
+            }
             this.preales.vincula_is(ts);
         }
 

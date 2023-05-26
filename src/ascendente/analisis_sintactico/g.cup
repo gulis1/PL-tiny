@@ -265,7 +265,7 @@ INSTR_IF_ELSE ::= IF E0:exp THEN INSTRUCCIONES:is1 ELSE INSTRUCCIONES:is2 END PC
 INSTR_ASIGN ::= E0:e1 ASIGN E0:e2 PCOMA
             {: RESULT = new Instruccion.Asignacion(e1, e2); :};
 
-INSTR_INVOC ::= ID:id PAP PREALES:preales PCI PCOMA
+INSTR_INVOC ::= E0:id PAP PREALES:preales PCI PCOMA
             {: RESULT = new Instruccion.Invoc(id, preales); :};
 
 INSTR_WHILE ::= WHILE E0:exp DO INSTRUCCIONES:is END PCOMA

@@ -19,6 +19,10 @@ public class Exp extends Nodo {
             this.id = id;
         }
 
+        public String getId() {
+            return id;
+        }
+
         @Override
         public void vincula_is(TablaSimbolos ts)  {
             if (ts.contiene(this.id))
