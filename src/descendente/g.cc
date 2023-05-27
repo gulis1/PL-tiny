@@ -75,10 +75,10 @@ TOKEN:{<PCOMA:";">}
 TOKEN:{<COMA:",">}
 TOKEN:{<LIT_ENTERO:("+"|"-")?<parteEntera>>}
 TOKEN:{<LIT_DECIMAL:("+"|"-")?<parteEntera>"."("0"|<parteDecimal>)>}
-TOKEN:{<LIT_STRING:"\'"(~["\t","\b","\r","\n"])"\'">}
+TOKEN:{<LIT_STRING:"\'"(~["\t","\b","\r","\n"])*"\'">}
 TOKEN:{<ID:<letra>(<letra>|<digito>|"_")*>}
 
-
+Prog Init(): {Prog resul;} {resul=PROG() <EOF>{return resul;}}
 
 Prog PROG(): {Decs decs; Instrucciones is;} {decs=DECS() <BEGIN> is=INSTRUCCIONES() <END> <PUNTO> {return new Prog(decs, is);}}
 
@@ -135,16 +135,34 @@ Dec DEC_TYPE(): {Tipo tipo; Token id;} {<TYPE> id=<ID> <DOSPUNTOS> tipo=TIPO() <
 Dec DEC_PROC(): {Token id; ParFs parfs; Decs decs; Instrucciones is;} {<PROC> id=<ID> <PAP> parfs=PFORMALES() <PCI> decs=DECS() <BEGIN> is=INSTRUCCIONES() <END> <PCOMA> {return new Dec.Dec_proc(id.image, parfs, decs, is);} }
 
 
-ParFs PFORMALES(): {ParFs resul;} {resul=RPFORMALES(new ParFs.No_Parf()) {return resul;}}
+// ParFs PFORMALES(): {ParFs parfs;} {
 
-ParFs RPFORMALES(ParFs parfh): {ParF parf; ParFs resul;} {
-    parf=PFORMAL() <COMA> resul=RPFORMALES(new ParFs.Muchos_ParF(parfh,parf)) {return resul;} |
-        {return parfh;}
+//     parfs=MUCHOS_PFORMALES() {return parfs;} |
+//     parfs=NO_PARF() {return parfs;}
+// }
+
+// ParFs MUCHOS_PFORMALES(): {ParFs parfs; ParF parf;} {
+//     parfs=PFORMALES() <COMA> parf=PFORMAL() {return new ParFs.Muchos_ParF(parfs, parf);} |
+//     parf=PFNORMAL() { return new Parfs.Muchos_ParF(new Parfs.No_Parfs(),parf);}
+// }
+
+// ParFs NO_PARF(): {} { {return new  Parfs.No_Parfs()}}
+
+
+ParFs PFORMALES(): {ParFs result; ParF parf;}{ 
+    parf=PFORMAL() result=RPFORMALES(new ParFs.Muchos_ParF(new ParFs.No_Parf(),parf)){return result;}|
+    result=RPFORMALES(new ParFs.No_Parf()){return result;}
+    }
+
+ParFs RPFORMALES(ParFs parfsh): {ParF parf; ParFs result;}{
+    <COMA> parf=PFORMAL() result=RPFORMALES(new ParFs.Muchos_ParF(parfsh, parf)){return result;} |
+    {return parfsh;}
+
 }
 
 
 ParF PFORMAL(): {ParF parf;} {
-    parf=PFR_VALOR() {return parf;}
+    parf=PFR_VALOR() {return parf;} |
     parf=PFR_REF() {return parf;}
 }
 
@@ -283,9 +301,12 @@ Instruccion INSTR_DELETE(): {Exp e0;} {<DELETE> e0=E0() <PCOMA> {return new Inst
 
 Instruccion INSTR_SEQ(): {Decs decs; Instrucciones is;} {<SEQ> decs=DECS() <BEGIN> is=INSTRUCCIONES() <END> <PCOMA> {return new Instruccion.Mix(decs,is);}}
 
-Preales PREALES(): {Preales resul;} {  resul=RPREALES(new Preales.No_pReal()) {return resul;}}
+Preales PREALES(): {Preales resul;Exp e0;} { 
+    e0=E0() resul=RPREALES(new Preales.Muchos_pReales(new Preales.No_pReal(),e0)) {return resul;}|
+    resul=RPREALES(new Preales.No_pReal()) {return resul;}
+    }
 
 Preales RPREALES(Preales prealh): {Exp e0; Preales resul;} {
-    e0=E0() <COMA> resul=RPREALES(new Preales.Muchos_pReales(prealh, e0)){return resul;} |
+     <COMA> e0=E0() resul=RPREALES(new Preales.Muchos_pReales(prealh, e0)){return resul;} |
         {return prealh;}
 }

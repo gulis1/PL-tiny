@@ -1,6 +1,7 @@
 package ascendente.analisis_lexico;
 
 import java_cup.runtime.Symbol;
+import ascendente.analisis_sintactico.Token;
 
 public class UnidadLexica extends Symbol {
 

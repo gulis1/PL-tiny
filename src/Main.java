@@ -1,6 +1,7 @@
 import ascendente.analisis_lexico.Jflexer;
 import ascendente.analisis_lexico.UnidadLexica;
 import ascendente.analisis_sintactico.Parser;
+import descendente.ConstructorAST;
 import maquinap.MaquinaP;
 import sintaxis_abstracta.*;
 import utils.GestorErrores;
@@ -40,7 +41,7 @@ public class Main {
                     break;
                 case "sdesc":
                 case "desc":
-                    System.out.println("No implementado.");
+                    procesar_desc(reader);
                     break;
                 default:
                     System.out.println("Modo desconocido: " + args[0]);
@@ -66,6 +67,28 @@ public class Main {
                 System.out.println("Error en: " + jflexer.fila() + ", " + jflexer.columna());
             }
         }
+    }
+
+    private static  void procesar_desc(FileReader fileReader){
+
+        ConstructorAST ast = new ConstructorAST(fileReader);
+        Prog prog= null;
+        try {
+            prog = ast.Init();
+        }
+        catch (Exception e){
+            System.out.println("Error en la construcción del AST:");
+            GestorErrores.printErrores();
+        }
+
+        try {
+            ejecutar(prog);
+        }
+        catch (Exception e) {
+            System.out.println("Error en ejecucion:");
+            System.out.println(Arrays.toString(e.getStackTrace()));
+        }
+
     }
 
     private static void procesar_asc(FileReader fileReader) {
