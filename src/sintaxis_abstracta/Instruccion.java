@@ -41,23 +41,38 @@ public class Instruccion extends Nodo {
 
         @Override
         public void gen_cod(MaquinaP maquinap) {
-            this.e1.gen_cod(maquinap);
-            this.e2.gen_cod(maquinap);
 
             // El proceso es un poco distinto si hay que convertit cosas.
-            if (Utils.esReal(this.e1.tipo) && Utils.esEntero(this.e2.tipo)) {
+            if ( (Utils.esReal(Utils.reff(this.e1.tipo)) && Utils.esEntero(Utils.reff(this.e2.tipo)))
+                ||  (Utils.esArray(Utils.reff(this.e1.tipo)) && Utils.esReal(((Tipo.Array) Utils.reff(this.e1.tipo)).getT())
+                    && Utils.esArray(Utils.reff(this.e2.tipo)) && Utils.esEntero(((Tipo.Array) Utils.reff(this.e2.tipo)).getT()))
+            ) {
                 if (Utils.es_desig(this.e2)) {
-                    maquinap.ponInstruccion(maquinap.desapilaInd());
-                    maquinap.ponInstruccion(maquinap.int2real());
-                    maquinap.ponInstruccion(maquinap.apilaInd());
+                    for (int i = 0; i < Utils.reff(this.e2.tipo).tam; i++) {
+                        this.e1.gen_cod(maquinap);
+                        maquinap.ponInstruccion(maquinap.apilaInt(i));
+                        maquinap.ponInstruccion(maquinap.suma());
+
+                        this.e2.gen_cod(maquinap);
+                        maquinap.ponInstruccion(maquinap.apilaInt(i));
+                        maquinap.ponInstruccion(maquinap.suma());
+
+                        maquinap.ponInstruccion(maquinap.apilaInd());
+                        maquinap.ponInstruccion(maquinap.int2real());
+                        maquinap.ponInstruccion(maquinap.desapilaInd());
+                    }
                 }
                 else {
+                    this.e1.gen_cod(maquinap);
+                    this.e2.gen_cod(maquinap);
                     maquinap.ponInstruccion(maquinap.int2real());
                     maquinap.ponInstruccion(maquinap.desapilaInd());
                 }
             }
 
             else {
+                this.e1.gen_cod(maquinap);
+                this.e2.gen_cod(maquinap);
                 if (Utils.es_desig(this.e2))
                     maquinap.ponInstruccion(maquinap.mueve(this.e2.tipo.tam));
                 //----------------------------------------------------------------
@@ -71,15 +86,34 @@ public class Instruccion extends Nodo {
 
             this.ini = ge.etq;
 
-            this.e1.etiquetado(ge);
-            this.e2.etiquetado(ge);
-
             // El proceso es un poco distinto si hay que convertit cosas.
-            if (Utils.esReal(this.e1.tipo) && Utils.esEntero(this.e2.tipo)) {
-                if (Utils.es_desig(this.e2)) ge.etq += 3;
-                else ge.etq += 2;
+            // El proceso es un poco distinto si hay que convertit cosas.
+            if ( (Utils.esReal(Utils.reff(this.e1.tipo)) && Utils.esEntero(Utils.reff(this.e2.tipo)))
+                    ||  (Utils.esArray(Utils.reff(this.e1.tipo)) && Utils.esReal(((Tipo.Array) Utils.reff(this.e1.tipo)).getT())
+                    && Utils.esArray(Utils.reff(this.e2.tipo)) && Utils.esEntero(((Tipo.Array) Utils.reff(this.e2.tipo)).getT()))
+            ) {
+                if (Utils.es_desig(this.e2)) {
+                    for (int i = 0; i < this.e2.tipo.tam; i++) {
+                        this.e1.etiquetado(ge);
+                        ge.etq += 2;
+
+                        this.e2.etiquetado(ge);
+                        ge.etq += 2;
+
+                        ge.etq += 3;
+                    }
+                }
+                else {
+                    this.e1.etiquetado(ge);
+                    this.e2.etiquetado(ge);
+                    ge.etq += 2;
+                }
             }
-            else ge.etq++;
+            else {
+                this.e1.etiquetado(ge);
+                this.e2.etiquetado(ge);
+                ge.etq++;
+            }
 
             this.sig = ge.etq;
         }

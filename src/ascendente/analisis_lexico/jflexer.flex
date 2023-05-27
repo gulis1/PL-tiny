@@ -50,6 +50,7 @@ string = (S|s)(T|t)(R|r)(I|i)(N|n)(G|g)
 array = (A|a)(R|r)(R|r)(A|a)(Y|y)
 record = (R|r)(E|e)(C|c)(O|o)(R|r)(D|d)
 int = (I|i)(N|n)(T|t)
+real = (R|r)(E|e)(A|a)(L|l)
 of = (O|o)(F|f)
 bool = (B|b)(O|o)(O|o)(L|l)
 operadorSuma = \+
@@ -106,6 +107,7 @@ identificador = {letra}({letra}|{digito}|_)*
 {array}                 {return new UnidadLexica(Token.ARRAY, this.lexema(), this.fila(), this.columna());}
 {record}                {return new UnidadLexica(Token.RECORD, this.lexema(), this.fila(), this.columna());}
 {int}                   {return new UnidadLexica(Token.INT, this.lexema(), this.fila(), this.columna());}
+{real}                  {return new UnidadLexica(Token.REAL, this.lexema(), this.fila(), this.columna());}
 {of}                    {return new UnidadLexica(Token.OF, this.lexema(), this.fila(), this.columna());}
 {bool}                  {return new UnidadLexica(Token.BOOL, this.lexema(), this.fila(), this.columna());}
 {operadorSuma}          {return new UnidadLexica(Token.OP_SUMA, this.lexema(), this.fila(), this.columna());}
@@ -134,7 +136,7 @@ identificador = {letra}({letra}|{digito}|_)*
 {coma}                  {return new UnidadLexica(Token.COMA, this.lexema(), this.fila(), this.columna());}
 {litEntero}             {return new UnidadLexica(Token.LIT_ENTERO, this.lexema(), this.fila(), this.columna());}
 {litDecimal}            {return new UnidadLexica(Token.LIT_DECIMAL, this.lexema(), this.fila(), this.columna());}
-{litString}             {return new UnidadLexica(Token.LIT_STRING, this.lexema(), this.fila(), this.columna());}
+{litString}             {return new UnidadLexica(Token.LIT_STRING, this.lexema().substring(1, this.lexema().length() - 1), this.fila(), this.columna());}
 {null}                  {return new UnidadLexica(Token.NULL, this.lexema(), this.fila(), this.columna());}
 {true}                  {return new UnidadLexica(Token.TRUE, this.lexema(), this.fila(), this.columna());}
 {false}                 {return new UnidadLexica(Token.FALSE, this.lexema(), this.fila(), this.columna());}

@@ -69,25 +69,20 @@ public class Main {
         }
     }
 
-    private static  void procesar_desc(FileReader fileReader){
+    private static void procesar_desc(FileReader fileReader){
 
         ConstructorAST ast = new ConstructorAST(fileReader);
-        Prog prog= null;
+        Prog prog;
         try {
             prog = ast.Init();
         }
         catch (Exception e){
             System.out.println("Error en la construcción del AST:");
             GestorErrores.printErrores();
+            return;
         }
 
-        try {
-            ejecutar(prog);
-        }
-        catch (Exception e) {
-            System.out.println("Error en ejecucion:");
-            System.out.println(Arrays.toString(e.getStackTrace()));
-        }
+        ejecutar(prog);
 
     }
 
@@ -102,16 +97,10 @@ public class Main {
         catch (Exception e){
             System.out.println("Error en la construcción del AST:");
             GestorErrores.printErrores();
+            return;
         }
 
-        try {
-            ejecutar(prog);
-        }
-        catch (Exception e) {
-            System.out.println("Error en ejecucion:");
-            System.out.println(Arrays.toString(e.getStackTrace()));
-        }
-
+        ejecutar(prog);
     }
 
     private static void ejecutar(Prog programa) {
@@ -156,7 +145,7 @@ public class Main {
             return;
         }
 
-        maquina.muestraCodigo();
+//        maquina.muestraCodigo();
         maquina.ejecuta();
     }
 }

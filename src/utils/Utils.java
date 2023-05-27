@@ -57,10 +57,9 @@ public class Utils {
 
     public static Tipo reff(Tipo tipo) {
         if (Utils.esRef(tipo)) {
-            if (tipo.vinculo instanceof Tipo.Ref) return reff((Tipo.Ref) tipo.vinculo); // TODO: probar este caso.
+            if (tipo.vinculo instanceof Tipo.Ref) return reff((Tipo)tipo.vinculo); // TODO: probar este caso.
             else return ((Dec.Dec_type)(tipo.vinculo)).getTipo();
         }
-        else if (esPointer(tipo)) { return reff(((Tipo.Pointer)tipo).getTipoBase()); }
         else return tipo;
     }
 
@@ -87,13 +86,12 @@ public class Utils {
 
     }
 
-    public static  boolean son_compatibles(Tipo t1, Tipo t2){
+    public static boolean son_compatibles(Tipo t1, Tipo t2){
 
-        HashSet<Pair<Tipo,Tipo>> reftipos = new HashSet<Pair<Tipo,Tipo>>();
-
-        return  son_compatible(t1,t2,reftipos);
+        HashSet<Pair<Tipo,Tipo>> reftipos = new HashSet<>();
+        return son_compatible(t1, t2, reftipos);
     }
-    public static boolean son_compatible(Tipo t1, Tipo t2,HashSet<Pair<Tipo,Tipo>> refTipos) {
+    public static boolean son_compatible(Tipo t1, Tipo t2, HashSet<Pair<Tipo,Tipo>> refTipos) {
 
         if (esRef(t1))
             return son_compatible(reff(t1), t2,refTipos);
@@ -103,6 +101,8 @@ public class Utils {
         if (esEntero(t1) && esEntero(t2))
             return true;
         if (esReal(t1) && esEntero(t2))
+            return true;
+        if (esReal(t1) && esReal(t2))
             return true;
         if (esBool(t1) && esBool(t2))
             return true;
@@ -117,9 +117,9 @@ public class Utils {
             return true;
 
         if (esPointer(t1))
-            return son_compatible(reff(t1), t2,refTipos);
+            return son_compatible(((Tipo.Pointer)t1).getTipoBase(), t2, refTipos);
         if (esPointer(t2))
-            return son_compatible(t1, reff(t2),refTipos);
+            return son_compatible(t1, ((Tipo.Pointer)t2).getTipoBase(), refTipos);
 
         Pair<Tipo,Tipo> p1 = Pair.of(t1,t2);
         if(!refTipos.contains(p1))

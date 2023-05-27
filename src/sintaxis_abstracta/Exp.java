@@ -1383,7 +1383,7 @@ public class Exp extends Nodo {
                 return;
             }
 
-            this.tipo = ((Tipo.Array) e1.tipo).getT();
+            this.tipo = ((Tipo.Array) Utils.reff(e1.tipo)).getT();
         }
 
 
@@ -1395,7 +1395,7 @@ public class Exp extends Nodo {
             if (Utils.es_desig(e2))
                 maquinap.ponInstruccion(maquinap.apilaInd());
 
-            maquinap.ponInstruccion(maquinap.apilaInt(((Tipo.Array)this.e1.tipo).getT().tam));
+            maquinap.ponInstruccion(maquinap.apilaInt(((Tipo.Array)Utils.reff(this.e1.tipo)).getT().tam));
             maquinap.ponInstruccion(maquinap.mul());
             maquinap.ponInstruccion(maquinap.suma());
         }

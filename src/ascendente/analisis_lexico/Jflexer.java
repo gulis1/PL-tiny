@@ -3,6 +3,7 @@
 // source: jflexer.flex
 
 package ascendente.analisis_lexico;
+
 import ascendente.analisis_sintactico.Token;
 
 // See https://github.com/jflex-de/jflex/issues/222
@@ -107,12 +108,12 @@ public class Jflexer implements java_cup.runtime.Scanner {
     "\3\21\1\33\2\21\1\34\2\21\1\35\1\36\12\21"+
     "\1\37\1\40\4\21\1\41\1\21\1\42\1\43\1\44"+
     "\4\21\1\45\4\21\1\46\2\21\1\0\2\21\1\47"+
-    "\1\50\1\21\1\51\1\52\1\53\2\21\1\54\1\55"+
-    "\1\56\2\21\1\57\1\60\1\61\2\21\1\62\1\63"+
-    "\1\64\1\65";
+    "\1\50\1\21\1\51\1\52\1\53\1\54\2\21\1\55"+
+    "\1\56\1\57\2\21\1\60\1\61\1\62\2\21\1\63"+
+    "\1\64\1\65\1\66";
 
   private static int [] zzUnpackAction() {
-    int [] result = new int[119];
+    int [] result = new int[120];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
     return result;
@@ -149,12 +150,12 @@ public class Jflexer implements java_cup.runtime.Scanner {
     "\0\u028a\0\u0992\0\u09c4\0\u09f6\0\u0a28\0\u028a\0\u0a5a\0\u028a"+
     "\0\u028a\0\u028a\0\u0a8c\0\u0abe\0\u0af0\0\u0b22\0\u028a\0\u0b54"+
     "\0\u0b86\0\u0bb8\0\u0bea\0\u028a\0\u0c1c\0\u0c4e\0\u0960\0\u0c80"+
-    "\0\u0cb2\0\u028a\0\u028a\0\u0ce4\0\u028a\0\u028a\0\u028a\0\u0d16"+
-    "\0\u0d48\0\u028a\0\u028a\0\u028a\0\u0d7a\0\u0dac\0\u028a\0\u028a"+
-    "\0\u028a\0\u0dde\0\u0e10\0\u028a\0\u028a\0\u028a\0\u028a";
+    "\0\u0cb2\0\u028a\0\u028a\0\u0ce4\0\u028a\0\u028a\0\u028a\0\u028a"+
+    "\0\u0d16\0\u0d48\0\u028a\0\u028a\0\u028a\0\u0d7a\0\u0dac\0\u028a"+
+    "\0\u028a\0\u028a\0\u0dde\0\u0e10\0\u028a\0\u028a\0\u028a\0\u028a";
 
   private static int [] zzUnpackRowMap() {
-    int [] result = new int[119];
+    int [] result = new int[120];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
     return result;
@@ -232,23 +233,24 @@ public class Jflexer implements java_cup.runtime.Scanner {
     "\20\0\2\30\6\0\17\30\1\144\5\30\3\0\2\30"+
     "\20\0\2\30\6\0\12\30\1\145\12\30\3\0\2\30"+
     "\20\0\2\30\6\0\2\30\1\146\22\30\3\0\2\30"+
-    "\20\0\2\30\6\0\3\30\1\147\21\30\3\0\2\30"+
-    "\20\0\2\30\6\0\14\30\1\150\10\30\3\0\2\30"+
-    "\20\0\2\30\6\0\10\30\1\151\14\30\3\0\2\30"+
-    "\20\0\2\30\6\0\13\30\1\152\11\30\3\0\2\30"+
-    "\20\0\2\30\6\0\4\30\1\153\20\30\3\0\2\30"+
-    "\20\0\2\30\6\0\4\30\1\154\20\30\3\0\2\30"+
-    "\20\0\2\30\6\0\12\30\1\155\12\30\3\0\2\30"+
-    "\20\0\2\30\6\0\20\30\1\156\4\30\3\0\2\30"+
-    "\20\0\2\30\6\0\24\30\1\157\3\0\2\30\20\0"+
-    "\2\30\6\0\13\30\1\160\11\30\3\0\2\30\20\0"+
-    "\2\30\6\0\4\30\1\161\20\30\3\0\2\30\20\0"+
-    "\2\30\6\0\16\30\1\162\6\30\3\0\2\30\20\0"+
-    "\2\30\6\0\13\30\1\163\11\30\3\0\2\30\20\0"+
-    "\2\30\6\0\4\30\1\164\20\30\3\0\2\30\20\0"+
-    "\2\30\6\0\4\30\1\165\20\30\3\0\2\30\20\0"+
-    "\2\30\6\0\3\30\1\166\21\30\3\0\2\30\20\0"+
-    "\2\30\6\0\6\30\1\167\16\30\3\0\2\30";
+    "\20\0\2\30\6\0\3\30\1\147\6\30\1\150\12\30"+
+    "\3\0\2\30\20\0\2\30\6\0\14\30\1\151\10\30"+
+    "\3\0\2\30\20\0\2\30\6\0\10\30\1\152\14\30"+
+    "\3\0\2\30\20\0\2\30\6\0\13\30\1\153\11\30"+
+    "\3\0\2\30\20\0\2\30\6\0\4\30\1\154\20\30"+
+    "\3\0\2\30\20\0\2\30\6\0\4\30\1\155\20\30"+
+    "\3\0\2\30\20\0\2\30\6\0\12\30\1\156\12\30"+
+    "\3\0\2\30\20\0\2\30\6\0\20\30\1\157\4\30"+
+    "\3\0\2\30\20\0\2\30\6\0\24\30\1\160\3\0"+
+    "\2\30\20\0\2\30\6\0\13\30\1\161\11\30\3\0"+
+    "\2\30\20\0\2\30\6\0\4\30\1\162\20\30\3\0"+
+    "\2\30\20\0\2\30\6\0\16\30\1\163\6\30\3\0"+
+    "\2\30\20\0\2\30\6\0\13\30\1\164\11\30\3\0"+
+    "\2\30\20\0\2\30\6\0\4\30\1\165\20\30\3\0"+
+    "\2\30\20\0\2\30\6\0\4\30\1\166\20\30\3\0"+
+    "\2\30\20\0\2\30\6\0\3\30\1\167\21\30\3\0"+
+    "\2\30\20\0\2\30\6\0\6\30\1\170\16\30\3\0"+
+    "\2\30";
 
   private static int [] zzUnpackTrans() {
     int [] result = new int[3650];
@@ -296,10 +298,10 @@ public class Jflexer implements java_cup.runtime.Scanner {
   private static final String ZZ_ATTRIBUTE_PACKED_0 =
     "\1\0\1\11\1\0\1\11\1\0\3\11\3\1\2\11"+
     "\2\1\2\11\23\1\4\11\1\1\1\0\3\11\61\1"+
-    "\1\0\30\1";
+    "\1\0\31\1";
 
   private static int [] zzUnpackAttribute() {
-    int [] result = new int[119];
+    int [] result = new int[120];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
     return result;
@@ -791,267 +793,272 @@ public class Jflexer implements java_cup.runtime.Scanner {
             { 
             }
             // fall through
-          case 54: break;
+          case 55: break;
           case 2:
             { return new UnidadLexica(Token.MODULO, this.lexema(), this.fila(), this.columna());
             }
             // fall through
-          case 55: break;
+          case 56: break;
           case 3:
             { return new UnidadLexica(Token.PAP, this.lexema(), this.fila(), this.columna());
             }
             // fall through
-          case 56: break;
+          case 57: break;
           case 4:
             { return new UnidadLexica(Token.PCI, this.lexema(), this.fila(), this.columna());
             }
             // fall through
-          case 57: break;
+          case 58: break;
           case 5:
             { return new UnidadLexica(Token.ASTERISCO, this.lexema(), this.fila(), this.columna());
             }
             // fall through
-          case 58: break;
+          case 59: break;
           case 6:
             { return new UnidadLexica(Token.OP_SUMA, this.lexema(), this.fila(), this.columna());
             }
             // fall through
-          case 59: break;
+          case 60: break;
           case 7:
             { return new UnidadLexica(Token.COMA, this.lexema(), this.fila(), this.columna());
             }
             // fall through
-          case 60: break;
+          case 61: break;
           case 8:
             { return new UnidadLexica(Token.OP_RESTA, this.lexema(), this.fila(), this.columna());
             }
             // fall through
-          case 61: break;
+          case 62: break;
           case 9:
             { return new UnidadLexica(Token.PUNTO, this.lexema(), this.fila(), this.columna());
             }
             // fall through
-          case 62: break;
+          case 63: break;
           case 10:
             { return new UnidadLexica(Token.SLASH, this.lexema(), this.fila(), this.columna());
             }
             // fall through
-          case 63: break;
+          case 64: break;
           case 11:
             { return new UnidadLexica(Token.LIT_ENTERO, this.lexema(), this.fila(), this.columna());
             }
             // fall through
-          case 64: break;
+          case 65: break;
           case 12:
             { return new UnidadLexica(Token.DOSPUNTOS, this.lexema(), this.fila(), this.columna());
             }
             // fall through
-          case 65: break;
+          case 66: break;
           case 13:
             { return new UnidadLexica(Token.PCOMA, this.lexema(), this.fila(), this.columna());
             }
             // fall through
-          case 66: break;
+          case 67: break;
           case 14:
             { return new UnidadLexica(Token.LT, this.lexema(), this.fila(), this.columna());
             }
             // fall through
-          case 67: break;
+          case 68: break;
           case 15:
             { return new UnidadLexica(Token.ASIGN, this.lexema(), this.fila(), this.columna());
             }
             // fall through
-          case 68: break;
+          case 69: break;
           case 16:
             { return new UnidadLexica(Token.GT, this.lexema(), this.fila(), this.columna());
             }
             // fall through
-          case 69: break;
+          case 70: break;
           case 17:
             { return new UnidadLexica(Token.ID, this.lexema(), this.fila(), this.columna());
             }
             // fall through
-          case 70: break;
+          case 71: break;
           case 18:
             { return new UnidadLexica(Token.CAP, this.lexema(), this.fila(), this.columna());
             }
             // fall through
-          case 71: break;
+          case 72: break;
           case 19:
             { return new UnidadLexica(Token.CCI, this.lexema(), this.fila(), this.columna());
             }
             // fall through
-          case 72: break;
+          case 73: break;
           case 20:
             { return new UnidadLexica(Token.SOMBRERO, this.lexema(), this.fila(), this.columna());
             }
             // fall through
-          case 73: break;
+          case 74: break;
           case 21:
             { return new UnidadLexica(Token.NEQ, this.lexema(), this.fila(), this.columna());
             }
             // fall through
-          case 74: break;
+          case 75: break;
           case 22:
-            { return new UnidadLexica(Token.LIT_STRING, this.lexema(), this.fila(), this.columna());
+            { return new UnidadLexica(Token.LIT_STRING, this.lexema().substring(1, this.lexema().length() - 1), this.fila(), this.columna());
             }
             // fall through
-          case 75: break;
+          case 76: break;
           case 23:
             { return new UnidadLexica(Token.LE, this.lexema(), this.fila(), this.columna());
             }
             // fall through
-          case 76: break;
+          case 77: break;
           case 24:
             { return new UnidadLexica(Token.EQ, this.lexema(), this.fila(), this.columna());
             }
             // fall through
-          case 77: break;
+          case 78: break;
           case 25:
             { return new UnidadLexica(Token.GE, this.lexema(), this.fila(), this.columna());
             }
             // fall through
-          case 78: break;
+          case 79: break;
           case 26:
             { return new UnidadLexica(Token.DO, this.lexema(), this.fila(), this.columna());
             }
             // fall through
-          case 79: break;
+          case 80: break;
           case 27:
             { return new UnidadLexica(Token.IF, this.lexema(), this.fila(), this.columna());
             }
             // fall through
-          case 80: break;
+          case 81: break;
           case 28:
             { return new UnidadLexica(Token.NL, this.lexema(), this.fila(), this.columna());
             }
             // fall through
-          case 81: break;
+          case 82: break;
           case 29:
             { return new UnidadLexica(Token.OF, this.lexema(), this.fila(), this.columna());
             }
             // fall through
-          case 82: break;
+          case 83: break;
           case 30:
             { return new UnidadLexica(Token.OR, this.lexema(), this.fila(), this.columna());
             }
             // fall through
-          case 83: break;
+          case 84: break;
           case 31:
             { return new UnidadLexica(Token.LIT_DECIMAL, this.lexema(), this.fila(), this.columna());
             }
             // fall through
-          case 84: break;
+          case 85: break;
           case 32:
             { return new UnidadLexica(Token.AND, this.lexema(), this.fila(), this.columna());
             }
             // fall through
-          case 85: break;
+          case 86: break;
           case 33:
             { return new UnidadLexica(Token.END, this.lexema(), this.fila(), this.columna());
             }
             // fall through
-          case 86: break;
+          case 87: break;
           case 34:
             { return new UnidadLexica(Token.INT, this.lexema(), this.fila(), this.columna());
             }
             // fall through
-          case 87: break;
+          case 88: break;
           case 35:
             { return new UnidadLexica(Token.NEW, this.lexema(), this.fila(), this.columna());
             }
             // fall through
-          case 88: break;
+          case 89: break;
           case 36:
             { return new UnidadLexica(Token.NOT, this.lexema(), this.fila(), this.columna());
             }
             // fall through
-          case 89: break;
+          case 90: break;
           case 37:
             { return new UnidadLexica(Token.SEQ, this.lexema(), this.fila(), this.columna());
             }
             // fall through
-          case 90: break;
+          case 91: break;
           case 38:
             { return new UnidadLexica(Token.VAR, this.lexema(), this.fila(), this.columna());
             }
             // fall through
-          case 91: break;
+          case 92: break;
           case 39:
             { return new UnidadLexica(Token.BOOL, this.lexema(), this.fila(), this.columna());
             }
             // fall through
-          case 92: break;
+          case 93: break;
           case 40:
             { return new UnidadLexica(Token.ELSE, this.lexema(), this.fila(), this.columna());
             }
             // fall through
-          case 93: break;
+          case 94: break;
           case 41:
             { return new UnidadLexica(Token.NULL, this.lexema(), this.fila(), this.columna());
             }
             // fall through
-          case 94: break;
+          case 95: break;
           case 42:
             { return new UnidadLexica(Token.PROC, this.lexema(), this.fila(), this.columna());
             }
             // fall through
-          case 95: break;
+          case 96: break;
           case 43:
             { return new UnidadLexica(Token.READ, this.lexema(), this.fila(), this.columna());
             }
             // fall through
-          case 96: break;
-          case 44:
-            { return new UnidadLexica(Token.THEN, this.lexema(), this.fila(), this.columna());
-            }
-            // fall through
           case 97: break;
-          case 45:
-            { return new UnidadLexica(Token.TRUE, this.lexema(), this.fila(), this.columna());
+          case 44:
+            { return new UnidadLexica(Token.REAL, this.lexema(), this.fila(), this.columna());
             }
             // fall through
           case 98: break;
-          case 46:
-            { return new UnidadLexica(Token.TYPE, this.lexema(), this.fila(), this.columna());
+          case 45:
+            { return new UnidadLexica(Token.THEN, this.lexema(), this.fila(), this.columna());
             }
             // fall through
           case 99: break;
-          case 47:
-            { return new UnidadLexica(Token.ARRAY, this.lexema(), this.fila(), this.columna());
+          case 46:
+            { return new UnidadLexica(Token.TRUE, this.lexema(), this.fila(), this.columna());
             }
             // fall through
           case 100: break;
-          case 48:
-            { return new UnidadLexica(Token.BEGIN, this.lexema(), this.fila(), this.columna());
+          case 47:
+            { return new UnidadLexica(Token.TYPE, this.lexema(), this.fila(), this.columna());
             }
             // fall through
           case 101: break;
-          case 49:
-            { return new UnidadLexica(Token.FALSE, this.lexema(), this.fila(), this.columna());
+          case 48:
+            { return new UnidadLexica(Token.ARRAY, this.lexema(), this.fila(), this.columna());
             }
             // fall through
           case 102: break;
-          case 50:
-            { return new UnidadLexica(Token.WHILE, this.lexema(), this.fila(), this.columna());
+          case 49:
+            { return new UnidadLexica(Token.BEGIN, this.lexema(), this.fila(), this.columna());
             }
             // fall through
           case 103: break;
-          case 51:
-            { return new UnidadLexica(Token.WRITE, this.lexema(), this.fila(), this.columna());
+          case 50:
+            { return new UnidadLexica(Token.FALSE, this.lexema(), this.fila(), this.columna());
             }
             // fall through
           case 104: break;
-          case 52:
-            { return new UnidadLexica(Token.RECORD, this.lexema(), this.fila(), this.columna());
+          case 51:
+            { return new UnidadLexica(Token.WHILE, this.lexema(), this.fila(), this.columna());
             }
             // fall through
           case 105: break;
-          case 53:
-            { return new UnidadLexica(Token.STRING, this.lexema(), this.fila(), this.columna());
+          case 52:
+            { return new UnidadLexica(Token.WRITE, this.lexema(), this.fila(), this.columna());
             }
             // fall through
           case 106: break;
+          case 53:
+            { return new UnidadLexica(Token.RECORD, this.lexema(), this.fila(), this.columna());
+            }
+            // fall through
+          case 107: break;
+          case 54:
+            { return new UnidadLexica(Token.STRING, this.lexema(), this.fila(), this.columna());
+            }
+            // fall through
+          case 108: break;
           default:
             zzScanError(ZZ_NO_MATCH);
         }

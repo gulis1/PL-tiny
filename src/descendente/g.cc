@@ -135,20 +135,6 @@ Dec DEC_TYPE(): {Tipo tipo; Token id;} {<TYPE> id=<ID> <DOSPUNTOS> tipo=TIPO() <
 Dec DEC_PROC(): {Token id; ParFs parfs; Decs decs; Instrucciones is;} {<PROC> id=<ID> <PAP> parfs=PFORMALES() <PCI> decs=DECS() <BEGIN> is=INSTRUCCIONES() <END> <PCOMA> {return new Dec.Dec_proc(id.image, parfs, decs, is);} }
 
 
-// ParFs PFORMALES(): {ParFs parfs;} {
-
-//     parfs=MUCHOS_PFORMALES() {return parfs;} |
-//     parfs=NO_PARF() {return parfs;}
-// }
-
-// ParFs MUCHOS_PFORMALES(): {ParFs parfs; ParF parf;} {
-//     parfs=PFORMALES() <COMA> parf=PFORMAL() {return new ParFs.Muchos_ParF(parfs, parf);} |
-//     parf=PFNORMAL() { return new Parfs.Muchos_ParF(new Parfs.No_Parfs(),parf);}
-// }
-
-// ParFs NO_PARF(): {} { {return new  Parfs.No_Parfs()}}
-
-
 ParFs PFORMALES(): {ParFs result; ParF parf;}{ 
     parf=PFORMAL() result=RPFORMALES(new ParFs.Muchos_ParF(new ParFs.No_Parf(),parf)){return result;}|
     result=RPFORMALES(new ParFs.No_Parf()){return result;}
@@ -226,7 +212,7 @@ Exp E6(): {Token token; Exp e0;} {
     token=<LIT_ENTERO> {return new Exp.Exp_entero(token.image);} |
     token=<LIT_DECIMAL> {return new Exp.Exp_real(token.image);}  |
     token=<ID> {return new Exp.Exp_id(token.image);}                |
-    token=<LIT_STRING> {return new Exp.Exp_cadena(token.image);} |
+    token=<LIT_STRING> {return new Exp.Exp_cadena(token.image.substring(1, token.image.length() - 1));} |
     <NULL> {return new Exp.Exp_null();}                          |
     <TRUE> {return new Exp.Exp_bool("true");}                    |
     <FALSE> {return new Exp.Exp_bool("false");}                  |

@@ -227,21 +227,7 @@ public class ConstructorAST implements ConstructorASTConstants {
     throw new Error("Missing return statement in function");
 }
 
-// ParFs PFORMALES(): {ParFs parfs;} {
-
-//     parfs=MUCHOS_PFORMALES() {return parfs;} |
-//     parfs=NO_PARF() {return parfs;}
-// }
-
-// ParFs MUCHOS_PFORMALES(): {ParFs parfs; ParF parf;} {
-//     parfs=PFORMALES() <COMA> parf=PFORMAL() {return new ParFs.Muchos_ParF(parfs, parf);} |
-//     parf=PFNORMAL() { return new Parfs.Muchos_ParF(new Parfs.No_Parfs(),parf);}
-// }
-
-// ParFs NO_PARF(): {} { {return new  Parfs.No_Parfs()}}
-  final public 
-
-ParFs PFORMALES() throws ParseException {ParFs result; ParF parf;
+  final public ParFs PFORMALES() throws ParseException {ParFs result; ParF parf;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case VAR:
     case ID:{
@@ -518,7 +504,7 @@ ParFs PFORMALES() throws ParseException {ParFs result; ParF parf;
       }
     case LIT_STRING:{
       token = jj_consume_token(LIT_STRING);
-{if ("" != null) return new Exp.Exp_cadena(token.image);}
+{if ("" != null) return new Exp.Exp_cadena(token.image.substring(1, token.image.length() - 1));}
       break;
       }
     case NULL:{
