@@ -1,0 +1,140 @@
+type TListaEnlazada: record
+    primero: ^TNodo;
+    ultimo: ^TNodo;
+    tam: int;
+end;
+
+type TNodo: record
+    valor: String;
+    sig: ^TNodo;
+    prev: ^TNodo;
+end;
+
+proc iniciar_lista(var lista: TListaEnlazada)
+    begin
+        lista.tam = 0;
+        lista.primero = null;
+        lista.ultimo = null;
+    end;
+
+proc inserta(var lista: TListaEnlazada, nombre: string)
+    var nodo: ^TNodo;
+    begin
+
+        new nodo;
+        nodo^.valor = nombre;
+
+        if lista.tam == 0 then
+            lista.primero = nodo;
+            lista.ultimo = nodo;
+            nodo^.sig = null;
+            nodo^.prev = null;
+        else
+            nodo^.sig = null;
+            nodo^.prev = lista.ultimo;
+            lista.ultimo^.sig = nodo;
+            lista.ultimo = nodo;
+        end;
+
+        lista.tam = lista.tam + 1;
+
+        write 'Insertando: ';
+        write nodo^.valor;
+        nl;
+    end;
+
+proc imprime(var lista: TListaEnlazada)
+    var nodoActual: ^TNodo;
+    var i: int;
+    begin
+        i = 0;
+        nodoActual = lista.primero;
+        while nodoActual != null do
+            write i;
+            write ': ';
+            write nodoActual^.valor;
+            nl;
+            nodoActual = nodoActual^.sig;
+            i = i + 1;
+        end;
+    end;
+
+proc imprime_inverso(var lista: TListaEnlazada)
+    var nodoActual: ^TNodo;
+    var i: int;
+    begin
+        i = lista.tam - 1;
+        nodoActual = lista.ultimo;
+        while nodoActual != null do
+            write i;
+            write ': ';
+            write nodoActual^.valor;
+            nl;
+            nodoActual = nodoActual^.prev;
+            i = i - 1;
+        end;
+    end;
+
+proc borrar(var lista: TListaEnlazada, indice: int)
+    var nodoActual: ^TNodo;
+    var i: int;
+    begin
+
+        if (indice < 0) or (indice >= lista.tam) then
+            write 'Indice no valido'; nl;
+        else
+            i = 0;
+            nodoActual = lista.primero;
+            while i != indice do
+                nodoActual = nodoActual^.sig;
+                i = i + 1;
+            end;
+
+            nodoActual^.prev^.sig = nodoActual^.sig;
+            nodoActual^.sig^.prev = nodoActual^.prev;
+            delete nodoActual;
+        end;
+    end;
+
+var lista: TListaEnlazada;
+var accion: string;
+var input: string;
+var ind: int;
+begin
+
+    iniciar_lista(lista);
+    while true do
+        write 'Acciones:'; nl;
+        write '1: Insertar al final'; nl;
+        write '2: Mostrar'; nl;
+        write '3: Mostrar orden inverso'; nl;
+        write '4: Borrar'; nl;
+        write 'Introduzca una accion: ';
+        read accion;
+        nl;
+
+        if accion == '1' then
+            write 'Introduzca un nombre: ';
+            read input;
+            inserta(lista, input);
+        end;
+
+        if accion == '2' then
+            imprime(lista);
+        end;
+
+        if accion == '3' then
+            imprime_inverso(lista);
+        end;
+
+        if accion == '4' then
+            write 'Introduzca un indice: ';
+            read ind;
+            borrar(lista, ind);
+        end;
+
+        write '-------------------------------------------'; nl;
+    end;
+
+end.
+

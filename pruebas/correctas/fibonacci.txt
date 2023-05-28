@@ -1,0 +1,19 @@
+var res: int;
+
+proc fibonacci(x: int, var res: int)
+    var res1: int;
+    var res2: int;
+    begin
+        if (x == 0) or (x == 1) then
+            res = x;
+        else
+            fibonacci(x - 1, res1);
+            fibonacci(x - 2, res2);
+            res = res1 + res2;
+        end;
+    end;
+
+begin
+    fibonacci(30, res);
+    write res;
+end.

@@ -1,0 +1,38 @@
+var res: real;
+
+proc fibonacci(x: int, var res: real)
+    type ArrayResultados: array [1000] of real;
+    var i: int;
+    var vector: ArrayResultados;
+
+    proc fib_aux(x: int, var res: real)
+        var res1: real;
+        var res2: real;
+        begin
+
+            if (x == 0) or (x == 1) then
+                res = x;
+            else
+                if vector[x] != 0 then
+                    res = vector[x];
+                else
+                    fib_aux(x - 1, res1);
+                    fib_aux(x - 2, res2);
+                    vector[x] = res1 + res2;
+                    res = vector[x];
+                end;
+            end;
+        end;
+    begin
+        i = 0;
+        while i < 1000 do
+            vector[i] = 0;
+            i = i + 1;
+        end;
+        fib_aux(x, res);
+    end;
+
+begin
+    fibonacci(30, res);
+    write res;
+end.
