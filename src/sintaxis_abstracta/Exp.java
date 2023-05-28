@@ -27,8 +27,10 @@ public class Exp extends Nodo {
         public void vincula_is(TablaSimbolos ts)  {
             if (ts.contiene(this.id))
                 this.vinculo = ts.valor_de(this.id);
-            else
+            else {
                 GestorErrores.addError("Identificador no encontrado: " + this.id);
+                this.tipo = new Tipo.Error();
+            }
         }
 
         @Override
@@ -41,6 +43,7 @@ public class Exp extends Nodo {
                 this.tipo = ((ParF.ParF_Ref) this.vinculo).getTipoParametro();
             else {
                 GestorErrores.addError("Error: no es una dec");
+                this.tipo = new Tipo.Error();
             }
         }
 
@@ -173,7 +176,7 @@ public class Exp extends Nodo {
 
         @Override
         public void gen_cod(MaquinaP maquinaP) {
-            maquinaP.ponInstruccion(maquinaP.apilaInt(0));
+            maquinaP.ponInstruccion(maquinaP.apilaInt(-1));
         }
 
         @Override
@@ -1375,11 +1378,14 @@ public class Exp extends Nodo {
 
             if (!Utils.esArray(Utils.reff(this.e1.tipo))) {
                 GestorErrores.addError("Tipo array incorrecto");
+                this.tipo = new Tipo.Error();
+
                 return;
             }
 
             if (!(Utils.esEntero(Utils.reff(this.e2.tipo)))) {
                 GestorErrores.addError("Tamaño de array incorrecto");
+                this.tipo = new Tipo.Error();
                 return;
             }
 
@@ -1429,8 +1435,10 @@ public class Exp extends Nodo {
             this.exp.tipado();
             if (Utils.esPointer(Utils.reff(this.exp.tipo)))
                 this.tipo = ((Tipo.Pointer) Utils.reff(this.exp.tipo)).getTipoBase();
-            else
+            else {
                 GestorErrores.addError("El operador ^ solo se puede usar con punteros.");
+                this.tipo = new Tipo.Error();
+            }
         }
 
         @Override
@@ -1468,11 +1476,13 @@ public class Exp extends Nodo {
                     this.tipo = ((Tipo.Record) Utils.reff(this.exp.tipo)).tipo_de_campo(this.str);
                 }
                 else{
-                    GestorErrores.addError("No existe el campos en el registro");
+                    GestorErrores.addError("No existe el campo en el registro");
+                    this.tipo = new Tipo.Error();
                 }
             }
             else{
                 GestorErrores.addError("El operador . solo se puede usar con registros.");
+                this.tipo = new Tipo.Error();
             }
         }
 

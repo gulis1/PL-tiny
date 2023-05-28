@@ -169,6 +169,7 @@ public class Dec extends Nodo {
             this.is.etiquetado(ge);
             ge.etq += 2;
             RecolectadorProcs.recolectaProcedimientos(this.decs);
+            this.sig = ge.etq;
         }
 
         public int get_TamDatos() {

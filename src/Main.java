@@ -108,7 +108,7 @@ public class Main {
         TablaSimbolos ts = new TablaSimbolos();
         GestorMem gm = new GestorMem();
         GestorEtiquetado ge = new GestorEtiquetado();
-        MaquinaP maquina = new MaquinaP(200, 200 ,400 ,10);
+        MaquinaP maquina = new MaquinaP(10000, 10000 ,10000 ,1000);
 
         programa.vincula(ts);
         if (GestorErrores.hayErrores()) {
@@ -145,7 +145,7 @@ public class Main {
             return;
         }
 
-//        maquina.muestraCodigo();
+        maquina.muestraCodigo();
         maquina.ejecuta();
     }
 }

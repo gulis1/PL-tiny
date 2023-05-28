@@ -2,7 +2,9 @@ package utils;
 
 import sintaxis_abstracta.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 public class Utils {
 
@@ -58,7 +60,7 @@ public class Utils {
     public static Tipo reff(Tipo tipo) {
         if (Utils.esRef(tipo)) {
             if (tipo.vinculo instanceof Tipo.Ref) return reff((Tipo)tipo.vinculo); // TODO: probar este caso.
-            else return ((Dec.Dec_type)(tipo.vinculo)).getTipo();
+            else return reff(((Dec.Dec_type)(tipo.vinculo)).getTipo());
         }
         else return tipo;
     }
@@ -252,17 +254,40 @@ public class Utils {
             Campos.Un_Campo unCampo1 = (Campos.Un_Campo) campos1;
             Campos.Un_Campo unCampo2 = (Campos.Un_Campo) campos2;
 
-//            if(tiposRecursivos((unCampo1.getCampo().getT())) && tiposRecursivos(unCampo1.getCampo().getT())) {
-//                Pair<Tipo, Tipo> p1 = Pair.of((unCampo1.getCampo().getT()), (unCampo1.getCampo().getT()));
-//                if (!refTipos.contains(p1)) {
-//                    refTipos.add(p1);
-//                    return son_compatible(unCampo1.getCampo().getT(), unCampo1.getCampo().getT(), refTipos);
-//                }
-//                return true;
-//            }
+            if(tiposRecursivos((unCampo1.getCampo().getT())) && tiposRecursivos(unCampo1.getCampo().getT())) {
+                Pair<Tipo, Tipo> p1 = Pair.of((unCampo1.getCampo().getT()), (unCampo1.getCampo().getT()));
+                if (!refTipos.contains(p1)) {
+                    refTipos.add(p1);
+                    return son_compatible(unCampo1.getCampo().getT(), unCampo1.getCampo().getT(), refTipos);
+                }
+                return true;
+            }
             return son_compatible(unCampo1.getCampo().getT(), unCampo2.getCampo().getT(),refTipos);
         }
         else
             return false;
+    }
+
+    public static List<Campo> recolectaCampos(Campos campos) {
+
+        if (campos instanceof Campos.Un_Campo) {
+            Campo campo = ((Campos.Un_Campo) campos).getCampo();
+            if (esRecord(reff(campo.getT())))
+                return recolectaCampos(((Tipo.Record)reff((campo).getT())).getCampos());
+            else return new ArrayList<>();
+        }
+
+        else {
+            List<Campo> lista = recolectaCampos(((Campos.Muchos_Campos) campos).getCampos());
+            Campo campo = ((Campos.Muchos_Campos) campos).getCampo();
+
+            if (esRecord(reff(campo.getT()))) {
+                List<Campo> lista2 = recolectaCampos(((Tipo.Record)reff((campo).getT())).getCampos());;
+                lista.addAll(lista2);
+            }
+            else
+                lista.add(((Campos.Muchos_Campos) campos).getCampo());
+            return lista;
+        }
     }
 }

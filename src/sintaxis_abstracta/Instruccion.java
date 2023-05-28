@@ -3,6 +3,8 @@ package sintaxis_abstracta;
 import maquinap.MaquinaP;
 import utils.*;
 
+import java.util.List;
+
 public class Instruccion extends Nodo {
 
     public static class Asignacion extends Instruccion {
@@ -25,8 +27,11 @@ public class Instruccion extends Nodo {
             this.e1.tipado();
             this.e2.tipado();
 
-            if (!Utils.es_desig(e1))
+            if (!Utils.es_desig(e1)) {
                 GestorErrores.addError("Asignación: no es un designador");
+                this.tipo = new Tipo.Error();
+                return;
+            }
 
             if (Utils.son_compatibles(e1.tipo, e2.tipo))
                 this.tipo = new Tipo.Ok();
@@ -45,7 +50,8 @@ public class Instruccion extends Nodo {
             // El proceso es un poco distinto si hay que convertit cosas.
             if ( (Utils.esReal(Utils.reff(this.e1.tipo)) && Utils.esEntero(Utils.reff(this.e2.tipo)))
                 ||  (Utils.esArray(Utils.reff(this.e1.tipo)) && Utils.esReal(((Tipo.Array) Utils.reff(this.e1.tipo)).getT())
-                    && Utils.esArray(Utils.reff(this.e2.tipo)) && Utils.esEntero(((Tipo.Array) Utils.reff(this.e2.tipo)).getT()))
+                    && Utils.esArray(Utils.reff(this.e2.tipo))
+                    && Utils.esEntero(Utils.reff(((Tipo.Array) Utils.reff(this.e2.tipo)).getT())))
             ) {
                 if (Utils.es_desig(this.e2)) {
                     for (int i = 0; i < Utils.reff(this.e2.tipo).tam; i++) {
@@ -79,6 +85,24 @@ public class Instruccion extends Nodo {
                 else
                     maquinap.ponInstruccion(maquinap.desapilaInd());
             }
+
+            if (Utils.esRecord(Utils.reff(this.e1.tipo)) && Utils.esRecord(Utils.reff(this.e2.tipo))) {
+                Campos campos1 = ((Tipo.Record) Utils.reff(this.e1.tipo)).getCampos();
+                Campos campos2 = ((Tipo.Record) Utils.reff(this.e2.tipo)).getCampos();
+
+                List<Campo> lista1 = Utils.recolectaCampos(campos1);
+                List<Campo> lista2 = Utils.recolectaCampos(campos2);
+
+                int despl = 0;
+                for (int i = 0; i < lista1.size(); i++) {
+
+                    if (lista1.get(i).getT() instanceof Tipo.Real && lista2.get(i).getT() instanceof Tipo.Entero) {
+
+                    }
+                    despl += lista1.get(i).getT().tam;
+                }
+
+            }
         }
 
         @Override
@@ -87,13 +111,13 @@ public class Instruccion extends Nodo {
             this.ini = ge.etq;
 
             // El proceso es un poco distinto si hay que convertit cosas.
-            // El proceso es un poco distinto si hay que convertit cosas.
             if ( (Utils.esReal(Utils.reff(this.e1.tipo)) && Utils.esEntero(Utils.reff(this.e2.tipo)))
                     ||  (Utils.esArray(Utils.reff(this.e1.tipo)) && Utils.esReal(((Tipo.Array) Utils.reff(this.e1.tipo)).getT())
-                    && Utils.esArray(Utils.reff(this.e2.tipo)) && Utils.esEntero(((Tipo.Array) Utils.reff(this.e2.tipo)).getT()))
+                    && Utils.esArray(Utils.reff(this.e2.tipo))
+                    && Utils.esEntero(Utils.reff(((Tipo.Array) Utils.reff(this.e2.tipo)).getT())))
             ) {
                 if (Utils.es_desig(this.e2)) {
-                    for (int i = 0; i < this.e2.tipo.tam; i++) {
+                    for (int i = 0; i < Utils.reff(this.e2.tipo).tam; i++) {
                         this.e1.etiquetado(ge);
                         ge.etq += 2;
 
@@ -571,7 +595,8 @@ public class Instruccion extends Nodo {
 
         @Override
         public void gen_cod(MaquinaP maquinap) {
-           this.is.gen_cod(maquinap);
+            this.is.gen_cod(maquinap);
+            RecolectadorProcs.recolectaProcedimientos(this.decs);
         }
 
         @Override
@@ -579,6 +604,7 @@ public class Instruccion extends Nodo {
 
             this.ini = ge.etq;
             this.is.etiquetado(ge);
+            RecolectadorProcs.recolectaProcedimientos(this.decs);
             this.sig = ge.etq;
         }
     }
@@ -613,7 +639,7 @@ public class Instruccion extends Nodo {
 
                 this.preales.tipado();
                 Dec.Dec_proc dec = (Dec.Dec_proc) this.vinculo;
-                if (Utils.comprobacion_parametros(this.preales,dec.getPfs())) this.tipo = new Tipo.Ok();
+                if (Utils.comprobacion_parametros(this.preales, dec.getPfs())) this.tipo = new Tipo.Ok();
                 else GestorErrores.addError("Los parámetros no son compatibles.");
             }
             else GestorErrores.addError("No es un procedimiento.");
