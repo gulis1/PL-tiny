@@ -352,7 +352,7 @@ public class ConstructorAST implements ConstructorASTConstants {
     case OP_RESTA:{
       jj_consume_token(OP_RESTA);
       e1 = E1();
-      resul = RE1P(new Exp.Exp_suma(eh, e1));
+      resul = RE1P(new Exp.Exp_resta(eh, e1));
 {if ("" != null) return resul;}
       break;
       }

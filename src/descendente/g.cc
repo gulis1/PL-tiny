@@ -174,7 +174,7 @@ Exp RE1(Exp eh): {Exp e2;} {
 
 Exp RE1P(Exp eh): {Exp e1,resul;} {
 
-    <OP_RESTA> e1=E1() resul=RE1P(new Exp.Exp_suma(eh, e1)) {return resul;} |
+    <OP_RESTA> e1=E1() resul=RE1P(new Exp.Exp_resta(eh, e1)) {return resul;} |
      {return eh;}
 }
 

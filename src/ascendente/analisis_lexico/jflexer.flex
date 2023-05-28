@@ -45,6 +45,7 @@ nl = (N|n)(L|l)
 read = (R|r)(E|e)(A|a)(D|d)
 write = (W|w)(R|r)(I|i)(T|t)(E|e)
 new = (N|n)(E|e)(W|w)
+delete = (D|d)(E|e)(L|l)(E|e)(T|t)(E|e)
 seq = (S|s)(E|e)(q|q)
 string = (S|s)(T|t)(R|r)(I|i)(N|n)(G|g)
 array = (A|a)(R|r)(R|r)(A|a)(Y|y)
@@ -102,6 +103,7 @@ identificador = {letra}({letra}|{digito}|_)*
 {read}                  {return new UnidadLexica(Token.READ, this.lexema(), this.fila(), this.columna());}
 {write}                 {return new UnidadLexica(Token.WRITE, this.lexema(), this.fila(), this.columna());}
 {new}                   {return new UnidadLexica(Token.NEW, this.lexema(), this.fila(), this.columna());}
+{delete}                   {return new UnidadLexica(Token.DELETE, this.lexema(), this.fila(), this.columna());}
 {seq}                   {return new UnidadLexica(Token.SEQ, this.lexema(), this.fila(), this.columna());}
 {string}                {return new UnidadLexica(Token.STRING, this.lexema(), this.fila(), this.columna());}
 {array}                 {return new UnidadLexica(Token.ARRAY, this.lexema(), this.fila(), this.columna());}

@@ -261,8 +261,8 @@ public abstract class Tipo extends Nodo {
 
             if (Utils.esRef(this.tipoBase)) {
                 Dec.Dec_type dec_tipo = (Dec.Dec_type) this.tipoBase.vinculo;
-                dec_tipo.getTipo().asig_espacio_tipo(gm); //ASDasd
-                this.tam = dec_tipo.getTipo().tam;
+                dec_tipo.getTipo().asig_espacio_tipo(gm);
+//                this.tam = dec_tipo.getTipo().tam;
             }
 
             else this.tipoBase.asig_espacio_tipo2(gm);
