@@ -1,0 +1,105 @@
+    var n: int;
+    var result: int;
+    type tArray: array[50] of int;
+    type tArrayV2: array[50] of tArray;
+
+    type tBizcochos: record
+        arrays: tArray;
+        cont: int;
+    end;
+
+    type tMatriz: record
+        matriz: tArrayV2;
+        fil: int;
+        col: int;
+    end;
+
+    var matriz: tMatriz;
+    var bizcochos: tBizcochos;
+
+    proc ini_Matriz(var matriz: tMatriz, n:int )
+        var i: int;
+        var j: int;
+        begin
+        i=0;
+        j=0;
+
+        matriz.fil=n;
+        matriz.col=n;
+        while( i < matriz.fil ) do
+            j = 0;
+            while( j < matriz.col) do
+                matriz.matriz[i][j] = -1;
+                j= j + 1;
+            end;
+            i= i + 1;
+        end;
+    end;
+
+    proc ini_vector(var bizcochos: tBizcochos,n :int)
+        var i : int;
+        begin
+
+        bizcochos.cont = n;
+        i = 0;
+        while ( i < bizcochos.cont) do
+            read bizcochos.arrays[i];
+            i = i + 1;
+        end;
+    end;
+
+    proc resolver(var bizcochos: tBizcochos, i: int , j: int, var aux: tMatriz, var result: int)
+        var res: int;
+        var res2: int;
+        var res3: int;
+        begin
+
+       if i>=j then
+        result=0;
+        aux.matriz[i][j]=0;
+       else
+           if aux.matriz[i][j] == -1 then
+               if (bizcochos.arrays[i] ==  bizcochos.arrays[j]) and (bizcochos.arrays[j] != 0) then
+                   resolver(bizcochos, i + 1, j - 1, aux, result);
+                   aux.matriz[i][j] = result + 1;
+               else
+                   resolver(bizcochos, i , j - 2, aux, result);
+                   res = result;
+
+                   resolver(bizcochos, i + 2, j, aux, result);
+                   res2 = result;
+
+                   resolver(bizcochos, i + 1, j - 1, aux, result);
+                   res3 = result;
+
+                   if (res3 >= res2) and (res3 >= res) then
+                       aux.matriz[i][j]= res3;
+                   else
+                       if (res2 >= res3) and (res2 >= res) then
+                           aux.matriz[i][j]= res2;
+                       else
+                           if (res >= res2) and (res >= res3) then
+                               aux.matriz[i][j]= res;
+                           end;
+                       end;
+                  end;
+               end;
+               result = aux.matriz[i][j];
+           end;
+           result = aux.matriz[i][j];
+       end;
+    end;
+
+    begin
+    read n;
+    while n != 0 do
+        ini_vector(bizcochos,n);
+        ini_Matriz(matriz,n);
+        resolver(bizcochos, 0 ,n - 1,matriz,result);
+        write result;
+        read n;
+    end;
+end.
+
+
+
