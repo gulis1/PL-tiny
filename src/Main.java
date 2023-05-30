@@ -17,6 +17,7 @@ import java.util.Arrays;
 
 import static java.lang.System.exit;
 
+
 public class Main {
 
     public static void main(String[] args) throws IOException {
@@ -34,12 +35,14 @@ public class Main {
                     imprimir_tokens(reader);
                     break;
                 case "sasc":
-                    System.out.println("No sé que hacer aquí.");
+                    procesar_sasc(reader);
                     break;
                 case "asc":
                     procesar_asc(reader);
                     break;
                 case "sdesc":
+                    procesar_sdesc(reader);
+                    break;
                 case "desc":
                     procesar_desc(reader);
                     break;
@@ -69,6 +72,21 @@ public class Main {
         }
     }
 
+    private static void procesar_sdesc(FileReader fileReader){
+        ConstructorAST ast = new ConstructorAST(fileReader);
+        Prog prog;
+        try {
+            prog = ast.Init();
+        }
+        catch (Exception e){
+            System.out.println("Error en la construcción del AST:");
+            System.out.println(e);
+            GestorErrores.printErrores();
+            return;
+        }
+        System.out.println("Arbol ast generado correctamente.");
+    }
+
     private static void procesar_desc(FileReader fileReader){
 
         ConstructorAST ast = new ConstructorAST(fileReader);
@@ -78,6 +96,7 @@ public class Main {
         }
         catch (Exception e){
             System.out.println("Error en la construcción del AST:");
+            System.out.println(e);
             GestorErrores.printErrores();
             return;
         }
@@ -86,6 +105,20 @@ public class Main {
 
     }
 
+    private static void procesar_sasc(FileReader fileReader){
+        Jflexer jflexer = new Jflexer(fileReader);
+        Parser parser = new Parser(jflexer);
+        Prog prog = null;
+        try {
+            prog = (Prog) parser.parse().value;
+        }
+        catch (Exception e){
+            System.out.println("Error en la construcción del AST:");
+            GestorErrores.printErrores();
+            return;
+        }
+        System.out.println("Arbol ast generado correctamente.");
+    }
     private static void procesar_asc(FileReader fileReader) {
 
         Jflexer jflexer = new Jflexer(fileReader);

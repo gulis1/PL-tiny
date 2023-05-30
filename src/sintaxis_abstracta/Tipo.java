@@ -31,6 +31,11 @@ public abstract class Tipo extends Nodo {
 
         @Override
         public void asig_espacio_tipo2(GestorMem gm) { }
+
+        @Override
+        public String toString() {
+            return "entero";
+        }
     }
     public static class Cadena extends Tipo {
 
@@ -54,6 +59,11 @@ public abstract class Tipo extends Nodo {
 
         @Override
         public void asig_espacio_tipo2(GestorMem gm) { }
+
+        @Override
+        public String toString() {
+            return "string";
+        }
     }
     public static class Real extends Tipo   {
 
@@ -77,6 +87,11 @@ public abstract class Tipo extends Nodo {
 
         @Override
         public void asig_espacio_tipo2(GestorMem gm) { }
+
+        @Override
+        public String toString() {
+            return "real";
+        }
     }
     public static class Bool extends Tipo   {
 
@@ -100,6 +115,11 @@ public abstract class Tipo extends Nodo {
 
         @Override
         public void asig_espacio_tipo2(GestorMem gm) { }
+
+        @Override
+        public String toString() {
+            return "bool";
+        }
     }
     public static class Null extends Tipo   {
 
@@ -114,6 +134,11 @@ public abstract class Tipo extends Nodo {
         @Override
         public void tipado() {
             this.tipo = new Tipo.Ok();
+        }
+
+        @Override
+        public String toString() {
+            return "null";
         }
     }
 
@@ -159,6 +184,11 @@ public abstract class Tipo extends Nodo {
 
         public int getTamArray() {
             return this.tamArray;
+        }
+
+        @Override
+        public String toString() {
+            return String.format("array[%s]", this.tipoArray.toString());
         }
     }
 
@@ -210,6 +240,11 @@ public abstract class Tipo extends Nodo {
 
         public Campos getCampos() {
             return this.campos;
+        }
+
+        @Override
+        public String toString() {
+            return "record;";
         }
     }
 
@@ -267,6 +302,11 @@ public abstract class Tipo extends Nodo {
 
             else this.tipoBase.asig_espacio_tipo2(gm);
         }
+
+        @Override
+        public String toString() {
+            return String.format("pointer<%s>", this.tipoBase.toString());
+        }
     }
 
     public static class Ref extends Tipo {
@@ -306,5 +346,10 @@ public abstract class Tipo extends Nodo {
 
         @Override
         public void asig_espacio_tipo2(GestorMem gm) {}
+
+        @Override
+        public String toString() {
+            return id;
+        }
     }
 }

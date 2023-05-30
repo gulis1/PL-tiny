@@ -36,7 +36,8 @@ public class Instruccion extends Nodo {
             if (Utils.son_compatibles(e1.tipo, e2.tipo))
                 this.tipo = new Tipo.Ok();
             else {
-                GestorErrores.addError("Asignación: tipos incompatibles.");
+                GestorErrores.addError(String.format("Error asignación: los tipos %s y %s no son compatibles.",
+                        e1.tipo.toString(), e2.tipo.toString()));
                 this.tipo = new Tipo.Error();
             }
         }
@@ -464,14 +465,6 @@ public class Instruccion extends Nodo {
 
             this.sig = ge.etq;
         }
-
-
-
-
-
-
-
-
     }
 
     public static class New extends Instruccion {
@@ -494,7 +487,7 @@ public class Instruccion extends Nodo {
             if (Utils.esPointer(Utils.reff(this.exp.tipo)))
                 this.tipo = new Tipo.Ok();
             else {
-                GestorErrores.addError("Tipado alloc no válido.");
+                GestorErrores.addError(String.format("Error tipado new: %s no es un tipo puntero.", this.exp.tipo.toString()));
                 this.tipo = new Tipo.Error();
             }
         }
@@ -534,7 +527,7 @@ public class Instruccion extends Nodo {
             if (Utils.esPointer(Utils.reff(this.exp.tipo)))
                 this.tipo = new Tipo.Ok();
             else {
-                GestorErrores.addError("Tipado alloc no válido.");
+                GestorErrores.addError(String.format("Error tipado delete: %s no es un tipo puntero.", this.exp.tipo.toString()));
                 this.tipo = new Tipo.Error();
             }
         }
